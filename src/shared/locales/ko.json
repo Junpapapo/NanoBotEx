@@ -1,0 +1,526 @@
+{
+  "chatbot": {
+    "closeConfirm": {
+      "title": "대화를 완전히 종료하시겠습니까?",
+      "desc": "종료 시 대화 내역이 완전히 초기화됩니다.",
+      "cancel": "계속 대화하기",
+      "confirm": "종료 및 초기화"
+    },
+    "status": {
+      "writing": "답변을 작성하는 중...",
+      "localReady": "로컬 AI 준비됨",
+      "fallbackActive": "백엔드 폴백 작동 중"
+    },
+    "dragMenu": {
+      "send": "연동",
+      "summary": "요약",
+      "translate": "번역",
+      "explain": "설명"
+    },
+    "tooltips": {
+      "collapse": "도구 바 접기",
+      "expand": "메뉴 열기",
+      "minimize": "최소화",
+      "maximize": "최대화",
+      "restore": "이전 크기로",
+      "close": "종료"
+    },
+    "input": {
+      "placeholder": "메시지를 입력하세요...",
+      "loadingPlaceholder": "AI가 작성하는 중...",
+      "stop": "생성 중단",
+      "send": "메시지 전송",
+      "hint": "Enter 전송 / Shift+Enter 줄바꿈"
+    },
+    "welcome": {
+      "title": "Hi, I'm",
+      "desc": "Chrome의 온디바이스 AI(Gemini Nano) 또는 백엔드 API 연동을 활용해 동작하는 범용 챗봇입니다."
+    },
+    "quickPrompts": {
+      "title": "빠른 시작 프롬프트",
+      "p1": {
+        "label": "Chrome AI란?",
+        "text": "Chrome Gemini Nano의 개념을 알려줘."
+      },
+      "p2": {
+        "label": "온디바이스 AI 장점",
+        "text": "온디바이스 AI의 주요 장점 3가지는 무엇인가요?"
+      },
+      "p3": {
+        "label": "연동 가이드",
+        "text": "이 프로젝트를 다른 서비스에 어떻게 연동할 수 있어?"
+      }
+    },
+    "setupGuides": {
+      "title": "크롬 나노AI 설정 가이드",
+      "g1": {
+        "label": "🛠️ 1단계: 크롬 Flags 활성화"
+      },
+      "g2": {
+        "label": "📦 2단계: 컴포넌트 다운로드"
+      },
+      "g3": {
+        "label": "❓ 3단계: 연결 문제 해결 (Troubleshoot)"
+      }
+    }
+  },
+  "bookmarks": {
+    "header": "BOOKMARKS",
+    "edit": "편집",
+    "addNew": "새 즐겨찾기 추가",
+    "collapse": "접기",
+    "expand": "즐겨찾기 목록 확장",
+    "modal": {
+      "titleEdit": "즐겨찾기 #{id} 편집",
+      "nameLabel": "즐겨찾기 이름",
+      "iconToggleOpen": "아이콘 변경 펼치기 ⚙️",
+      "iconToggleClose": "아이콘 설정 접기 ✕",
+      "urlLabel": "웹사이트 주소 (URL)",
+      "namePlaceholder": "즐겨찾기 사이트의 이름을 입력하세요...",
+      "deleteConfirm": "정말로 이 즐겨찾기를 삭제하시겠습니까?",
+      "cancel": "취소",
+      "save": "저장하기",
+      "delete": "삭제"
+    }
+  },
+  "skills": {
+    "header": "SKILLS",
+    "edit": "편집",
+    "addNew": "새 스킬 추가",
+    "collapse": "접기",
+    "expand": "스킬 보관함 확장",
+    "modal": {
+      "titleEdit": "스킬 편집 ({title})",
+      "titleNew": "신규 스킬 등록",
+      "nameLabel": "단축 제목",
+      "iconToggleOpen": "아이콘 변경 펼치기 ⚙️",
+      "iconToggleClose": "아이콘 설정 접기 ✕",
+      "descLabel": "스킬 설명",
+      "promptLabel": "스킬 프롬프트 지침 (Instruction)",
+      "optimize": "프롬프트 최적화",
+      "optimizing": "최적화 중...",
+      "namePlaceholder": "스킬의 제목을 입력하세요...",
+      "descPlaceholder": "스킬의 간단한 한 줄 설명을 입력하세요...",
+      "promptPlaceholder": "나노봇에 주입할 구체적인 시스템 프롬프트 지침을 작성하세요...",
+      "deleteConfirm": "정말로 이 스킬을 로컬 디렉토리에서 완전히 삭제하시겠습니까?",
+      "cancel": "취소",
+      "save": "저장하기",
+      "delete": "삭제"
+    },
+    "finder": {
+      "title": "스킬 탐색기 (Find Skills)",
+      "results": "검색 결과 목록",
+      "noResults": "검색 결과가 없습니다.",
+      "searchFailed": "스킬 검색에 실패했습니다.",
+      "serverError": "서버 통신 중 오류가 발생했습니다.",
+      "installSuccess": "✓ [{name}] 스킬 설치가 완료되었습니다!",
+      "installFailed": "스킬 설치에 실패했습니다.",
+      "install": "설치",
+      "installing": "설치 중",
+      "placeholderDesc": "스킬 키워드를 검색하여\n새로운 기능을 설치해 보세요.",
+      "inputPlaceholder": "예: web search, react, testing..."
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "collapse": "▼ Danger Zone 접기",
+      "expand": "▶ Danger Zone 펼치기",
+      "warning": "스킬을 삭제하면 복구할 수 없으며, 로컬 파일 시스템(frontend/public/skills/{id})에 저장된 스킬 폴더가 물리적으로 완전히 삭제됩니다.",
+      "deleteBtn": "스킬 물리적 삭제 실행",
+      "confirmMsg": "이 스킬과 관련된 로컬 폴더를 물리적으로 영구 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+    },
+    "presets": {
+      "visualizer": {
+        "title": "데이터 시각화 & 표 메이커",
+        "description": "복잡한 텍스트 데이터를 일목요연한 표와 시각화 차트 형태로 가공해 줍니다."
+      },
+      "tutor": {
+        "title": "친절한 AI 선생님",
+        "description": "어려운 개념을 학생 눈높이에서 글과 표, 예문을 활용해 알기 쉽게 교육합니다."
+      },
+      "translator": {
+        "title": "다국어 번역가",
+        "description": "한국어와 영어 등 타국어 간 자연스러운 번역을 수행합니다."
+      },
+      "summarizer": {
+        "title": "텍스트 요약기",
+        "description": "긴 글을 핵심 요점 3줄로 깔끔하게 요약해 줍니다."
+      },
+      "find-skills": {
+        "title": "Find Skills",
+        "description": "새로운 스킬 기능을 탐색하고 설치합니다."
+      },
+      "code_reviewer": {
+        "title": "코드 리뷰어",
+        "description": "제출한 코드의 문제점을 찾고 개선 아이디어를 제안합니다."
+      },
+      "code_mentor": {
+        "title": "시니어 개발자 멘토",
+        "description": "작성한 코드에 대해 피드백을 제공하고, 더 나은 아키텍처 및 설계 방안을 멘토링해 줍니다."
+      },
+      "business_editor": {
+        "title": "비즈니스 메일 에디터",
+        "description": "상황에 맞게 격식 있고 프로페셔널한 비즈니스 이메일 초안을 작성하고 교정해 줍니다."
+      }
+    },
+    "activation": {
+      "activated": "💡 **[{title}]** 스킬이 장착되었습니다.\n\n*{description}*{additionalContent}\n\n지침에 맞춰 준비가 완료되었습니다. 질문이나 요청을 입력해 주세요!",
+      "deactivated": "💡 **[{title}]** 스킬 장착이 해제되었습니다. 이제 일반 대화 모드로 전환됩니다.",
+      "listHeader": "\n\n### 📋 현재 등록된 스킬 목록\n",
+      "listTableHead": "| 스킬명 (Title) | 역할 및 설명 (Description) |\n| :--- | :--- |\n",
+      "noCustomSkills": "\n\n현재 등록된 커스텀 스킬이 없습니다."
+    }
+  },
+  "history": {
+    "header": "HISTORY",
+    "empty": "저장된 대화가 없습니다.",
+    "unnamed": "이전 대화",
+    "delete": "대화 삭제",
+    "newSession": "새 대화 시작",
+    "collapse": "접기",
+    "expand": "히스토리 목록 확장"
+  },
+  "panel": {
+    "titles": {
+      "settings": "시스템 세팅",
+      "diagnostics": "시스템 연동 상태 진단",
+      "guide": "Chrome Gemini Nano 가이드",
+      "botSettings": "봇 지침 규칙 설정",
+      "calculator": "스마트 계산기",
+      "exchange": "실시간 환율 변환",
+      "translator": "독립형 AI 번역기",
+      "memo": "도구 메모 및 할 일",
+      "skillFinder": "스킬 탐색기"
+    },
+    "tooltips": {
+      "resize": "드래그하여 가로 크기 조절"
+    },
+    "settings": {
+      "botName": "🤖 봇 이름",
+      "engine": "⚙️ 실행 엔진",
+      "theme": "🎨 테마 설정",
+      "dark": "🌙 다크",
+      "light": "☀️ 라이트",
+      "tabAi": "🤖 AI 설정",
+      "tabAppearance": "🎨 외관 설정",
+      "tabLauncher": "⚙️ 기동 설정"
+    },
+    "diagnostics": {
+      "sectionEnv": "환경 및 보안",
+      "secureContext": "보안 컨텍스트 (HTTPS)",
+      "origin": "현재 오리진",
+      "secure": "Secure (Pass)",
+      "insecure": "Insecure (Fail)",
+      "sectionAi": "크롬 내장 AI 검출 상태"
+    },
+    "guide": {
+      "title": "온디바이스 AI 및 외부 API 가이드",
+      "tabFlags": "🛠️ Flags 설정",
+      "tabComponents": "📦 컴포넌트",
+      "tabTroubleshoot": "❓ 문제 해결",
+      "tabLocalCheck": "3. 로컬 체크",
+      "tabExternalApi": "4. 외부 API",
+      "flagsTitle": "Chrome Gemini Nano 활성화",
+      "flagsDesc": "크롬에 내장된 온디바이스 AI 기능을 활성화하기 위해 아래 두 가지 실험용 기능(Flags)을 활성화해야 합니다.",
+      "flagsStep1": "주소창에 chrome://flags/#prompt-api-for-gemini-nano 입력 후 Enabled로 설정.",
+      "flagsStep2": "주소창에 chrome://flags/#optimization-guide-on-device-model 입력 후 Enabled BypassPerfRequirement 설정.",
+      "flagsStep3": "설정을 마친 후 크롬 브라우저를 완전히 재실행(Relaunch)해 주세요.",
+      "componentsTitle": "디바이스 내장 모델 다운로드",
+      "componentsDesc": "Flags 설정 후, 크롬이 로컬 추론을 위한 Gemini Nano 모델 파일을 내려받아야 합니다.",
+      "componentsStep1": "주소창에 chrome://components 입력.",
+      "componentsStep2": "Optimization Guide On Device Model 항목을 찾습니다.",
+      "componentsStep3": "하단의 Check for update 버튼을 클릭합니다.",
+      "componentsStep4": "상태가 Up-to-date 또는 다운로드 중으로 전환되는지 확인해 주세요.",
+      "checkTitle": "API 연동 상태 및 로컬 실행",
+      "checkDesc": "F12 개발자 도구의 Console 창에 아래 명령을 입력하여 정상적으로 Gemini Nano 세션이 생성되는지 직접 테스트해 볼 수 있습니다.",
+      "checkSuccess": "✅ 콘솔에서 정상 응답이 오면 온디바이스 챗봇이 완벽하게 독립 동작합니다.",
+      "externalApiTitle": "외부 LLM API 설정 (Bypass Mode)",
+      "externalApiDesc": "로컬 Gemini Nano 대신 OpenAI 등의 클라우드 API를 직접 연결할 수도 있습니다.",
+      "externalApiStep1": "1. 팝업 또는 챗봇 설정창에서 Bypass Mode를 켭니다.",
+      "externalApiStep2": "2. 사용하실 API Key와 API URL(예: OpenAI, Anthropic 호환 주소) 및 Model(예: gpt-4o-mini)을 등록합니다.",
+      "externalApiStep3": "3. 모든 요청은 브라우저에서 직접 전달되어 안전하게 작동합니다.",
+      "troubleshootTitle": "자주 발생하는 오류 해결",
+      "q1": "Q. `window.ai`가 여전히 감지되지 않습니다.",
+      "a1": "크롬 브라우저가 최신 버전(v128 이상)인지 확인해 보세요. 또한 시크릿 모드에서는 일부 내장 AI 탐지가 제한될 수 있으므로 일반 브라우저 탭에서 실행해 주세요.",
+      "q2": "Q. 컴포넌트 다운로드 버전이 0.0.0.0에서 안 변합니다.",
+      "a2": "컴포넌트 다운로드에는 디바이스에 최소 10GB 이상의 여유 공간이 확보되어 있어야 합니다.",
+      "q3": "Q. 저사양 노트북에서도 작동하나요?",
+      "a3": "온디바이스 AI는 시스템 리소스(RAM 8GB 이상, 그래픽 카드)의 최소 제약 요건이 있습니다. Flags에서 `BypassPerfRequirement`를 지정해야 사양 제약을 우회해 테스트가 가능합니다."
+    },
+    "botSettings": {
+      "tabGlobal": "글로벌 룰 (Global)",
+      "tabGeneral": "일반 룰 (General)",
+      "globalLabel": "모든 답변 시 적용할 공통 룰 지침",
+      "generalLabel": "일반 대화 시에만 적용할 어조/행동 지침",
+      "globalPlaceholder": "시나리오 분석 및 일반 대화 등 온디바이스 AI의 모든 답변 시 항시 준수해야 하는 절대 지침을 입력하세요...",
+      "generalPlaceholder": "일반 자유 대화 시에만 특별히 적용할 규칙을 입력하세요...",
+      "saveSynced": "✓ 규칙이 안전하게 동기화됨!",
+      "saveBtn": "저장 및 봇 엔진 동기화",
+      "defaultGlobalRules": "- 모든 답변은 반드시 정중하고 친절한 한국어 존댓말(경어체)을 사용하세요.\n- 제공된 실시간 수치나 뉴스 데이터 등의 팩트 정보를 왜곡하거나 없는 사실을 지어내지 마세요.\n- 금액이나 수치 정보를 표시할 때는 반드시 천단위 쉼표(,)를 붙여서 가독성을 높여주세요.",
+      "defaultGeneralRules": "- 일반 대화나 질문에 답할 때는 친근하게 소통하되, 간결하고 명확한 대답을 우선으로 해주세요.\n- 투자 판단이나 매매 기법 등에 관해 답변할 때는 \"투자의 책임은 본인에게 있으므로 신중한 결정이 필요합니다\"라는 리스크 환기 메시지를 덧붙여주세요.\n- 어려운 금융/거시경제 용어가 나오면 직관적인 비유를 섞어 이해하기 쉽게 설명해주세요."
+    }
+  },
+  "settings": {
+    "language": "🌐 언어 설정",
+    "position": "📍 플로팅 위치",
+    "positions": {
+      "topLeft": "↖ 좌상단",
+      "topRight": "↗ 우상단",
+      "bottomLeft": "↙ 좌하단",
+      "bottomRight": "↘ 우하단 (기본)"
+    },
+    "size": "📏 플로팅 버튼 크기",
+    "sizes": {
+      "small": "소 44px",
+      "medium": "중 56px",
+      "large": "대 64px",
+      "original": "원본",
+      "custom": "커스텀"
+    },
+    "customInput": "직접 입력:",
+    "customRange": "(20 ~ 150px 입력 가능)",
+    "tooltip": "💬 플로팅 버튼 툴팁 (호버)",
+    "tooltipPlaceholder": "호버 문구 입력 (엔터로 줄바꿈 가능)",
+    "tooltipStyle": "툴팁 스타일",
+    "tooltipStyles": {
+      "standard": "기본",
+      "glow": "네온",
+      "modern": "모던",
+      "speech": "웹툰"
+    },
+    "icon": "🎨 플로팅 아이콘 선택",
+    "icons": {
+      "message": "채팅",
+      "bot": "봇",
+      "cpu": "CPU",
+      "sparkles": "스파클",
+      "custom": "이미지"
+    },
+    "imagePath": "커스텀 플로팅 이미지 경로",
+    "defaultImage": "기본 상태 이미지",
+    "hoverImage": "마우스 오버 이미지",
+    "attach": "파일 첨부",
+    "emptyDefault": "비워두면 기본값 적용",
+    "preview": "실시간 미리보기",
+    "hoverPreview": "마우스 올려 확인",
+    "notSet": "미등록",
+    "recommendedSize": "추천 창 사이즈",
+    "recommendedSizeDesc": "클릭하면 현재 창 크기에 즉시 적용됩니다.",
+    "recommendedSizes": {
+      "minimal": "최소 동작 크기",
+      "standard": "기본값 (권장)",
+      "wide": "넓은 화면 최적"
+    },
+    "avatarTitle": "🤖 나노봇 아바타 선택",
+    "upload": "업로드",
+    "uploadTitle": "로컬 이미지 파일 업로드",
+    "random": "랜덤",
+    "randomTitle": "매 기동마다 랜덤 아바타",
+    "avatarCustom": "커스텀",
+    "avatarDescPrefix": "💡 커스텀 이미지를",
+    "avatarDescMiddle": "에 넣으면 프리셋 목록에 자동 반영됩니다. 또는",
+    "avatarDescSuffix": "버튼으로 로컬 파일을 직접 설정할 수 있습니다.",
+    "displayTitle": "챗봇 창 규격 직접 설정",
+    "ratioLock": "비율 고정",
+    "width": "가로 폭",
+    "height": "세로 높이",
+    "fontSize": "글꼴 크기",
+    "temperature": "답변 창의성 (TEMPERATURE: {temp})",
+    "tempConservative": "보수적",
+    "tempBalanced": "균형적",
+    "tempCreative": "창의적",
+    "bypassTitle": "환경 강제 활성화",
+    "bypassDesc": "내장 AI 검출 실패 시에도 위젯을 강제 기동합니다."
+  },
+  "session": {
+    "clearContext": "🧹 **AI의 이전 대화 맥락 기억이 클리어되었습니다.** (이후의 질문은 이전 내용과 연계되지 않고 완전히 새롭게 답변됩니다.)",
+    "firstUserMsgDefault": "새로운 대화",
+    "ragDetect": {
+      "desc": "💡 **실시간 검색 RAG(TPocket) 연동 지시가 감지되었습니다.**\n실시간 외부 증시 데이터를 연동하여 분석할까요, 아니면 온디바이스 AI의 기본 지식으로 답변을 생성할까요?",
+      "yes": "실시간 연동 분석 실행 ⚡",
+      "no": "일반 AI 답변 생성"
+    },
+    "multipleMatch": {
+      "kr": "**'{keyword}'** 관련 한국 종목이 여러 개 검색되었습니다. 아래에서 분석을 원하시는 종목을 선택해 주세요:",
+      "us": "**'{keyword}'** 관련 미국 종목이 여러 개 검색되었습니다. 아래에서 분석을 원하시는 종목을 선택해 주세요:",
+      "plain": "일반대화"
+    },
+    "priceCheck": {
+      "notFound": "❌ **'{text}'**에 매칭되는 종목을 찾지 못했습니다.",
+      "footer": "\n--- \n*(조회 기준 시각: {time} | 실시간 API 즉시 연동 완료)*",
+      "header": "### 📊 **{name} ({ticker}) 실시간 시세**\n\n",
+      "type": "구분",
+      "valUnit": "정보 (단위: {unit})",
+      "price": "현재가",
+      "ohlc": "시가 / 고가 / 저가",
+      "volume": "당일 거래량"
+    },
+    "newsCheck": {
+      "notFound": "❌ **'{text}'**에 매칭되는 종목을 찾지 못했습니다.",
+      "empty": "* 최근 관련 뉴스가 없습니다.\n",
+      "footer": "\n--- \n*(수집 기준 시각: {time} | 실시간 크롤링 연동)*",
+      "header": "### 📰 **[{name} ({ticker})] 최신 뉴스**\n\n",
+      "news": "뉴스"
+    },
+    "portfolioOpt": {
+      "header": "### ⚖️ **미국 주식 포트폴리오 최적 배분율 (Sharpe Max)**\n\n#### **1. 최적 투자 비중 (Optimal Weights)**\n",
+      "perfHeader": "\n#### **2. 포트폴리오 기대 성과 (3년 백테스트)**\n",
+      "expectedReturn": "연평균 기대수익률",
+      "volatility": "포트폴리오 변동성",
+      "sharpe": "샤프 지수",
+      "footer": "\n--- \n*(연산 분석 시각: {time} | 현대 포트폴리오 이론(MPT) 기반)*",
+      "failed": "❌ **포트폴리오 최적화 실패**: 올바른 티커를 입력해 주세요."
+    },
+    "webAnalyze": {
+      "invalidUrl": "❌ **올바른 형식의 웹 페이지 주소(URL)를 입력해 주세요.** (http:// 또는 https:// 로 시작하는 주소)",
+      "failed": "❌ **웹 페이지 분석 실패**: 웹 페이지의 내용을 가져올 수 없습니다. URL을 확인하거나 나중에 다시 시도해 주세요.",
+      "sourceInfo": "분석 근거 정보",
+      "item": "구분",
+      "detail": "정보",
+      "sourceUrl": "출처 URL",
+      "charCount": "추출된 글자 수",
+      "footer": "분석 기준 시각: {time} | AI 웹 요약 및 분석",
+      "reportHeader": "### 📄 **{title} 요약 및 분석 보고서**\n\n"
+    },
+    "ragStart": "🔍 **선택하신 숏컷 프롬프트에 기반하여 실시간 검색 연동을 시작합니다.**",
+    "errorOccurred": "오류가 발생했습니다. 브라우저 및 온디바이스 설정을 확인해 주세요.",
+    "scenarios": {
+      "priceCheck": "📊 **시세를 확인할 종목명 또는 6자리 코드를 입력해 주세요.** (예: 삼성전자 또는 005930)",
+      "newsCheck": "📰 **최신 뉴스를 확인할 종목명 또는 6자리 코드를 입력해 주세요.** (예: 카카오 또는 035720)",
+      "stockAnalyze": "🧠 **AI 심층 분석을 진행할 종목명 또는 6자리 코드를 입력해 주세요.** (예: 현대차 또는 005380)",
+      "webAnalyze": "📄 **요약 및 분석을 진행할 웹 페이지 주소(URL)를 입력해 주세요.** (예: https://example.com)",
+      "portfolioOpt": "⚖️ **포트폴리오 자산 배분을 최적화할 미국 주식/ETF 티커들을 쉼표(,)로 구분하여 입력해 주세요.** (예: `AAPL, MSFT, TLT, GLD`)"
+    }
+  },
+  "tools": {
+    "calc": {
+      "title": "🧮 일반 계산기",
+      "converterTitle": "📏 스마트 단위 변환기",
+      "temp": "온도",
+      "valInput": "값 입력",
+      "exchange": "단위 교환",
+      "pyung": "평 (Pyung)",
+      "m2": "제곱미터 (㎡)",
+      "celsius": "섭씨 (°C)",
+      "fahrenheit": "화씨 (°F)"
+    },
+    "translator": {
+      "placeholder": "여기에 번역할 텍스트를 입력하세요...",
+      "btnTranslate": "실시간 번역 실행 ⚡",
+      "errorApi": "API 요청 오류가 발생했습니다.",
+      "errorFail": "번역 처리에 실패했습니다. 온디바이스 엔진 상태 또는 API 연결을 확인하세요.",
+      "sourceLabel": "번역할 원문 입력",
+      "resultLabel": "번역 결과",
+      "resultPlaceholder": "번역 결과가 여기에 표시됩니다...",
+      "copied": "복사 완료!",
+      "copy": "복사하기",
+      "languages": {
+        "en": "English (영어)",
+        "ko": "Korean (한국어)",
+        "ja": "Japanese (일본어)",
+        "zh": "Chinese (중국어)",
+        "es": "Spanish (스페인어)",
+        "fr": "French (프랑스어)"
+      }
+    },
+    "exchange": {
+      "offline": "기본값(오프라인)",
+      "refresh": "새로고침",
+      "errorFallback": "오류 (백업 환율 적용)",
+      "currencies": {
+        "USD": "$ (달러)",
+        "KRW": "₩ (원)",
+        "JPY": "¥ (엔)",
+        "EUR": "€ (유로)",
+        "CNY": "¥ (위안)"
+      }
+    },
+    "memo": {
+      "title": "도구 메모 및 할 일",
+      "todoTab": "할 일 목록",
+      "memoTab": "메모장",
+      "newTodoPlaceholder": "새로운 할 일 등록...",
+      "emptyTodo": "등록된 할 일이 없습니다.\n오늘의 미션을 추가해 보세요!",
+      "emptyMemo": "저장된 메모가 없습니다.\n우측 상단의 [+] 버튼을 눌러 새 메모를 작성해 보세요!",
+      "emptyActiveMemo": "선택된 메모가 없습니다.\n목록에서 메모를 선택하거나 새 메모를 작성해 보세요!",
+      "memoTitlePlaceholder": "메모 제목 입력...",
+      "memoContentPlaceholder": "여기에 자유롭게 메모를 적어주세요. 작성한 내용은 안전하게 자동 저장됩니다...",
+      "autoSaved": "자동 저장됨",
+      "deleteConfirm": "정말로 이 메모를 삭제하시겠습니까?",
+      "newMemoTitle": "새 메모",
+      "unnamedMemo": "기본 메모",
+      "aiAnswerTitle": "AI 답변 저장",
+      "lastUpdated": "마지막 업데이트",
+      "addMemo": "메모 추가",
+      "deleteMemo": "메모 삭제"
+    }
+  },
+  "sidebar": {
+    "contextSync": "맥락 연동",
+    "tooltips": {
+      "diagnostics": "시스템 환경 진단",
+      "guide": "Gemini Nano 가이드",
+      "clearContext": "대화 지우기 및 기억 클리어",
+      "resetChat": "전체 대화 리셋",
+      "botSettings": "커스텀 AI 동작 룰 설정",
+      "settings": "시스템 세팅",
+      "aiStockAnalyze": "AI 종목 분석",
+      "aiWebAnalyze": "AI 웹 페이지 분석",
+      "findSkills": "스킬 탐색기 (Find Skills)",
+      "translator": "독립형 AI 번역기",
+      "exchange": "실시간 환율 변환기",
+      "calculator": "스마트 계산기",
+      "memo": "도구 메모 및 할 일",
+      "textSummary": "텍스트 단순 요약",
+      "keyPoints": "핵심 요점 3줄 정리",
+      "grammarCheck": "맞춤법 & 문법 교정",
+      "businessTone": "비즈니스 메일 톤 변환",
+      "detailedExplain": "상세 설명 요청",
+      "brainstorming": "참신한 아이디어 브레인스토밍",
+      "toggleSkills": "스킬 토글",
+      "toggleBookmarks": "BOOKMARKS 즐겨찾기바 토글",
+      "toggleHistory": "대화 히스토리 토글"
+    }
+  },
+  "persona": {
+    "title": "AI 성향 (Persona)",
+    "addBtn": "성향 등록",
+    "addBtnTooltip": "새로운 성향 프리셋을 추가합니다",
+    "editTooltip": "편집 (이름 및 내용 수정)",
+    "deleteTooltip": "삭제",
+    "alertLabelRequired": "성향의 라벨 이름을 입력해주세요.",
+    "alertValueRequired": "성향 지침 내용을 입력해주세요.",
+    "deleteConfirm": "이 성향 프리셋을 삭제하시겠습니까?",
+    "registerTitle": "현재 지침 내용을 새 성향으로 등록",
+    "labelPlaceholder": "라벨 이름 입력 (예: 🧠 경제 분석가)",
+    "valuePlaceholder": "성향 지침 프롬프트 내용",
+    "saveBtn": "등록",
+    "cancelBtn": "취소",
+    "editTitle": "성향 이름 및 지침 편집",
+    "editSubtitle": "*(변경 사항을 템플릿에 저장)*",
+    "editLabelPlaceholder": "라벨 이름 입력",
+    "editValuePlaceholder": "성향 지침 프롬프트 내용",
+    "updateBtn": "저장",
+    "textareaPlaceholder": "AI의 성향 및 답변 방식을 직접 설정하세요...",
+    "presets": {
+      "trader": "⚡ 단기 트레이더",
+      "traderValue": "You are a cynical, strict technical analysis trading expert. Answer with sharp, data-focused metrics and highlight risks aggressively. Keep it extremely brief. 반드시 한국어로 답변해 주세요.",
+      "mentor": "☕ 가치 투자 멘토",
+      "mentorValue": "You are a warm, friendly value investing mentor like Warren Buffett. Focus on long-term values, company moats, stability, and growth potentials. Avoid short-term noise. 반드시 한국어로 답변해 주세요.",
+      "restore": "🔄 기본 복원",
+      "restoreValue": "You are a friendly and intelligent AI assistant named 'Nano AI'. Provide helpful, concise, and professional answers in Korean (반드시 한국어로 답변해 주세요). Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text."
+    }
+  },
+  "popup": {
+    "openSidepanel": "사이드패널 열기 (Open Sidepanel)",
+    "floatingWidget": "웹페이지 플로팅 봇 기동",
+    "bypassApiMode": "Bypass API Mode (외부 LLM 연결)",
+    "systemPersona": "System Persona (프롬프트 지침)",
+    "personaPlaceholder": "AI 행동 지침을 작성하세요..."
+  },
+  "common": {
+    "confirm": "확인",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정"
+  }
+}

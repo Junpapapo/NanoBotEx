@@ -1,0 +1,526 @@
+{
+  "chatbot": {
+    "closeConfirm": {
+      "title": "End this conversation?",
+      "desc": "Ending will completely reset your history.",
+      "cancel": "Continue Chatting",
+      "confirm": "Reset & End"
+    },
+    "status": {
+      "writing": "Generating...",
+      "localReady": "Local AI Ready",
+      "fallbackActive": "Backend Fallback Active"
+    },
+    "dragMenu": {
+      "send": "Send",
+      "summary": "Summary",
+      "translate": "Translate",
+      "explain": "Explain"
+    },
+    "tooltips": {
+      "collapse": "Collapse Sidebar",
+      "expand": "Open Sidebar",
+      "minimize": "Minimize",
+      "maximize": "Maximize",
+      "restore": "Restore",
+      "close": "Close"
+    },
+    "input": {
+      "placeholder": "Type a message...",
+      "loadingPlaceholder": "AI is writing...",
+      "stop": "Stop",
+      "send": "Send",
+      "hint": "Enter to send / Shift+Enter for new line"
+    },
+    "welcome": {
+      "title": "Hi, I'm",
+      "desc": "A general-purpose chatbot operating on Chrome's on-device AI (Gemini Nano) or backend API integrations."
+    },
+    "quickPrompts": {
+      "title": "Quick Start Prompts",
+      "p1": {
+        "label": "What is Chrome AI?",
+        "text": "Tell me about the concept of Chrome Gemini Nano."
+      },
+      "p2": {
+        "label": "On-device AI Pros",
+        "text": "What are the 3 key advantages of on-device AI?"
+      },
+      "p3": {
+        "label": "Integration Guide",
+        "text": "How can I integrate this project into other services?"
+      }
+    },
+    "setupGuides": {
+      "title": "Chrome Nano AI Setup Guide",
+      "g1": {
+        "label": "🛠️ Step 1: Enable Chrome Flags"
+      },
+      "g2": {
+        "label": "📦 Step 2: Download Components"
+      },
+      "g3": {
+        "label": "❓ Step 3: Troubleshoot Connection"
+      }
+    }
+  },
+  "bookmarks": {
+    "header": "BOOKMARKS",
+    "edit": "Edit",
+    "addNew": "Add Bookmark",
+    "collapse": "Collapse",
+    "expand": "Expand Bookmarks",
+    "modal": {
+      "titleEdit": "Bookmark #{id} Edit",
+      "nameLabel": "Bookmark Name",
+      "iconToggleOpen": "Change Icon ⚙️",
+      "iconToggleClose": "Collapse ✕",
+      "urlLabel": "Website URL",
+      "namePlaceholder": "Enter bookmark name...",
+      "deleteConfirm": "Delete this bookmark?",
+      "cancel": "Cancel",
+      "save": "Save",
+      "delete": "Delete"
+    }
+  },
+  "skills": {
+    "header": "SKILLS",
+    "edit": "Edit",
+    "addNew": "Add Skill",
+    "collapse": "Collapse",
+    "expand": "Expand Skills",
+    "modal": {
+      "titleEdit": "Edit Skill ({title})",
+      "titleNew": "New Skill",
+      "nameLabel": "Title",
+      "iconToggleOpen": "Change Icon ⚙️",
+      "iconToggleClose": "Collapse ✕",
+      "descLabel": "Description",
+      "promptLabel": "Prompt Instruction",
+      "optimize": "Optimize Prompt",
+      "optimizing": "Optimizing...",
+      "namePlaceholder": "Enter skill title...",
+      "descPlaceholder": "Enter a short description...",
+      "promptPlaceholder": "Write the system prompt instruction...",
+      "deleteConfirm": "Permanently delete this skill?",
+      "cancel": "Cancel",
+      "save": "Save",
+      "delete": "Delete"
+    },
+    "finder": {
+      "title": "Find Skills",
+      "results": "Search Results",
+      "noResults": "No results found.",
+      "searchFailed": "Failed to search skills.",
+      "serverError": "A server error occurred.",
+      "installSuccess": "✓ [{name}] Skill installation completed!",
+      "installFailed": "Failed to install skill.",
+      "install": "Install",
+      "installing": "Installing...",
+      "placeholderDesc": "Search skill keywords to\ninstall new features.",
+      "inputPlaceholder": "e.g. web search, react, testing..."
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "collapse": "▼ Collapse Danger Zone",
+      "expand": "▶ Expand Danger Zone",
+      "warning": "Once deleted, this cannot be recovered. The skill folder stored in the local file system (frontend/public/skills/{id}) will be physically deleted.",
+      "deleteBtn": "Execute Physical Delete",
+      "confirmMsg": "Are you sure you want to permanently delete the local folder associated with this skill? This action cannot be undone."
+    },
+    "presets": {
+      "visualizer": {
+        "title": "Data Visualizer & Table Maker",
+        "description": "Transforms complex text data into organized tables and visual charts."
+      },
+      "tutor": {
+        "title": "Friendly AI Teacher",
+        "description": "Explains complex concepts easily at a student's level using text, tables, and examples."
+      },
+      "translator": {
+        "title": "Multilingual Translator",
+        "description": "Performs natural translation between English, Korean, and other languages."
+      },
+      "summarizer": {
+        "title": "Text Summarizer",
+        "description": "Summarizes long text into 3 clean, key points."
+      },
+      "find-skills": {
+        "title": "Find Skills",
+        "description": "Search and install new skill features."
+      },
+      "code_reviewer": {
+        "title": "Code Reviewer",
+        "description": "Finds problems in submitted code and suggests improvement ideas."
+      },
+      "code_mentor": {
+        "title": "Senior Dev Mentor",
+        "description": "Provides feedback on written code, and mentors on better architecture and design."
+      },
+      "business_editor": {
+        "title": "Business Mail Editor",
+        "description": "Drafts and refines formal and professional business email drafts based on scenarios."
+      }
+    },
+    "activation": {
+      "activated": "💡 **[{title}]** Skill has been equipped.\n\n*{description}*{additionalContent}\n\nReady with active instructions. Please type your question or request!",
+      "deactivated": "💡 **[{title}]** Skill has been unequipped. Switching to general conversation mode.",
+      "listHeader": "\n\n### 📋 Currently Installed Skills\n",
+      "listTableHead": "| Skill Title | Role & Description |\n| :--- | :--- |\n",
+      "noCustomSkills": "\n\nNo custom skills installed."
+    }
+  },
+  "history": {
+    "header": "HISTORY",
+    "empty": "No saved sessions.",
+    "unnamed": "Previous Chat",
+    "delete": "Delete",
+    "newSession": "New Chat",
+    "collapse": "Collapse",
+    "expand": "Expand History"
+  },
+  "panel": {
+    "titles": {
+      "settings": "System Settings",
+      "diagnostics": "System Diagnostics",
+      "guide": "Chrome Gemini Nano Guide",
+      "botSettings": "Bot Rule Settings",
+      "calculator": "Smart Calculator",
+      "exchange": "Live Exchange Rate",
+      "translator": "Standalone AI Translator",
+      "memo": "Memo & To-do",
+      "skillFinder": "Find Skills"
+    },
+    "tooltips": {
+      "resize": "Drag to adjust panel width"
+    },
+    "settings": {
+      "botName": "🤖 Bot Name",
+      "engine": "⚙️ Engine",
+      "theme": "🎨 Theme",
+      "dark": "🌙 Dark",
+      "light": "☀️ Light",
+      "tabAi": "🤖 AI Settings",
+      "tabAppearance": "🎨 Appearance",
+      "tabLauncher": "⚙️ Launcher"
+    },
+    "diagnostics": {
+      "sectionEnv": "Environment & Security",
+      "secureContext": "Secure Context (HTTPS)",
+      "origin": "Current Origin",
+      "secure": "Secure (Pass)",
+      "insecure": "Insecure (Fail)",
+      "sectionAi": "Chrome Built-in AI Detection"
+    },
+    "guide": {
+      "title": "On-Device AI & External API Guide",
+      "tabFlags": "🛠️ Flags",
+      "tabComponents": "📦 Components",
+      "tabTroubleshoot": "❓ Troubleshoot",
+      "tabLocalCheck": "3. Local Check",
+      "tabExternalApi": "4. External API",
+      "flagsTitle": "Enable Chrome Gemini Nano",
+      "flagsDesc": "To activate the built-in on-device AI, enable the following two experimental flags.",
+      "flagsStep1": "Enter chrome://flags/#prompt-api-for-gemini-nano in the address bar and set to Enabled.",
+      "flagsStep2": "Enter chrome://flags/#optimization-guide-on-device-model in the address bar and set to Enabled BypassPerfRequirement.",
+      "flagsStep3": "Relaunch Chrome after making changes.",
+      "componentsTitle": "Download On-Device Model",
+      "componentsDesc": "After setting flags, Chrome needs to download the Gemini Nano model files.",
+      "componentsStep1": "Enter chrome://components in the address bar.",
+      "componentsStep2": "Find Optimization Guide On Device Model.",
+      "componentsStep3": "Click Check for update.",
+      "componentsStep4": "Confirm the status changes to Up-to-date or Downloading...",
+      "checkTitle": "API Connection Status & Local Execution",
+      "checkDesc": "You can test if the Gemini Nano session is successfully created by entering the command below in the F12 developer console.",
+      "checkSuccess": "✅ If a normal response is received in the console, the on-device chatbot runs completely independently.",
+      "externalApiTitle": "External LLM API Settings (Bypass Mode)",
+      "externalApiDesc": "You can directly connect cloud APIs like OpenAI instead of local Gemini Nano.",
+      "externalApiStep1": "1. Turn on Bypass Mode in the popup or chatbot settings.",
+      "externalApiStep2": "2. Register your API Key, API URL (e.g. OpenAI, Anthropic compatible address), and Model (e.g. gpt-4o-mini).",
+      "externalApiStep3": "3. All requests are sent directly from the browser and run securely.",
+      "troubleshootTitle": "Common Issues",
+      "q1": "Q. `window.ai` is still not detected.",
+      "a1": "Check if Chrome is v128+. Also, built-in AI may be limited in Incognito mode — use a regular tab.",
+      "q2": "Q. Component version stays at 0.0.0.0.",
+      "a2": "Device needs at least 10GB of free storage for the model download.",
+      "q3": "Q. Does it work on a low-spec laptop?",
+      "a3": "On-device AI has minimum system requirements (8GB+ RAM, GPU). Use `BypassPerfRequirement` in Flags to bypass the check."
+    },
+    "botSettings": {
+      "tabGlobal": "Global Rule",
+      "tabGeneral": "General Rule",
+      "globalLabel": "Rules applied to all responses",
+      "generalLabel": "Rules applied to general chat only",
+      "globalPlaceholder": "Enter absolute rules that always apply to all AI responses...",
+      "generalPlaceholder": "Enter rules that apply only during free conversation...",
+      "saveSynced": "✓ Rules synced!",
+      "saveBtn": "Save & Sync Bot",
+      "defaultGlobalRules": "- Always use a polite and friendly tone in all replies.\n- Do not distort or make up facts regarding real-time numbers or news data provided.\n- When displaying money or numerical information, always use thousand separators (,) for better readability.",
+      "defaultGeneralRules": "- When answering general conversation or questions, communicate friendly but prioritize concise and clear answers.\n- When answering about investment decisions or trading techniques, add a risk reminder message: \"Since investment responsibility lies with oneself, careful decision-making is required.\"\n- When difficult financial/macroeconomic terms appear, mix in intuitive analogies to explain them easily."
+    }
+  },
+  "settings": {
+    "language": "🌐 Language",
+    "position": "📍 Position",
+    "positions": {
+      "topLeft": "↖ Top Left",
+      "topRight": "↗ Top Right",
+      "bottomLeft": "↙ Bottom Left",
+      "bottomRight": "↘ Bottom Right (Default)"
+    },
+    "size": "📏 Launcher Size",
+    "sizes": {
+      "small": "Small 44px",
+      "medium": "Medium 56px",
+      "large": "Large 64px",
+      "original": "Original",
+      "custom": "Custom"
+    },
+    "customInput": "Custom Input:",
+    "customRange": "(20 - 150px)",
+    "tooltip": "💬 Hover Tooltip",
+    "tooltipPlaceholder": "Enter tooltip (Enter for new line)",
+    "tooltipStyle": "Tooltip Style",
+    "tooltipStyles": {
+      "standard": "Standard",
+      "glow": "Glow",
+      "modern": "Modern",
+      "speech": "Comic"
+    },
+    "icon": "🎨 Launcher Icon",
+    "icons": {
+      "message": "Chat",
+      "bot": "Bot",
+      "cpu": "CPU",
+      "sparkles": "Sparkle",
+      "custom": "Image"
+    },
+    "imagePath": "Custom Image Path",
+    "defaultImage": "Default Image",
+    "hoverImage": "Hover Image",
+    "attach": "Attach",
+    "emptyDefault": "Leave empty for default",
+    "preview": "Live Preview",
+    "hoverPreview": "Hover to test",
+    "notSet": "Not Set",
+    "recommendedSize": "Recommended Window Size",
+    "recommendedSizeDesc": "Click to apply instantly.",
+    "recommendedSizes": {
+      "minimal": "Minimal",
+      "standard": "Default (Recommended)",
+      "wide": "Wide Screen"
+    },
+    "avatarTitle": "🤖 Select NanoBot Avatar",
+    "upload": "Upload",
+    "uploadTitle": "Upload local image file",
+    "random": "Random",
+    "randomTitle": "Random avatar on startup",
+    "avatarCustom": "Custom",
+    "avatarDescPrefix": "💡 Put custom images in",
+    "avatarDescMiddle": "to auto-reflect in presets. Or use the",
+    "avatarDescSuffix": "button to select a local file directly.",
+    "displayTitle": "Custom Chatbot Window Size",
+    "ratioLock": "Lock Aspect Ratio",
+    "width": "Width",
+    "height": "Height",
+    "fontSize": "Font Size",
+    "temperature": "Response Creativity (TEMPERATURE: {temp})",
+    "tempConservative": "Conservative",
+    "tempBalanced": "Balanced",
+    "tempCreative": "Creative",
+    "bypassTitle": "Force Enable Environment",
+    "bypassDesc": "Force launches the widget even if on-device AI detection fails."
+  },
+  "session": {
+    "clearContext": "🧹 **AI's previous conversation context memory has been cleared.** (Subsequent questions will not be linked to previous content and will be answered completely brand new.)",
+    "firstUserMsgDefault": "New Chat",
+    "ragDetect": {
+      "desc": "💡 **Real-time search RAG (TPocket) integration instruction detected.**\nWould you like to integrate real-time external stock market data for analysis, or generate a response using the built-in knowledge of the on-device AI?",
+      "yes": "Run Real-time Analysis ⚡",
+      "no": "Generate Regular AI Response"
+    },
+    "multipleMatch": {
+      "kr": "**Multiple Korean stocks matching '{keyword}' were found. Please select the stock you want to analyze below:**",
+      "us": "**Multiple US stocks matching '{keyword}' were found. Please select the stock you want to analyze below:**",
+      "plain": "General Conversation"
+    },
+    "priceCheck": {
+      "notFound": "❌ Matching stock for **'{text}'** not found.",
+      "footer": "\n--- \n*(As of: {time} | Real-time API integration completed)*",
+      "header": "### 📊 **{name} ({ticker}) Real-time Quote**\n\n",
+      "type": "Category",
+      "valUnit": "Info (Unit: {unit})",
+      "price": "Current Price",
+      "ohlc": "Open / High / Low",
+      "volume": "Daily Volume"
+    },
+    "newsCheck": {
+      "notFound": "❌ Matching stock for **'{text}'** not found.",
+      "empty": "* No recent news found.\n",
+      "footer": "\n--- \n*(As of: {time} | Real-time crawling integration)*",
+      "header": "### 📰 **[{name} ({ticker})] Recent News**\n\n",
+      "news": "News"
+    },
+    "portfolioOpt": {
+      "header": "### ⚖️ **US Stock Portfolio Optimal Weight (Sharpe Max)**\n\n#### **1. Optimal Weights**\n",
+      "perfHeader": "\n#### **2. Expected Performance (3-Year Backtest)**\n",
+      "expectedReturn": "Expected Annual Return",
+      "volatility": "Portfolio Volatility",
+      "sharpe": "Sharpe Ratio",
+      "footer": "\n--- \n*(Calculation Time: {time} | Based on Modern Portfolio Theory)*",
+      "failed": "❌ **Portfolio Optimization Failed**: Please enter valid tickers."
+    },
+    "webAnalyze": {
+      "invalidUrl": "❌ **Please enter a valid web page URL.** (Must start with http:// or https://)",
+      "failed": "❌ **Web Analysis Failed**: Unable to fetch the content. Please check the URL or try again later.",
+      "sourceInfo": "Source Analysis Information",
+      "item": "Item",
+      "detail": "Detail",
+      "sourceUrl": "Source URL",
+      "charCount": "Extracted Characters",
+      "footer": "Analysis Time: {time} | AI Web Summary & Analysis",
+      "reportHeader": "### 📄 **{title} Summary & Analysis Report**\n\n"
+    },
+    "ragStart": "🔍 **Starting real-time search integration based on selected shortcut prompt.**",
+    "errorOccurred": "An error occurred. Please check your browser and on-device settings.",
+    "scenarios": {
+      "priceCheck": "📊 **Please enter the stock name or 6-digit code to check the price.** (e.g. Samsung Electronics or 005930)",
+      "newsCheck": "📰 **Please enter the stock name or 6-digit code to check the news.** (e.g. Kakao or 035720)",
+      "stockAnalyze": "🧠 **Please enter the stock name or 6-digit code to run AI analysis.** (e.g. Hyundai Motor or 005380)",
+      "webAnalyze": "📄 **Please enter the web page URL to summarize and analyze.** (e.g., https://example.com)",
+      "portfolioOpt": "⚖️ **Please enter US stock/ETF tickers separated by commas to optimize asset allocation.** (e.g. `AAPL, MSFT, TLT, GLD`)"
+    }
+  },
+  "tools": {
+    "calc": {
+      "title": "🧮 Calculator",
+      "converterTitle": "📏 Unit Converter",
+      "temp": "Temp",
+      "valInput": "Enter Value",
+      "exchange": "Swap Units",
+      "pyung": "Pyung",
+      "m2": "Square Meter (㎡)",
+      "celsius": "Celsius (°C)",
+      "fahrenheit": "Fahrenheit (°F)"
+    },
+    "translator": {
+      "placeholder": "Enter text to translate here...",
+      "btnTranslate": "Translate Live ⚡",
+      "errorApi": "API request error occurred.",
+      "errorFail": "Translation failed. Check on-device engine status or API connection.",
+      "sourceLabel": "Source Text to Translate",
+      "resultLabel": "Translation Result",
+      "resultPlaceholder": "Translation results will appear here...",
+      "copied": "Copied!",
+      "copy": "Copy",
+      "languages": {
+        "en": "English",
+        "ko": "Korean",
+        "ja": "Japanese",
+        "zh": "Chinese",
+        "es": "Spanish",
+        "fr": "French"
+      }
+    },
+    "exchange": {
+      "offline": "Default (Offline)",
+      "refresh": "Refresh",
+      "errorFallback": "Error (Fallback applied)",
+      "currencies": {
+        "USD": "$ (USD)",
+        "KRW": "₩ (KRW)",
+        "JPY": "¥ (JPY)",
+        "EUR": "€ (EUR)",
+        "CNY": "¥ (CNY)"
+      }
+    },
+    "memo": {
+      "title": "Memos & To-Dos",
+      "todoTab": "To-Do List",
+      "memoTab": "Memos",
+      "newTodoPlaceholder": "Add a new to-do task...",
+      "emptyTodo": "No to-do tasks registered.\nAdd a mission for today!",
+      "emptyMemo": "No saved memos.\nClick [+] at the top right to write a new memo!",
+      "emptyActiveMemo": "No memo selected.\nSelect a memo from the list or write a new one!",
+      "memoTitlePlaceholder": "Enter memo title...",
+      "memoContentPlaceholder": "Feel free to write anything here. Changes are saved automatically...",
+      "autoSaved": "Saved",
+      "deleteConfirm": "Are you sure you want to delete this memo?",
+      "newMemoTitle": "New Memo",
+      "unnamedMemo": "Default Memo",
+      "aiAnswerTitle": "Saved AI Answer",
+      "lastUpdated": "Last updated",
+      "addMemo": "Add Memo",
+      "deleteMemo": "Delete Memo"
+    }
+  },
+  "sidebar": {
+    "contextSync": "Keep Context",
+    "tooltips": {
+      "diagnostics": "System Diagnostics",
+      "guide": "Gemini Nano Guide",
+      "clearContext": "Clear Conversation & Memory",
+      "resetChat": "Reset All Chat",
+      "botSettings": "Bot Rule Settings",
+      "settings": "System Settings",
+      "aiStockAnalyze": "AI Stock Analysis",
+      "aiWebAnalyze": "AI Web Page Analysis",
+      "findSkills": "Find Skills",
+      "translator": "Standalone AI Translator",
+      "exchange": "Live Exchange Rate",
+      "calculator": "Smart Calculator",
+      "memo": "Memos & To-Dos",
+      "textSummary": "Summarize Text",
+      "keyPoints": "3 Key Points Summary",
+      "grammarCheck": "Spelling & Grammar Correction",
+      "businessTone": "Business Mail Tone Converter",
+      "detailedExplain": "Request Detailed Explanation",
+      "brainstorming": "Brainstorm Ideas",
+      "toggleSkills": "Toggle Skills",
+      "toggleBookmarks": "Toggle Bookmarks",
+      "toggleHistory": "Toggle Chat History"
+    }
+  },
+  "persona": {
+    "title": "AI Persona (Persona)",
+    "addBtn": "Add Persona",
+    "addBtnTooltip": "Add a new persona preset",
+    "editTooltip": "Edit (Modify name and directives)",
+    "deleteTooltip": "Delete",
+    "alertLabelRequired": "Please enter the label name for the persona.",
+    "alertValueRequired": "Please enter the persona directive content.",
+    "deleteConfirm": "Do you want to delete this persona preset?",
+    "registerTitle": "Register current directives as a new persona",
+    "labelPlaceholder": "Enter label name (e.g. 🧠 Economic Analyst)",
+    "valuePlaceholder": "Persona directive prompt content",
+    "saveBtn": "Register",
+    "cancelBtn": "Cancel",
+    "editTitle": "Edit Persona Name and Directives",
+    "editSubtitle": "*(Save changes to template)*",
+    "editLabelPlaceholder": "Enter label name",
+    "editValuePlaceholder": "Persona directive prompt content",
+    "updateBtn": "Save",
+    "textareaPlaceholder": "Directly configure the AI's persona and response style...",
+    "presets": {
+      "trader": "⚡ Short-term Trader",
+      "traderValue": "You are a cynical, strict technical analysis trading expert. Answer with sharp, data-focused metrics and highlight risks aggressively. Keep it extremely brief. Please reply in English.",
+      "mentor": "☕ Value Investing Mentor",
+      "mentorValue": "You are a warm, friendly value investing mentor like Warren Buffett. Focus on long-term values, company moats, stability, and growth potentials. Avoid short-term noise. Please reply in English.",
+      "restore": "🔄 Restore Default",
+      "restoreValue": "You are a friendly and intelligent AI assistant named 'Nano AI'. Provide helpful, concise, and professional answers in English. Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text."
+    }
+  },
+  "popup": {
+    "openSidepanel": "Open Sidepanel",
+    "floatingWidget": "Launch Floating Widget",
+    "bypassApiMode": "Bypass API Mode (External LLM)",
+    "systemPersona": "System Persona (Prompt Guideline)",
+    "personaPlaceholder": "Enter AI behavior instructions..."
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit"
+  }
+}

@@ -1,0 +1,524 @@
+{
+  "chatbot": {
+    "closeConfirm": {
+      "title": "会話を終了しますか？",
+      "desc": "終了すると会話履歴がリセットされます。",
+      "cancel": "続ける",
+      "confirm": "終了・リセット"
+    },
+    "status": {
+      "writing": "返答を生成中...",
+      "localReady": "ローカル AI 準備完了",
+      "fallbackActive": "バックエンドフォールバック稼働中"
+    },
+    "dragMenu": {
+      "send": "送信",
+      "summary": "要約",
+      "translate": "翻訳",
+      "explain": "解説"
+    },
+    "tooltips": {
+      "collapse": "サイドバーを閉じる",
+      "expand": "サイドバーを開く",
+      "minimize": "最小化",
+      "maximize": "最大化",
+      "restore": "元のサイズに戻す",
+      "close": "閉じる"
+    },
+    "input": {
+      "placeholder": "メッセージを入力...",
+      "loadingPlaceholder": "AI が生成中...",
+      "stop": "生成を停止",
+      "send": "送信",
+      "hint": "Enter で送信 / Shift+Enter で改行"
+    },
+    "welcome": {
+      "title": "Hi, I'm",
+      "desc": "ChromeのオンデバイスAI(Gemini Nano)またはバックエンドAPI連携を活用して動作する汎用チャットボットです。"
+    },
+    "quickPrompts": {
+      "title": "クイックスタートプロンプト",
+      "p1": {
+        "label": "Chrome AIとは？",
+        "text": "Chrome Gemini Nanoの概念について教えて。"
+      },
+      "p2": {
+        "label": "オンデバイスAIのメリット",
+        "text": "オンデバイスAIの主なメリット3つは何ですか？"
+      },
+      "p3": {
+        "label": "連携ガイド",
+        "text": "このプロジェクトを他のサービスにどのように連携できますか？"
+      }
+    },
+    "setupGuides": {
+      "title": "Chrome Nano AI 設定ガイド",
+      "g1": {
+        "label": "🛠️ ステップ1: Chrome Flagsの有効化"
+      },
+      "g2": {
+        "label": "📦 ステップ2: コンポーネントのダウンロード"
+      },
+      "g3": {
+        "label": "❓ ステップ3: 接続問題の解決 (Troubleshoot)"
+      }
+    }
+  },
+  "bookmarks": {
+    "header": "BOOKMARKS",
+    "edit": "編集",
+    "addNew": "ブックマークを追加",
+    "collapse": "折りたたむ",
+    "expand": "ブックマーク一覧を展開",
+    "modal": {
+      "titleEdit": "ブックマーク #{id} 編集",
+      "nameLabel": "ブックマーク名",
+      "iconToggleOpen": "アイコンを変更 ⚙️",
+      "iconToggleClose": "折りたたむ ✕",
+      "urlLabel": "ウェブサイト URL",
+      "namePlaceholder": "ブックマーク名を入力...",
+      "deleteConfirm": "このブックマークを削除しますか？",
+      "cancel": "キャンセル",
+      "save": "保存",
+      "delete": "削除"
+    }
+  },
+  "skills": {
+    "header": "SKILLS",
+    "edit": "編集",
+    "addNew": "スキルを追加",
+    "collapse": "折りたたむ",
+    "expand": "スキル一覧を展開",
+    "modal": {
+      "titleEdit": "スキル編集 ({title})",
+      "titleNew": "新規スキル登録",
+      "nameLabel": "タイトル",
+      "iconToggleOpen": "アイコンを変更 ⚙️",
+      "iconToggleClose": "折りたたむ ✕",
+      "descLabel": "スキルの説明",
+      "promptLabel": "プロンプト指示 (Instruction)",
+      "optimize": "プロンプトを最適化",
+      "optimizing": "最適化中...",
+      "namePlaceholder": "スキルのタイトルを入力...",
+      "descPlaceholder": "スキルの簡単な説明を入力...",
+      "promptPlaceholder": "システムプロンプトの指示を入力...",
+      "deleteConfirm": "このスキルを完全に削除しますか？",
+      "cancel": "キャンセル",
+      "save": "保存",
+      "delete": "削除"
+    },
+    "finder": {
+      "title": "スキル探検家 (Find Skills)",
+      "results": "検索結果一覧",
+      "noResults": "検索結果が見つかりません。",
+      "searchFailed": "スキルの検索に失敗しました。",
+      "serverError": "サーバー通信エラーが発生しました。",
+      "installSuccess": "✓ [{name}] スキルのインストールが完了しました！",
+      "installFailed": "スキルのインストールに失敗しました。",
+      "install": "インストール",
+      "installing": "インストール中",
+      "placeholderDesc": "スキルのキーワードを検索して\n新しい機能をインストールしてください。",
+      "inputPlaceholder": "例: web search, react, testing..."
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "collapse": "▼ Danger Zone を閉じる",
+      "expand": "▶ Danger Zone を展開",
+      "warning": "スキルを削除すると復元できません。ローカルファイルシステム(frontend/public/skills/{id})に保存されたスキルフォルダーが物理的に完全に削除されます。",
+      "deleteBtn": "スキルの物理的削除を実行",
+      "confirmMsg": "このスキルに関連するローカルフォルダーを物理的に永久削除しますか？この操作は取り消せません。"
+    },
+    "presets": {
+      "visualizer": {
+        "title": "データ可視化＆表作成",
+        "description": "複雑なテキストデータを分かりやすい表やグラフの形で処理します。"
+      },
+      "tutor": {
+        "title": "親切な AI 先生",
+        "description": "難しい概念を学生の目線に合わせて、文章や表、例文を使って分かりやすく解説します。"
+      },
+      "translator": {
+        "title": "多言語翻訳者",
+        "description": "日本語や英語など、他の言語間の自然な翻訳を行います。"
+      },
+      "summarizer": {
+        "title": "テキスト要約",
+        "description": "長い文章を3つの重要なポイントに分かりやすく要約します。"
+      },
+      "find-skills": {
+        "title": "Find Skills",
+        "description": "新しいスキル機能を探索してインストールします。"
+      },
+      "code_reviewer": {
+        "title": "コードレビューア",
+        "description": "提出されたコードの問題点を見つけ、改善のアイデアを提案します。"
+      },
+      "code_mentor": {
+        "title": "シニア開発者メンター",
+        "description": "作成したコードに対するフィードバックを提供し、より良いアーキテクチャや設計方法を指導します。"
+      },
+      "business_editor": {
+        "title": "ビジネスメールエディター",
+        "description": "状況に合わせて礼儀正しくプロフェッショナルなビジネスメールの下書きを作成し、校正します。"
+      }
+    },
+    "activation": {
+      "activated": "💡 **[{title}]** スキルが装着されました。\n\n*{description}*{additionalContent}\n\n指示に従って準備が完了しました。質問やリクエストを入力してください！",
+      "deactivated": "💡 **[{title}]** スキルの装着が解除されました。一般会話モードに切り替わります。",
+      "listHeader": "\n\n### 📋 現在登録されているスキル一覧\n",
+      "listTableHead": "| スキル名 (Title) | 役割と説明 (Description) |\n| :--- | :--- |\n",
+      "noCustomSkills": "\n\n現在登録されているカスタムスキルはありません。"
+    }
+  },
+  "history": {
+    "header": "HISTORY",
+    "empty": "保存された会話はありません。",
+    "unnamed": "以前の会話",
+    "delete": "会話を削除",
+    "newSession": "新しい会話",
+    "collapse": "折りたたむ",
+    "expand": "履歴一覧を展開"
+  },
+  "panel": {
+    "titles": {
+      "settings": "システム設定",
+      "diagnostics": "システム診断",
+      "guide": "Chrome Gemini Nano ガイド",
+      "botSettings": "ボットルール設定",
+      "calculator": "スマート計算機",
+      "exchange": "リアルタイム為替",
+      "translator": "AI 翻訳ツール",
+      "memo": "メモ・タスク",
+      "skillFinder": "スキル探索"
+    },
+    "tooltips": {
+      "resize": "ドラッグして横幅を調整"
+    },
+    "settings": {
+      "botName": "🤖 ボット名",
+      "engine": "⚙️ エンジン",
+      "theme": "🎨 テーマ",
+      "dark": "🌙 ダーク",
+      "light": "☀️ ライト",
+      "tabAi": "🤖 AI 設定",
+      "tabAppearance": "🎨 外観",
+      "tabLauncher": "⚙️ 起動設定"
+    },
+    "diagnostics": {
+      "sectionEnv": "環境・セキュリティ",
+      "secureContext": "セキュアコンテキスト (HTTPS)",
+      "origin": "現在のオリジン",
+      "secure": "Secure (Pass)",
+      "insecure": "Insecure (Fail)",
+      "sectionAi": "Chrome 内蔵 AI 検出状態"
+    },
+    "guide": {
+      "title": "オンデバイスAI＆外部APIガイド",
+      "tabFlags": "🛠️ Flags 설정",
+      "tabComponents": "📦 コンポーネント",
+      "tabTroubleshoot": "❓ トラブルシューティング",
+      "tabLocalCheck": "3. ローカルチェック",
+      "tabExternalApi": "4. 外部API",
+      "flagsTitle": "Chrome Gemini Nano を有効化",
+      "flagsDesc": "オンデバイス AI を有効にするには、以下の2つの実験的フラグを有効にする必要があります。",
+      "flagsStep1": "アドレスバーに chrome://flags/#prompt-api-for-gemini-nano と入力し、Enabledに設定。",
+      "flagsStep2": "アドレスバーに chrome://flags/#optimization-guide-on-device-model と入力し、Enabled BypassPerfRequirementに設定。",
+      "flagsStep3": "設定後、Chrome ブラウザを完全に再起動してください。",
+      "componentsTitle": "オンデバイスモデルのダウンロード",
+      "componentsDesc": "フラグ設定後、Chrome が Gemini Nano モデルファイルをダウンロードする必要があります。",
+      "componentsStep1": "アドレスバーに chrome://components と入力。",
+      "componentsStep2": "Optimization Guide On Device Model を探します。",
+      "componentsStep3": "Check for update ボタンをクリック。",
+      "componentsStep4": "Up-to-date またはダウンロード中に変わることを確認。",
+      "checkTitle": "API連携ステータスとローカル実行",
+      "checkDesc": "F12開発者ツールのConsoleウィンドウに以下のコマンドを入力し、正常にGemini Nanoセッションが作成されるかテストできます。",
+      "checkSuccess": "✅ コンソールで正常な応答が返ってくれば、オンデバイスチャットボットが完全に独立して動作します。",
+      "externalApiTitle": "外部LLM API設定 (Bypass Mode)",
+      "externalApiDesc": "ローカルのGemini Nanoの代わりに、OpenAIなどのクラウドAPIを直接連携することもできます。",
+      "externalApiStep1": "1. ポップアップまたはチャットボットの設定画面で Bypass Mode をオンにします。",
+      "externalApiStep2": "2. 使用する API Key、API URL（例：OpenAI, Anthropic互換アドレス）、および Model（例：gpt-4o-mini）を登録します。",
+      "externalApiStep3": "3. すべてのリクエストはブラウザから直接送信され、安全に動作します。",
+      "troubleshootTitle": "よくある問題",
+      "q1": "Q. `window.ai` がまだ検出されません。",
+      "a1": "Chrome が v128 以上か確認してください。シークレットモードでは AI 検出が制限される場合があります。通常タブで実行してください。",
+      "q2": "Q. コンポーネントのバージョンが 0.0.0.0 のままです。",
+      "a2": "モデルのダウンロードには最低 10GB の空き容量が必要です。",
+      "q3": "Q. 低スペックのノートパソコンでも動作しますか？",
+      "a3": "オンデバイス AI には最低動作要件 (RAM 8GB 以上、GPU) があります。Flags で `BypassPerfRequirement` を指定することで要件をバイパスできます。"
+    },
+    "botSettings": {
+      "tabGlobal": "グローバルルール",
+      "tabGeneral": "一般ルール",
+      "globalLabel": "すべての回答に適用する共通ルール",
+      "generalLabel": "一般会話のみに適用するルール",
+      "globalPlaceholder": "すべての AI 回答に常に適用される絶対的な指示を入力...",
+      "generalPlaceholder": "自由会話時のみ適用する特別なルールを入力...",
+      "saveSynced": "✓ ルールが同期されました！",
+      "saveBtn": "保存・ボット同期"
+    }
+  },
+  "settings": {
+    "language": "🌐 言語設定",
+    "position": "📍 表示位置",
+    "positions": {
+      "topLeft": "↖ 左上",
+      "topRight": "↗ 右上",
+      "bottomLeft": "↙ 左下",
+      "bottomRight": "↘ 右下 (デフォルト)"
+    },
+    "size": "📏 ランチャーサイズ",
+    "sizes": {
+      "small": "小 44px",
+      "medium": "中 56px",
+      "large": "大 64px",
+      "original": "オリジナル",
+      "custom": "カスタム"
+    },
+    "customInput": "カスタム入力:",
+    "customRange": "(20 〜 150px)",
+    "tooltip": "💬 ホバーツールチップ",
+    "tooltipPlaceholder": "ツールチップテキストを入力 (Enterで改行)",
+    "tooltipStyle": "ツールチップスタイル",
+    "tooltipStyles": {
+      "standard": "標準",
+      "glow": "ネオン",
+      "modern": "モダン",
+      "speech": "吹き出し"
+    },
+    "icon": "🎨 ランチャーアイコン",
+    "icons": {
+      "message": "チャット",
+      "bot": "ボット",
+      "cpu": "CPU",
+      "sparkles": "スパークル",
+      "custom": "画像"
+    },
+    "imagePath": "カスタム画像パス",
+    "defaultImage": "デフォルト画像",
+    "hoverImage": "ホバー画像",
+    "attach": "添付",
+    "emptyDefault": "空欄の場合はデフォルト適用",
+    "preview": "リアルタイムプレビュー",
+    "hoverPreview": "ホバーして確認",
+    "notSet": "未設定",
+    "recommendedSize": "推奨ウィンドウサイズ",
+    "recommendedSizeDesc": "クリックで即座に適用します。",
+    "recommendedSizes": {
+      "minimal": "最小動作サイズ",
+      "standard": "デフォルト (推奨)",
+      "wide": "ワイドスクリーン最適"
+    },
+    "avatarTitle": "🤖 ナノボットアバター選択",
+    "upload": "アップロード",
+    "uploadTitle": "ローカル画像ファイルをアップロード",
+    "random": "ランダム",
+    "randomTitle": "起動ごとにランダムアバター",
+    "avatarCustom": "カスタム",
+    "avatarDescPrefix": "💡 カスタム画像を",
+    "avatarDescMiddle": "に入れるとプリセット一覧に自動反映されます。または",
+    "avatarDescSuffix": "ボタンでローカルファイルを直接設定できます。",
+    "displayTitle": "チャットボット窓の規格を直接設定",
+    "ratioLock": "比率固定",
+    "width": "横幅",
+    "height": "高さ",
+    "fontSize": "フォントサイズ",
+    "temperature": "回答の創造性 (TEMPERATURE: {temp})",
+    "tempConservative": "保守的",
+    "tempBalanced": "バランス",
+    "tempCreative": "創造的",
+    "bypassTitle": "環境を強制的に有効化",
+    "bypassDesc": "オンデバイスAIの検出に失敗した場合でも、強制的にウィジェットを起動します。"
+  },
+  "session": {
+    "clearContext": "🧹 **AIの以前の会話コンテキストメモリがクリアされました。** (以降の質問は以前の内容とリンクされず、完全に新しく回答されます。)",
+    "firstUserMsgDefault": "新しい会話",
+    "ragDetect": {
+      "desc": "💡 **リアルタイム検索 RAG (TPocket) 連携指示が検出されました。**\nリアルタイムの外部市場データを連携して分析しますか、それともオンデバイス AI の基本知識で回答を生成しますか？",
+      "yes": "リアルタイム連携分析を実行 ⚡",
+      "no": "通常の AI 回答を生成"
+    },
+    "multipleMatch": {
+      "kr": "**'{keyword}' に一致する韓国銘柄が複数見つかりました。以下から分析する銘柄を選択してください:**",
+      "us": "**'{keyword}' に一致する米国銘柄が複数見つかりました。以下から分析する銘柄を選択してください:**",
+      "plain": "一般会話"
+    },
+    "priceCheck": {
+      "notFound": "❌ **'{text}'** に一致する銘柄が見つかりませんでした。",
+      "footer": "\n--- \n*(照会基準時刻: {time} | リアルタイム API 連携完了)*",
+      "header": "### 📊 **{name} ({ticker}) リアルタイム株価**\n\n",
+      "type": "区分",
+      "valUnit": "情報 (単位: {unit})",
+      "price": "現在値",
+      "ohlc": "始値 / 高値 / 安値",
+      "volume": "当日の出来高"
+    },
+    "newsCheck": {
+      "notFound": "❌ **'{text}'** に一致する銘柄が見つかりませんでした。",
+      "empty": "* 最近の関連ニュースはありません。\n",
+      "footer": "\n--- \n*(収集基準時刻: {time} | リアルタイムクローラー連携)*",
+      "header": "### 📰 **[{name} ({ticker})] 最新ニュース**\n\n",
+      "news": "ニュース"
+    },
+    "portfolioOpt": {
+      "header": "### ⚖️ **米国株ポートフォリオ最適配分比率 (Sharpe Max)**\n\n#### **1. 最適投資比重 (Optimal Weights)**\n",
+      "perfHeader": "\n#### **2. ポートフォリオ期待パフォーマンス (3年バックテスト)**\n",
+      "expectedReturn": "年平均期待収益率",
+      "volatility": "ポートフォリオボラティリティ",
+      "sharpe": "シャープ・レシオ",
+      "footer": "\n--- \n*(計算基準時刻: {time} | 現代ポートフォリオ理論(MPT)に基づく)*",
+      "failed": "❌ **ポートフォリオ最適化失敗**: 正しいティッカーを入力してください。"
+    },
+    "webAnalyze": {
+      "invalidUrl": "❌ **正しい形式のウェブページURLを入力してください。** (http:// 또는 https:// で始まるアドレス)",
+      "failed": "❌ **ウェブページ分析失敗**: 内容を取得できません。URLを確認するか、しばらくしてからもう一度お試しください。",
+      "sourceInfo": "分析根拠情報",
+      "item": "区分",
+      "detail": "情報",
+      "sourceUrl": "ソースURL",
+      "charCount": "抽出された文字数",
+      "footer": "分析基準時刻: {time} | AI ウェブ要約および分析",
+      "reportHeader": "### 📄 **{title} 要約および分析レポート**\n\n"
+    },
+    "ragStart": "🔍 **選択されたショートカットプロンプトに基づいてリアルタイム検索連携を開始します。**",
+    "errorOccurred": "エラーが発生しました。ブラウザおよびオンデバイスの設定を確認してください。",
+    "scenarios": {
+      "priceCheck": "📊 **株価を確認する銘柄名または6桁のコードを入力してください。** (例: 三星電子 または 005930)",
+      "newsCheck": "📰 **最新ニュースを確認する銘柄名または6桁のコードを入力してください。** (例: カカオ または 035720)",
+      "stockAnalyze": "🧠 **AI 深層分析を行う銘柄名または6桁のコードを入力してください。** (例: 現代自動車 または 005380)",
+      "webAnalyze": "📄 **要約および分析を行うウェブページのURLを入力してください。** (例: https://example.com)",
+      "portfolioOpt": "⚖️ **資産配分を最適化する米国株/ETFティッカーをカンマ(,)で区切って入力してください。** (例: `AAPL, MSFT, TLT, GLD`)"
+    }
+  },
+  "tools": {
+    "calc": {
+      "title": "🧮 電卓",
+      "converterTitle": "📏 スマート単位換算器",
+      "temp": "温度",
+      "valInput": "값을 입력",
+      "exchange": "単位切替",
+      "pyung": "坪 (Pyung)",
+      "m2": "平方メートル (㎡)",
+      "celsius": "摂氏 (°C)",
+      "fahrenheit": "華氏 (°F)"
+    },
+    "translator": {
+      "placeholder": "ここに翻訳するテキストを入力してください...",
+      "btnTranslate": "リアルタイム翻訳を実行 ⚡",
+      "errorApi": "API リクエストエラーが発生しました。",
+      "errorFail": "翻訳処理に失敗しました。オンデバイスエンジンの状態または API 接続を確認してください。",
+      "sourceLabel": "翻訳する原文を入力",
+      "resultLabel": "翻訳結果",
+      "resultPlaceholder": "翻訳結果がここに表示されます...",
+      "copied": "コピー完了！",
+      "copy": "コピーする",
+      "languages": {
+        "en": "English (英語)",
+        "ko": "Korean (韓国語)",
+        "ja": "Japanese (日本語)",
+        "zh": "Chinese (中国語)",
+        "es": "Spanish (スペイン語)",
+        "fr": "French (フランス語)"
+      }
+    },
+    "exchange": {
+      "offline": "デフォルト (オフライン)",
+      "refresh": "更新",
+      "errorFallback": "エラー (バックアップ為替適用)",
+      "currencies": {
+        "USD": "$ (ドル)",
+        "KRW": "₩ (ウォン)",
+        "JPY": "¥ (円)",
+        "EUR": "€ (ユーロ)",
+        "CNY": "¥ (元)"
+      }
+    },
+    "memo": {
+      "title": "メモ＆ToDo",
+      "todoTab": "ToDoリスト",
+      "memoTab": "メモ帳",
+      "newTodoPlaceholder": "新しいToDoタスクを追加...",
+      "emptyTodo": "登録されたToDoはありません。\n今日のミッションを追加してください！",
+      "emptyMemo": "保存されたメモはありません。\n右上の [+] をクリックして新しいメモを作成してください！",
+      "emptyActiveMemo": "選択されたメモはありません。\nリストからメモを選択するか、新しいメモを作成してください！",
+      "memoTitlePlaceholder": "メモのタイトルを入力...",
+      "memoContentPlaceholder": "ここに自由にメモを入力してください。変更は自動的に保存されます...",
+      "autoSaved": "自動保存済み",
+      "deleteConfirm": "このメモを削除してもよろしいですか？",
+      "newMemoTitle": "新規メモ",
+      "unnamedMemo": "基本メモ",
+      "aiAnswerTitle": "AI回答の保存",
+      "lastUpdated": "最終更新",
+      "addMemo": "メモ追加",
+      "deleteMemo": "メモ削除"
+    }
+  },
+  "sidebar": {
+    "contextSync": "履歴連動",
+    "tooltips": {
+      "diagnostics": "システム環境診断",
+      "guide": "Gemini Nano ガイド",
+      "clearContext": "会話履歴を消去してメモリを初期化",
+      "resetChat": "会話をリセット",
+      "botSettings": "カスタム AI ルール設定",
+      "settings": "システム設定",
+      "aiStockAnalyze": "AI 銘柄分析",
+      "aiWebAnalyze": "AI ウェブページ分析",
+      "findSkills": "スキル探索 (Find Skills)",
+      "translator": "AI 翻訳ツール",
+      "exchange": "リアルタイム為替換算機",
+      "calculator": "スマート計算機",
+      "memo": "メモ＆ToDo",
+      "textSummary": "テキスト要約",
+      "keyPoints": "重要ポイント3点まとめ",
+      "grammarCheck": "スペル＆文法修正",
+      "businessTone": "ビジネスメール表現変換",
+      "detailedExplain": "詳細説明をリクエスト",
+      "brainstorming": "アイデア出し・ブレスト",
+      "toggleSkills": "スキル表示切替",
+      "toggleBookmarks": "ブックマークバー表示切替",
+      "toggleHistory": "会話履歴表示切替"
+    }
+  },
+  "persona": {
+    "title": "AIの傾向 (Persona)",
+    "addBtn": "プリセット追加",
+    "addBtnTooltip": "新しいペルソナプリセットを追加",
+    "editTooltip": "編集 (名前と指示文を修正)",
+    "deleteTooltip": "削除",
+    "alertLabelRequired": "ペルソナの名前を入力してください。",
+    "alertValueRequired": "ペルソナの指示内容を入力してください。",
+    "deleteConfirm": "このペルソナプリセットを削除しますか？",
+    "registerTitle": "現在の指示内容を新しいペルソナとして登録",
+    "labelPlaceholder": "名前を入力 (例: 🧠 経済アナリスト)",
+    "valuePlaceholder": "ペルソナ指示文プロンプトの内容",
+    "saveBtn": "登録",
+    "cancelBtn": "キャンセル",
+    "editTitle": "ペルソナ名と指示文の編集",
+    "editSubtitle": "*(テンプレートへの変更を保存します)*",
+    "editLabelPlaceholder": "名前を入力",
+    "editValuePlaceholder": "ペルソナ指示文プロンプトの内容",
+    "updateBtn": "保存",
+    "textareaPlaceholder": "AIのペルソナと応答スタイルを設定してください...",
+    "presets": {
+      "trader": "⚡ 短期トレーダー",
+      "traderValue": "You are a cynical, strict technical analysis trading expert. Answer with sharp, data-focused metrics and highlight risks aggressively. Keep it extremely brief. 必ず日本語で回答してください。",
+      "mentor": "☕ 価値投資メンター",
+      "mentorValue": "You are a warm, friendly value investing mentor like Warren Buffett. Focus on long-term values, company moats, stability, and growth potentials. Avoid short-term noise. 必ず日本語で回答してください。",
+      "restore": "🔄 デフォルト復元",
+      "restoreValue": "You are a friendly and intelligent AI assistant named 'Nano AI'. Provide helpful, concise, and professional answers in Japanese (必ず日本語で回答してください). Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text."
+    }
+  },
+  "popup": {
+    "openSidepanel": "サイドパネルを開く",
+    "floatingWidget": "ウェブページでフローティングボットを起動",
+    "bypassApiMode": "Bypass API Mode (外部LLM接続)",
+    "systemPersona": "System Persona (プロンプト指示)",
+    "personaPlaceholder": "AIの行動方針を入力してください..."
+  },
+  "common": {
+    "confirm": "確認",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集"
+  }
+}
