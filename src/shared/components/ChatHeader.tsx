@@ -85,7 +85,7 @@ export function ChatHeader({
         </div>
         <div className="min-w-0 flex-1">
           <div className={`text-xs font-black ${theme.textMain} flex items-center gap-1.5`}>
-            <span className="truncate">{settings.nano_ai_avatar_name || "Nano AI 챗봇"}</span>
+            <span className="truncate">{settings.nano_ai_avatar_name || "NanoBot"}</span>
             {settings.api_mode === "api" && (
               <span className="text-[9px] px-1 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 uppercase font-mono flex-shrink-0">
                 API

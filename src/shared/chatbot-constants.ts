@@ -1,14 +1,14 @@
 import { UserSettings } from "./chatbot-types";
 
 export const DEFAULT_PERSONA = 
-  "You are a friendly and intelligent AI assistant named 'Nano AI'. " +
+  "You are a friendly and intelligent AI assistant named 'NanoBot'. " +
   "Provide helpful, concise, and professional answers in Korean (반드시 한국어로 답변해 주세요). " +
   "Use markdown formatting when appropriate. " +
   "Keep answers highly readable with bullet points or bold text.";
 
 export const DEFAULT_SETTINGS: UserSettings = {
   nano_ai_avatar: "/nanobots/bot-01.webp",
-  nano_ai_avatar_name: "Bot 01",
+  nano_ai_avatar_name: "NanoBot",
   nano_ai_random_avatar: false,
   nano_ai_enabled: true,
   nano_ai_bypass: false,
