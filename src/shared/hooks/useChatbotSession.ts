@@ -275,8 +275,47 @@ export function useChatbotSession(
       }
 
       if (currentSettings.api_mode === "local") {
+        // ──────────────────────────────────────────────
+        // Dual-Pass Guardrails: 메인 AI에 전달 전 안전성 선제 판별
+        // ──────────────────────────────────────────────
+        const safetyResult = await new Promise<{ success: boolean; safe?: boolean }>((resolve) => {
+          try {
+            chrome.runtime.sendMessage(
+              { action: "evaluate_safety", userInput: text },
+              (res) => resolve(res || { success: false })
+            );
+          } catch (e) {
+            resolve({ success: false });
+          }
+        });
+
+        // 판별에 성공하고 unsafe로 판정된 경우 즉시 차단
+        if (safetyResult.success && safetyResult.safe === false) {
+          updateContent(
+            t(
+              "guardrail.blocked",
+              "🚫 **안전 가이드라인 위반이 감지되었습니다.**\n\n해당 요청은 선정적이거나 위험한 내용을 포함하고 있어 답변을 제공할 수 없습니다.\n일반적인 질문으로 다시 시도해 주세요."
+            )
+          );
+          setMessages((prev) =>
+            prev.map((m) => (m.id === assistantMessageId ? { ...m, isStreaming: false } : m))
+          );
+          return;
+        }
+
+        // 백그라운드 서비스 워커의 세션 활성 여부 체크
+        const isSessionActive = await new Promise<boolean>((resolve) => {
+          try {
+            chrome.runtime.sendMessage({ action: "check_session_active" }, (res) => {
+              resolve(!!res?.active);
+            });
+          } catch (e) {
+            resolve(false);
+          }
+        });
+
         let activeSession = aiSession;
-        if (!activeSession) {
+        if (!activeSession || !isSessionActive) {
           activeSession = await initSession();
         }
         if (!activeSession) throw new Error("Local AI session is not initialized.");

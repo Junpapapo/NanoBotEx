@@ -54,6 +54,17 @@ export function ChatInput({
     }
   }, [externalText, onClearExternalText]);
 
+  // 답변이 완료되면(즉, isSending이 true -> false로 변경될 때) 입력 박스에 자동 포커싱을 적용합니다.
+  const wasSendingRef = useRef<boolean>(isSending);
+  useEffect(() => {
+    if (wasSendingRef.current && !isSending) {
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 50);
+    }
+    wasSendingRef.current = isSending;
+  }, [isSending]);
+
   const handleSend = () => {
     if (!input.trim() || isSending) return;
     onSendMessage(input);
