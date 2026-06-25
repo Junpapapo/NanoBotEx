@@ -107,21 +107,7 @@
       "save": "保存",
       "delete": "削除"
     },
-    "finder": {
-      "title": "スキル探検家 (Find Skills)",
-      "results": "検索結果一覧",
-      "noResults": "検索結果が見つかりません。",
-      "searchFailed": "スキルの検索に失敗しました。",
-      "serverError": "サーバー通信エラーが発生しました。",
-      "installSuccess": "✓ [{name}] スキルのインストールが完了しました！",
-      "installFailed": "スキルのインストールに失敗しました。",
-      "install": "インストール",
-      "installing": "インストール中",
-      "placeholderDesc": "スキルのキーワードを検索して\n新しい機能をインストールしてください。",
-      "inputPlaceholder": "例: web search, react, testing...",
-      "searchTooltip": "検索",
-      "infoTooltip": "スキル情報の確認"
-    },
+
     "dangerZone": {
       "title": "Danger Zone",
       "collapse": "▼ Danger Zone を閉じる",
@@ -147,10 +133,7 @@
         "title": "Text Summarizer",
         "description": "Summarizes long text into 3 clean, key points."
       },
-      "find-skills": {
-        "title": "Find Skills",
-        "description": "Search and install new skill features."
-      },
+
       "code_reviewer": {
         "title": "Code Reviewer",
         "description": "Finds problems in submitted code and suggests improvement ideas."
@@ -337,64 +320,7 @@
   },
   "session": {
     "clearContext": "🧹 **AIの以前の会話コンテキストメモリがクリアされました。** (以降の質問は以前の内容とリンクされず、完全に新しく回答されます。)",
-    "firstUserMsgDefault": "新しい会話",
-    "ragDetect": {
-      "desc": "💡 **リアルタイム検索 RAG (TPocket) 連携指示が検出されました。**\nリアルタイムの外部市場データを連携して分析しますか、それともオンデバイス AI の基本知識で回答を生成しますか？",
-      "yes": "リアルタイム連携分析を実行 ⚡",
-      "no": "通常の AI 回答を生成"
-    },
-    "multipleMatch": {
-      "kr": "**'{keyword}' に一致する韓国銘柄が複数見つかりました。以下から分析する銘柄を選択してください:**",
-      "us": "**'{keyword}' に一致する米国銘柄が複数見つかりました。以下から分析する銘柄を選択してください:**",
-      "plain": "一般会話"
-    },
-    "priceCheck": {
-      "notFound": "❌ **'{text}'** に一致する銘柄が見つかりませんでした。",
-      "footer": "\n--- \n*(照会基準時刻: {time} | リアルタイム API 連携完了)*",
-      "header": "### 📊 **{name} ({ticker}) リアルタイム株価**\n\n",
-      "type": "区分",
-      "valUnit": "情報 (単位: {unit})",
-      "price": "現在値",
-      "ohlc": "始値 / 高値 / 安値",
-      "volume": "当日の出来高"
-    },
-    "newsCheck": {
-      "notFound": "❌ **'{text}'** に一致する銘柄が見つかりませんでした。",
-      "empty": "* 最近の関連ニュースはありません。\n",
-      "footer": "\n--- \n*(収集基準時刻: {time} | リアルタイムクローラー連携)*",
-      "header": "### 📰 **[{name} ({ticker})] 最新ニュース**\n\n",
-      "news": "ニュース"
-    },
-    "portfolioOpt": {
-      "header": "### ⚖️ **米国株ポートフォリオ最適配分比率 (Sharpe Max)**\n\n#### **1. 最適投資比重 (Optimal Weights)**\n",
-      "perfHeader": "\n#### **2. ポートフォリオ期待パフォーマンス (3年バックテスト)**\n",
-      "expectedReturn": "年平均期待収益率",
-      "volatility": "ポートフォリオボラティリティ",
-      "sharpe": "シャープ・レシオ",
-      "footer": "\n--- \n*(計算基準時刻: {time} | 現代ポートフォリオ理論(MPT)に基づく)*",
-      "failed": "❌ **ポートフォリオ最適化失敗**: 正しいティッカーを入力してください。"
-    },
-    "webAnalyze": {
-      "invalidUrl": "❌ **正しい形式のウェブページURLを入力してください。** (http:// 또는 https:// で始まるアドレス)",
-      "failed": "❌ **ウェブページ分析失敗**: 内容を取得できません。URLを確認するか、しばらくしてからもう一度お試しください。",
-      "sourceInfo": "分析根拠情報",
-      "item": "区分",
-      "detail": "情報",
-      "sourceUrl": "ソースURL",
-      "charCount": "抽出された文字数",
-      "footer": "分析基準時刻: {time} | AI ウェブ要約および分析",
-      "reportHeader": "### 📄 **{title} 要約および分析レポート**\n\n",
-      "analyzeCurrentSite": "現在のサイトを分析 ⚡"
-    },
-    "ragStart": "🔍 **選択されたショートカットプロンプトに基づいてリアルタイム検索連携を開始します。**",
-    "errorOccurred": "エラーが発生しました。ブラウザおよびオンデバイスの設定を確認してください。",
-    "scenarios": {
-      "priceCheck": "📊 **株価を確認する銘柄名または6桁のコードを入力してください。** (例: 三星電子 または 005930)",
-      "newsCheck": "📰 **最新ニュースを確認する銘柄名または6桁のコードを入力してください。** (例: カカオ または 035720)",
-      "stockAnalyze": "🧠 **AI 深層分析を行う銘柄名または6桁のコードを入力してください。** (例: 現代自動車 または 005380)",
-      "webAnalyze": "📄 **要約および分析を行うウェブページのURLを入力してください。** (例: https://example.com)",
-      "portfolioOpt": "⚖️ **資産配分を最適化する米国株/ETFティッカーをカンマ(,)で区切って入力してください。** (例: `AAPL, MSFT, TLT, GLD`)"
-    }
+    "firstUserMsgDefault": "新しい会話"
   },
   "tools": {
     "calculator": {
@@ -476,9 +402,7 @@
       "resetChat": "会話をリセット",
       "botSettings": "カスタム AI ルール設定",
       "settings": "システム設定",
-      "aiStockAnalyze": "AI 銘柄分析",
-      "aiWebAnalyze": "AI ウェブページ分析",
-      "findSkills": "スキル探索 (Find Skills)",
+
       "translator": "翻訳",
       "exchange": "リアルタイム為替換算機",
       "calculator": "スマート計算機",

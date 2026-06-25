@@ -18,7 +18,6 @@ import { SkillEditModal } from "./SkillEditModal";
 import { TranslatorPanel } from "./tools/TranslatorPanel";
 import { ExchangePanel } from "./tools/ExchangePanel";
 import { CalculatorPanel } from "./tools/CalculatorPanel";
-import { SkillFinderPanel } from "./tools/SkillFinderPanel";
 import { DiagnosticsPanel } from "./tools/DiagnosticsPanel";
 import { BotSettingsPanel } from "./tools/BotSettingsPanel";
 import { SettingsPanel } from "./tools/SettingsPanel";
@@ -65,8 +64,6 @@ export function ChatbotView({
     currentSessionId,
     loadSession,
     deleteSession,
-    currentScenario,
-    triggerScenario,
     clearContext
   } = useChatbotSession(true, settings, activeSkill, skills, t);
 
@@ -339,7 +336,6 @@ export function ChatbotView({
           {activePanel === "translator" && <TranslatorPanel settings={settings} t={t} theme={theme} />}
           {activePanel === "exchange" && <ExchangePanel t={t} theme={theme} locale={locale} />}
           {activePanel === "calculator" && <CalculatorPanel t={t} theme={theme} />}
-          {activePanel === "skill-finder" && <SkillFinderPanel t={t} theme={theme} />}
           {activePanel === "diagnostics" && <DiagnosticsPanel t={t} theme={theme} />}
           {activePanel === "bot-settings" && <BotSettingsPanel t={t} theme={theme} />}
           {activePanel === "settings" && (
@@ -471,8 +467,6 @@ export function ChatbotView({
           setIsPromptsBarOpen={setIsPromptsBarOpen}
           isBookmarksBarOpen={isBookmarksBarOpen}
           setIsBookmarksBarOpen={setIsBookmarksBarOpen}
-          currentScenario={currentScenario}
-          triggerScenario={triggerScenario}
           theme={theme}
           setCopiedPrompt={handleSetCopiedPrompt}
           t={t}

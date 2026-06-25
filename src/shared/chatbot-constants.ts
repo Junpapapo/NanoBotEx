@@ -279,7 +279,6 @@ export function getThemePalette(colorKey: string, skinMode: "dark" | "light" = "
   };
 }
 
-export const API_BASE_URL = "http://127.0.0.1:5001";
 
 export const DEFAULT_SKILLS = [
   {
@@ -313,17 +312,6 @@ export const DEFAULT_SKILLS = [
     description: "Finds problems in submitted code and suggests improvement ideas.",
     prompt: `You are a senior software engineer and a code reviewer. Carefully review the syntax errors, potential bugs, readability, and performance aspects of the code provided by the user, and present specific refactoring suggestions along with modified code.`,
     icon: "Cpu"
-  },
-  {
-    id: "find-skills",
-    title: "Find Skills",
-    description: "Displays information about the current skill.",
-    prompt: `You are a system skill matching and summarization expert. Kindly respond to the user's request according to the following rules.
-
-1. Read the [List of Installed Skills] provided below, and display the Name (Title), Role (Description), and basic explanations of all currently available skills clearly organized in a Markdown table.
-2. If the user mentions a specific task (e.g., "I want to summarize text", "Find a translator", etc.), identify and recommend the most suitable skill from the table, and briefly explain how to equip it by clicking on it.
-3. If the user is looking for another feature (e.g., "I want to search the web") and there is no matching skill here, kindly guide them: "Click on the Compass (Skill Finder) icon in the right section of the AI panel to search for and install new skills!"`,
-    icon: "Search"
   },
   {
     id: "summarizer",

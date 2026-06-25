@@ -107,21 +107,7 @@
       "save": "Save",
       "delete": "Delete"
     },
-    "finder": {
-      "title": "Find Skills",
-      "results": "Search Results",
-      "noResults": "No results found.",
-      "searchFailed": "Failed to search skills.",
-      "serverError": "A server error occurred.",
-      "installSuccess": "✓ [{name}] Skill installation completed!",
-      "installFailed": "Failed to install skill.",
-      "install": "Install",
-      "installing": "Installing...",
-      "placeholderDesc": "Search skill keywords to\ninstall new features.",
-      "inputPlaceholder": "e.g. web search, react, testing...",
-      "searchTooltip": "Search",
-      "infoTooltip": "View Skill Info"
-    },
+
     "dangerZone": {
       "title": "Danger Zone",
       "collapse": "▼ Collapse Danger Zone",
@@ -147,10 +133,7 @@
         "title": "Text Summarizer",
         "description": "Summarizes long text into 3 clean, key points."
       },
-      "find-skills": {
-        "title": "Find Skills",
-        "description": "Search and install new skill features."
-      },
+
       "code_reviewer": {
         "title": "Code Reviewer",
         "description": "Finds problems in submitted code and suggests improvement ideas."
@@ -339,64 +322,7 @@
   },
   "session": {
     "clearContext": "🧹 **AI's previous conversation context memory has been cleared.** (Subsequent questions will not be linked to previous content and will be answered completely brand new.)",
-    "firstUserMsgDefault": "New Chat",
-    "ragDetect": {
-      "desc": "💡 **Real-time search RAG (TPocket) integration instruction detected.**\nWould you like to integrate real-time external stock market data for analysis, or generate a response using the built-in knowledge of the on-device AI?",
-      "yes": "Run Real-time Analysis ⚡",
-      "no": "Generate Regular AI Response"
-    },
-    "multipleMatch": {
-      "kr": "**Multiple Korean stocks matching '{keyword}' were found. Please select the stock you want to analyze below:**",
-      "us": "**Multiple US stocks matching '{keyword}' were found. Please select the stock you want to analyze below:**",
-      "plain": "General Conversation"
-    },
-    "priceCheck": {
-      "notFound": "❌ Matching stock for **'{text}'** not found.",
-      "footer": "\n--- \n*(As of: {time} | Real-time API integration completed)*",
-      "header": "### 📊 **{name} ({ticker}) Real-time Quote**\n\n",
-      "type": "Category",
-      "valUnit": "Info (Unit: {unit})",
-      "price": "Current Price",
-      "ohlc": "Open / High / Low",
-      "volume": "Daily Volume"
-    },
-    "newsCheck": {
-      "notFound": "❌ Matching stock for **'{text}'** not found.",
-      "empty": "* No recent news found.\n",
-      "footer": "\n--- \n*(As of: {time} | Real-time crawling integration)*",
-      "header": "### 📰 **[{name} ({ticker})] Recent News**\n\n",
-      "news": "News"
-    },
-    "portfolioOpt": {
-      "header": "### ⚖️ **US Stock Portfolio Optimal Weight (Sharpe Max)**\n\n#### **1. Optimal Weights**\n",
-      "perfHeader": "\n#### **2. Expected Performance (3-Year Backtest)**\n",
-      "expectedReturn": "Expected Annual Return",
-      "volatility": "Portfolio Volatility",
-      "sharpe": "Sharpe Ratio",
-      "footer": "\n--- \n*(Calculation Time: {time} | Based on Modern Portfolio Theory)*",
-      "failed": "❌ **Portfolio Optimization Failed**: Please enter valid tickers."
-    },
-    "webAnalyze": {
-      "invalidUrl": "❌ **Please enter a valid web page URL.** (Must start with http:// or https://)",
-      "failed": "❌ **Web Analysis Failed**: Unable to fetch the content. Please check the URL or try again later.",
-      "sourceInfo": "Source Analysis Information",
-      "item": "Item",
-      "detail": "Detail",
-      "sourceUrl": "Source URL",
-      "charCount": "Extracted Characters",
-      "footer": "Analysis Time: {time} | AI Web Summary & Analysis",
-      "reportHeader": "### 📄 **{title} Summary & Analysis Report**\n\n",
-      "analyzeCurrentSite": "Analyze Current Active Site ⚡"
-    },
-    "ragStart": "🔍 **Starting real-time search integration based on selected shortcut prompt.**",
-    "errorOccurred": "An error occurred. Please check your browser and on-device settings.",
-    "scenarios": {
-      "priceCheck": "📊 **Please enter the stock name or 6-digit code to check the price.** (e.g. Samsung Electronics or 005930)",
-      "newsCheck": "📰 **Please enter the stock name or 6-digit code to check the news.** (e.g. Kakao or 035720)",
-      "stockAnalyze": "🧠 **Please enter the stock name or 6-digit code to run AI analysis.** (e.g. Hyundai Motor or 005380)",
-      "webAnalyze": "📄 **Please enter the web page URL to summarize and analyze.** (e.g., https://example.com)",
-      "portfolioOpt": "⚖️ **Please enter US stock/ETF tickers separated by commas to optimize asset allocation.** (e.g. `AAPL, MSFT, TLT, GLD`)"
-    }
+    "firstUserMsgDefault": "New Chat"
   },
   "tools": {
     "calculator": {
@@ -478,9 +404,7 @@
       "resetChat": "Reset All Chat",
       "botSettings": "Bot Rule Settings",
       "settings": "System Settings",
-      "aiStockAnalyze": "AI Stock Analysis",
-      "aiWebAnalyze": "AI Web Page Analysis",
-      "findSkills": "Find Skills",
+
       "translator": "Translation",
       "exchange": "Live Exchange Rate",
       "calculator": "Smart Calculator",

@@ -6,7 +6,6 @@ import {
   RotateCcw, 
   Scroll, 
   Cpu, 
-  Compass,
   Link2,
   ChevronRight,
   Settings,
@@ -34,7 +33,6 @@ export type PanelType =
   | "translator" 
   | "exchange" 
   | "calculator" 
-  | "skill-finder" 
   | "diagnostics" 
   | "settings" 
   | "bot-settings";
@@ -49,8 +47,6 @@ interface SystemSidebarProps {
   setIsPromptsBarOpen: (open: boolean) => void;
   isBookmarksBarOpen: boolean;
   setIsBookmarksBarOpen: (open: boolean) => void;
-  currentScenario: ScenarioType;
-  triggerScenario: (scenario: ScenarioType) => void;
   theme: any;
   setCopiedPrompt: (prompt: string) => void;
   t: any;
@@ -70,8 +66,6 @@ export function SystemSidebar({
   setIsPromptsBarOpen,
   isBookmarksBarOpen,
   setIsBookmarksBarOpen,
-  currentScenario,
-  triggerScenario,
   theme,
   setCopiedPrompt,
   t,
@@ -90,11 +84,7 @@ export function SystemSidebar({
     setActivePanel(activePanel === tab ? "none" : tab);
   };
 
-  const getActiveStyle = (scenario: ScenarioType) => {
-    return currentScenario === scenario
-      ? "bg-rose-500/20 text-rose-500 border-rose-500/35 shadow-[0_2px_8px_rgba(244,63,94,0.25)] font-bold"
-      : btnMutedClass;
-  };
+
 
   return (
     <div className={`w-[80px] h-full ${theme.bgSub} flex flex-col items-center py-4 select-none overflow-x-hidden overflow-y-auto custom-scrollbar border-l ${theme.borderMuted} flex-shrink-0 relative z-[10]`}>
@@ -193,37 +183,6 @@ export function SystemSidebar({
       </div>
 
 
-
-      {/* 3. AI 섹션 */}
-      <div className="flex items-center gap-1.5 w-full px-2 mt-4 mb-2.5 shrink-0">
-        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-slate-500/20" />
-        <span className="text-[8px] font-black text-slate-400/90 tracking-widest uppercase select-none">AI</span>
-        <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-slate-500/20" />
-      </div>
-      <div className="grid grid-cols-2 gap-2 w-full px-2 shrink-0 justify-items-center">
-        {/* 페이지 분석 시나리오 */}
-        <button
-          type="button"
-          onClick={() => triggerScenario("PAGE_ANALYZE")}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all border shadow-sm cursor-pointer ${getActiveStyle("PAGE_ANALYZE")}`}
-          title={t("sidebar.tooltips.aiWebAnalyze", "웹페이지 요약 분석")}
-        >
-          <Globe size={12} />
-        </button>
-        {/* 스킬 탐색기 */}
-        <button
-          type="button"
-          onClick={() => handleTabToggle("skill-finder")}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer shadow-sm border ${
-            activePanel === "skill-finder"
-              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
-              : btnMutedClass
-          }`}
-          title={t("sidebar.tooltips.findSkills", "스킬 검색")}
-        >
-          <Compass size={12} />
-        </button>
-      </div>
 
       {/* 4. TOOL 섹션 */}
       <div className="flex items-center gap-1.5 w-full px-2 mt-4 mb-2.5 shrink-0">
