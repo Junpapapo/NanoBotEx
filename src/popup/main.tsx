@@ -21,7 +21,6 @@ import {
   Bug,
   ExternalLink,
   ShieldCheck,
-  X,
 } from "lucide-react";
 import {
   I18nProvider,
@@ -184,13 +183,6 @@ function PopupContent({
             className={`relative mx-4 rounded-2xl border ${theme.borderMuted} ${theme.bgSub} p-6 flex flex-col items-center gap-3 shadow-2xl text-center`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* 닫기 버튼 */}
-            <button
-              onClick={() => setShowShieldModal(false)}
-              className={`absolute top-3 right-3 p-1 rounded-full ${theme.textSub} hover:${theme.textMain} ${theme.bgHover} transition-colors cursor-pointer`}
-            >
-              <X size={12} />
-            </button>
 
             {/* 방패 아이콘 */}
             <div className={`w-12 h-12 rounded-full ${theme.primary} flex items-center justify-center shadow-lg`}>
