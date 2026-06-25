@@ -68,6 +68,9 @@ export interface UserSettings {
   nano_locale?: string;
   // 크롬 확장 기동 모드 설정
   nano_launcher_mode?: "sidepanel" | "widget";
+  // 채팅창 글자 크기 & 폰트
+  nano_chat_font_size?: "small" | "medium" | "large";
+  nano_chat_font?: "sans" | "inter" | "noto" | "mono";
 }
 
 export interface Skill {

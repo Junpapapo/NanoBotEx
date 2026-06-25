@@ -383,7 +383,17 @@ export function ChatbotView({
 
       {/* 2. 중앙 메인 채팅 영역 */}
       {showChat && (
-        <div className={`flex-1 flex flex-col h-full overflow-hidden ${theme.bgMain} relative`}>
+        <div
+          className={`flex-1 flex flex-col h-full overflow-hidden ${theme.bgMain} relative`}
+          style={{
+            "--nano-chat-font-size": settings.nano_chat_font_size === "small" ? "11px" : settings.nano_chat_font_size === "large" ? "15px" : "13px",
+            "--nano-chat-font-family":
+              settings.nano_chat_font === "inter" ? "'Inter', sans-serif" :
+              settings.nano_chat_font === "noto"  ? "'Noto Sans KR', sans-serif" :
+              settings.nano_chat_font === "mono"  ? "'JetBrains Mono', 'Fira Code', monospace" :
+              "ui-sans-serif, system-ui, sans-serif",
+          } as React.CSSProperties}
+        >
           <ChatHeader
             settings={settings}
             isSupported={isSupported}

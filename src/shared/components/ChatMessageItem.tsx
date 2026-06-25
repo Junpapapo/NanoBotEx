@@ -222,13 +222,17 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
         )}
 
         <div
-          className={`rounded-2xl px-4 py-2.5 text-xs leading-relaxed break-words relative overflow-hidden select-text w-full ${
+          className={`rounded-2xl px-4 py-2.5 leading-relaxed break-words relative overflow-hidden select-text w-full ${
             isUser
               ? `${theme.primary} border ${theme.border} text-white rounded-tr-sm shadow-md`
               : `${theme.bgSub} border ${theme.borderMuted} ${theme.textMain} rounded-tl-sm shadow-sm`
           }`}
+          style={{
+            fontSize: "var(--nano-chat-font-size, 13px)",
+            fontFamily: "var(--nano-chat-font-family, ui-sans-serif, system-ui, sans-serif)",
+          }}
         >
-          <div className={`prose max-w-none text-xs ${
+          <div className={`prose max-w-none ${
             isUser
               ? "text-white prose-invert"
               : (isLight ? "text-slate-800" : "prose-invert text-slate-200")
