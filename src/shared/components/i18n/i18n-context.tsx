@@ -25,15 +25,19 @@ const DICTIONARIES: Record<string, any> = {
 export function I18nProvider({
   children,
   settings,
-  updateSettings
+  updateSettings,
+  isSettingsLoaded
 }: {
   children: React.ReactNode;
   settings: UserSettings;
   updateSettings: (settings: Partial<UserSettings>) => void;
+  isSettingsLoaded?: boolean;
 }) {
   const [locale, setLocaleState] = useState<string>("ko");
 
   useEffect(() => {
+    if (isSettingsLoaded === false) return;
+
     const savedLocale = settings.nano_locale;
     if (savedLocale && savedLocale.trim() !== "") {
       setLocaleState(savedLocale);
@@ -44,7 +48,7 @@ export function I18nProvider({
       setLocaleState(detectedLocale);
       updateSettings({ nano_locale: detectedLocale });
     }
-  }, [settings.nano_locale]);
+  }, [settings.nano_locale, isSettingsLoaded]);
 
   const setLocale = (newLocale: string) => {
     setLocaleState(newLocale);

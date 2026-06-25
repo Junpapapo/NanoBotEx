@@ -86,6 +86,21 @@ export async function runTPocketRAG(prompt: string): Promise<string> {
 }
 
 export async function scrapeWebPage(url: string): Promise<any> {
+  if (url.startsWith("scraped-direct:")) {
+    try {
+      const dataStr = url.substring("scraped-direct:".length);
+      const parsed = JSON.parse(dataStr);
+      return {
+        status: "success",
+        title: parsed.title || "Scraped Page",
+        text: parsed.text || "",
+        url: parsed.url || ""
+      };
+    } catch (e: any) {
+      return { status: "error", message: "Failed to parse direct scrape data" };
+    }
+  }
+
   try {
     const res = await fetch(`${API_BASE_URL}/api/chatbot/web/scrape?url=${encodeURIComponent(url)}`);
     if (!res.ok) {

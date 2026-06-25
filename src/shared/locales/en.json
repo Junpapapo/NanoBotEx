@@ -118,7 +118,9 @@
       "install": "Install",
       "installing": "Installing...",
       "placeholderDesc": "Search skill keywords to\ninstall new features.",
-      "inputPlaceholder": "e.g. web search, react, testing..."
+      "inputPlaceholder": "e.g. web search, react, testing...",
+      "searchTooltip": "Search",
+      "infoTooltip": "View Skill Info"
     },
     "dangerZone": {
       "title": "Danger Zone",
@@ -171,7 +173,7 @@
     }
   },
   "history": {
-    "header": "HISTORY",
+    "header": "History",
     "empty": "No saved sessions.",
     "unnamed": "Previous Chat",
     "delete": "Delete",
@@ -187,7 +189,7 @@
       "botSettings": "Bot Rule Settings",
       "calculator": "Smart Calculator",
       "exchange": "Live Exchange Rate",
-      "translator": "Standalone AI Translator",
+      "translator": "Translation",
       "memo": "Memo & To-do",
       "skillFinder": "Find Skills"
     },
@@ -202,7 +204,16 @@
       "light": "☀️ Light",
       "tabAi": "🤖 AI Settings",
       "tabAppearance": "🎨 Appearance",
-      "tabLauncher": "⚙️ Launcher"
+      "tabDiagnostics": "💻 Diagnostics",
+      "tabEngine": "⚙️ Engine Settings",
+      "skinMode": "🎨 Theme Mode",
+      "localEngine": "On-Device (Local)",
+      "apiEngine": "External API (Hybrid)",
+      "fallbackTitle": "On-Device Fallback",
+      "fallbackDesc": "Switch to local AI engine on API failure",
+      "fallbackModel": "Fallback Model (Download Size)",
+      "fallbackPath": "Model Storage Folder Path",
+      "fallbackPathPlaceholder": "e.g. C:/NanoBot/models"
     },
     "diagnostics": {
       "sectionEnv": "Environment & Security",
@@ -319,17 +330,12 @@
     "avatarDescPrefix": "💡 Put custom images in",
     "avatarDescMiddle": "to auto-reflect in presets. Or use the",
     "avatarDescSuffix": "button to select a local file directly.",
-    "displayTitle": "Custom Chatbot Window Size",
-    "ratioLock": "Lock Aspect Ratio",
-    "width": "Width",
-    "height": "Height",
-    "fontSize": "Font Size",
     "temperature": "Response Creativity (TEMPERATURE: {temp})",
     "tempConservative": "Conservative",
     "tempBalanced": "Balanced",
     "tempCreative": "Creative",
     "bypassTitle": "Force Enable Environment",
-    "bypassDesc": "Force launches the widget even if on-device AI detection fails."
+    "bypassDesc": "Force activates the chatbot even if on-device AI detection fails."
   },
   "session": {
     "clearContext": "🧹 **AI's previous conversation context memory has been cleared.** (Subsequent questions will not be linked to previous content and will be answered completely brand new.)",
@@ -379,7 +385,8 @@
       "sourceUrl": "Source URL",
       "charCount": "Extracted Characters",
       "footer": "Analysis Time: {time} | AI Web Summary & Analysis",
-      "reportHeader": "### 📄 **{title} Summary & Analysis Report**\n\n"
+      "reportHeader": "### 📄 **{title} Summary & Analysis Report**\n\n",
+      "analyzeCurrentSite": "Analyze Current Active Site ⚡"
     },
     "ragStart": "🔍 **Starting real-time search integration based on selected shortcut prompt.**",
     "errorOccurred": "An error occurred. Please check your browser and on-device settings.",
@@ -392,6 +399,9 @@
     }
   },
   "tools": {
+    "calculator": {
+      "title": "Smart Calculator & Converter"
+    },
     "calc": {
       "title": "🧮 Calculator",
       "converterTitle": "📏 Unit Converter",
@@ -404,8 +414,10 @@
       "fahrenheit": "Fahrenheit (°F)"
     },
     "translator": {
+      "title": "Translation",
       "placeholder": "Enter text to translate here...",
       "btnTranslate": "Translate Live ⚡",
+      "translating": "Translating...",
       "errorApi": "API request error occurred.",
       "errorFail": "Translation failed. Check on-device engine status or API connection.",
       "sourceLabel": "Source Text to Translate",
@@ -423,9 +435,12 @@
       }
     },
     "exchange": {
+      "info": "Exchange Rates",
+      "calculatorTitle": "Direct Amount Calculation",
       "offline": "Default (Offline)",
       "refresh": "Refresh",
       "errorFallback": "Error (Fallback applied)",
+      "valInput": "Enter amount",
       "currencies": {
         "USD": "$ (USD)",
         "KRW": "₩ (KRW)",
@@ -466,7 +481,7 @@
       "aiStockAnalyze": "AI Stock Analysis",
       "aiWebAnalyze": "AI Web Page Analysis",
       "findSkills": "Find Skills",
-      "translator": "Standalone AI Translator",
+      "translator": "Translation",
       "exchange": "Live Exchange Rate",
       "calculator": "Smart Calculator",
       "memo": "Memos & To-Dos",
@@ -512,15 +527,23 @@
   },
   "popup": {
     "openSidepanel": "Open Sidepanel",
-    "floatingWidget": "Launch Floating Widget",
     "bypassApiMode": "Bypass API Mode (External LLM)",
     "systemPersona": "System Persona (Prompt Guideline)",
     "personaPlaceholder": "Enter AI behavior instructions..."
+  },
+  "dialog": {
+    "reset": {
+      "title": "Reset Conversation",
+      "message": "Are you sure you want to clear and reset all conversation history for the current session?"
+    }
   },
   "common": {
     "confirm": "Confirm",
     "cancel": "Cancel",
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "sidebarLength": "Length",
+    "copied": "Copied!",
+    "copy": "Copy"
   }
 }

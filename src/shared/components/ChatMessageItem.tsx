@@ -8,15 +8,17 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import { getThemePalette } from "../chatbot-constants";
-import { Check, CheckSquare, FileText } from "lucide-react";
+import { Check, CheckSquare, FileText, Globe } from "lucide-react";
 
 interface ChatMessageItemProps {
   message: Message;
   settings: UserSettings;
   effectiveAIAvatar: string;
+  onQuickQuestion?: (text: string) => void;
+  t?: any;
 }
 
-export function ChatMessageItem({ message, settings, effectiveAIAvatar }: ChatMessageItemProps) {
+export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t }: ChatMessageItemProps) {
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
   const isUser = message.role === "user";
   const isLight = settings.nano_skin_mode === "light";
@@ -26,6 +28,15 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar }: ChatMe
 
   const chartRegex = /\[CHART:(bar|line|pie)\]\s*(\{.*?\})/g;
   let cleanContent = message.content;
+  if (isUser && cleanContent.startsWith("scraped-direct:")) {
+    try {
+      const dataStr = cleanContent.substring("scraped-direct:".length);
+      const parsed = JSON.parse(dataStr);
+      cleanContent = parsed.url || "Web Page URL";
+    } catch {
+      cleanContent = "Web Page URL";
+    }
+  }
   const charts: React.ReactNode[] = [];
 
   let match;
@@ -46,24 +57,112 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar }: ChatMe
 
   const handleSaveToTodo = () => {
     if (todoSaved) return;
-    window.dispatchEvent(
-      new CustomEvent("nanobot:add-todo", {
-        detail: { text: cleanContent }
-      })
-    );
-    setTodoSaved(true);
-    setTimeout(() => setTodoSaved(false), 1500);
+    try {
+      chrome.storage.local.get(["nanobot-tool-todos"], (result) => {
+        const prevTodos = result["nanobot-tool-todos"] || [];
+        const newTodo = {
+          id: "todo-" + Math.random().toString(36).substring(7),
+          text: cleanContent.trim(),
+          completed: false,
+          createdAt: Date.now()
+        };
+        chrome.storage.local.set({ "nanobot-tool-todos": [newTodo, ...prevTodos] }, () => {
+          setTodoSaved(true);
+          setTimeout(() => setTodoSaved(false), 1500);
+        });
+      });
+    } catch (err) {
+      console.error("Failed to save to todo:", err);
+    }
   };
 
   const handleSaveToNote = () => {
     if (noteSaved) return;
-    window.dispatchEvent(
-      new CustomEvent("nanobot:add-note", {
-        detail: { text: cleanContent }
-      })
-    );
-    setNoteSaved(true);
-    setTimeout(() => setNoteSaved(false), 1500);
+    try {
+      chrome.storage.local.get(["nanobot-tool-notes"], (result) => {
+        const prevNotes = result["nanobot-tool-notes"] || [];
+        const newNote = {
+          id: "note-" + Math.random().toString(36).substring(7),
+          title: cleanContent.trim().substring(0, 15) + (cleanContent.trim().length > 15 ? "..." : ""),
+          content: cleanContent,
+          updatedAt: Date.now()
+        };
+        chrome.storage.local.set({
+          "nanobot-tool-notes": [newNote, ...prevNotes],
+          "nanobot-tool-active-note-id": newNote.id
+        }, () => {
+          setNoteSaved(true);
+          setTimeout(() => setNoteSaved(false), 1500);
+        });
+      });
+    } catch (err) {
+      console.error("Failed to save to note:", err);
+    }
+  };
+
+  const handleAnalyzeCurrentSite = () => {
+    if (!onQuickQuestion) return;
+    if (typeof chrome !== "undefined" && chrome.tabs?.query) {
+      chrome.tabs.query({ active: true }, (tabs) => {
+        let activeTab = tabs.find(tab => 
+          tab.url && 
+          !tab.url.startsWith("chrome-extension://") && 
+          !tab.url.startsWith("chrome://") && 
+          !tab.url.startsWith("about:")
+        );
+        if (!activeTab && tabs.length > 0) {
+          activeTab = tabs[0];
+        }
+        if (activeTab && activeTab.id && activeTab.url) {
+          const url = activeTab.url;
+          if (url.startsWith("chrome-extension://") || url.startsWith("chrome://") || url.startsWith("about:")) {
+            const rawMsg = t 
+              ? t("session.webAnalyze.invalidUrl", "❌ **올바른 형식의 웹 페이지 주소(URL)를 입력해 주세요.**") 
+              : "올바른 형식의 웹 페이지 주소(URL)를 입력해 주세요.";
+            const cleanMsg = rawMsg.replace(/\*\*|❌/g, "").trim();
+            alert(cleanMsg);
+            return;
+          }
+
+          // scripting API를 이용해 활성 탭의 innerText를 직접 긁어와 CORS 및 봇 차단을 우회합니다.
+          if (chrome.scripting && typeof chrome.scripting.executeScript === "function") {
+            chrome.scripting.executeScript(
+              {
+                target: { tabId: activeTab.id },
+                func: () => {
+                  return {
+                    title: document.title,
+                    text: document.body.innerText || document.body.textContent || ""
+                  };
+                }
+              },
+              (results) => {
+                if (results && results[0] && results[0].result) {
+                  const { title, text } = results[0].result;
+                  if (text && text.trim().length > 30) {
+                    const payload = {
+                      title: title || "Web Page",
+                      text: text.trim().substring(0, 8000), // Gemini Nano 크기 한계 고려
+                      url: url
+                    };
+                    onQuickQuestion(`scraped-direct:${JSON.stringify(payload)}`);
+                    return;
+                  }
+                }
+                // 직접 스크랩 실패 시 기존 방식(URL만 전달하여 서버에서 긁기)으로 fallback
+                onQuickQuestion(url);
+              }
+            );
+          } else {
+            onQuickQuestion(url);
+          }
+        } else {
+          onQuickQuestion(window.location.href);
+        }
+      });
+    } else {
+      onQuickQuestion(window.location.href);
+    }
   };
 
   return (
@@ -84,10 +183,14 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar }: ChatMe
                 <button
                   type="button"
                   onClick={handleSaveToTodo}
-                  className={`p-0.5 rounded hover:bg-white/10 transition-all cursor-pointer flex items-center justify-center text-slate-400 hover:text-white ${
-                    todoSaved ? "text-emerald-400 hover:text-emerald-400" : ""
+                  className={`p-0.5 rounded transition-all cursor-pointer flex items-center justify-center ${
+                    isLight
+                      ? "hover:bg-slate-200/60 text-slate-400 hover:text-slate-700"
+                      : "hover:bg-white/10 text-slate-400 hover:text-white"
+                  } ${
+                    todoSaved ? "text-emerald-500 hover:text-emerald-600" : ""
                   }`}
-                  title="할 일 목록에 추가"
+                  title="Add to To-Do List"
                 >
                   {todoSaved ? (
                     <Check size={10} className="text-emerald-400 animate-in zoom-in duration-200" />
@@ -98,10 +201,14 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar }: ChatMe
                 <button
                   type="button"
                   onClick={handleSaveToNote}
-                  className={`p-0.5 rounded hover:bg-white/10 transition-all cursor-pointer flex items-center justify-center text-slate-400 hover:text-white ${
-                    noteSaved ? "text-emerald-400 hover:text-emerald-400" : ""
+                  className={`p-0.5 rounded transition-all cursor-pointer flex items-center justify-center ${
+                    isLight
+                      ? "hover:bg-slate-200/60 text-slate-400 hover:text-slate-700"
+                      : "hover:bg-white/10 text-slate-400 hover:text-white"
+                  } ${
+                    noteSaved ? "text-emerald-500 hover:text-emerald-600" : ""
                   }`}
-                  title="메모장에 추가"
+                  title="Add to Memos"
                 >
                   {noteSaved ? (
                     <Check size={10} className="text-emerald-400 animate-in zoom-in duration-200" />
@@ -115,13 +222,17 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar }: ChatMe
         )}
 
         <div
-          className={`rounded-2xl px-4 py-2.5 text-xs leading-relaxed break-words relative overflow-hidden select-text ${
+          className={`rounded-2xl px-4 py-2.5 text-xs leading-relaxed break-words relative overflow-hidden select-text w-full ${
             isUser
               ? `${theme.primary} border ${theme.border} text-white rounded-tr-sm shadow-md`
               : `${theme.bgSub} border ${theme.borderMuted} ${theme.textMain} rounded-tl-sm shadow-sm`
           }`}
         >
-          <div className={`prose max-w-none text-xs ${isLight ? "text-slate-800" : "prose-invert text-slate-200"}`}>
+          <div className={`prose max-w-none text-xs ${
+            isUser
+              ? "text-white prose-invert"
+              : (isLight ? "text-slate-800" : "prose-invert text-slate-200")
+          }`}>
             <ReactMarkdown
               remarkPlugins={[remarkGfm, remarkBreaks]}
               rehypePlugins={[rehypeRaw]}
@@ -155,7 +266,11 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar }: ChatMe
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${theme.text} ${theme.textHover} font-bold underline transition-colors cursor-pointer whitespace-nowrap`}
+                    className={`${
+                      isUser 
+                        ? "text-white/90 hover:text-white underline decoration-white/50" 
+                        : `${theme.text} ${theme.textHover} font-bold underline`
+                    } transition-colors cursor-pointer whitespace-nowrap`}
                   >
                     {children}
                   </a>
@@ -174,6 +289,19 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar }: ChatMe
             >
               {cleanContent}
             </ReactMarkdown>
+
+            {message.isWebAnalyzeIntro && onQuickQuestion && (
+              <div className={`mt-3 pt-2 border-t border-dashed ${isLight ? "border-slate-200" : "border-white/10"} flex justify-start`}>
+                <button
+                  type="button"
+                  onClick={handleAnalyzeCurrentSite}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10.5px] font-bold ${theme.primary} text-white cursor-pointer hover:opacity-90 active:scale-95 transition-all shadow-md`}
+                >
+                  <Globe size={11} />
+                  {t ? t("session.webAnalyze.analyzeCurrentSite", "현재 활성화된 사이트 분석 ⚡") : "현재 활성화된 사이트 분석 ⚡"}
+                </button>
+              </div>
+            )}
 
             {charts.length > 0 && (
               <div className="flex flex-col gap-2.5 w-full">

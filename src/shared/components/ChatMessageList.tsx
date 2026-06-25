@@ -48,10 +48,10 @@ export function ChatMessageList({
   return (
     <div 
       ref={scrollRef}
-      className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar select-text"
+      className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar select-text min-h-0"
     >
       {messages.length === 0 ? (
-        <div className="h-full flex flex-col items-center justify-center text-center p-6 select-none my-auto">
+        <div className="h-full flex flex-col items-center justify-start text-center p-6 select-none">
           <div className="mb-4">
             <AIAvatar avatarPath={effectiveAIAvatar} size={96} />
           </div>
@@ -94,7 +94,14 @@ export function ChatMessageList({
         </div>
       ) : (
         messages.map((m) => (
-          <ChatMessageItem key={m.id} message={m} settings={settings} effectiveAIAvatar={effectiveAIAvatar} />
+          <ChatMessageItem 
+            key={m.id} 
+            message={m} 
+            settings={settings} 
+            effectiveAIAvatar={effectiveAIAvatar} 
+            onQuickQuestion={onQuickQuestion}
+            t={t}
+          />
         ))
       )}
     </div>

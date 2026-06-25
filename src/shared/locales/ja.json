@@ -118,7 +118,9 @@
       "install": "インストール",
       "installing": "インストール中",
       "placeholderDesc": "スキルのキーワードを検索して\n新しい機能をインストールしてください。",
-      "inputPlaceholder": "例: web search, react, testing..."
+      "inputPlaceholder": "例: web search, react, testing...",
+      "searchTooltip": "検索",
+      "infoTooltip": "スキル情報の確認"
     },
     "dangerZone": {
       "title": "Danger Zone",
@@ -130,36 +132,36 @@
     },
     "presets": {
       "visualizer": {
-        "title": "データ可視化＆表作成",
-        "description": "複雑なテキストデータを分かりやすい表やグラフの形で処理します。"
+        "title": "Data Visualization & Table Maker",
+        "description": "Processes complex text data into neat tables and visual charts."
       },
       "tutor": {
-        "title": "親切な AI 先生",
-        "description": "難しい概念を学生の目線に合わせて、文章や表、例文を使って分かりやすく解説します。"
+        "title": "Friendly AI Teacher",
+        "description": "Explains complex concepts easily at a student's level using text, tables, and examples."
       },
       "translator": {
-        "title": "多言語翻訳者",
-        "description": "日本語や英語など、他の言語間の自然な翻訳を行います。"
+        "title": "Multilingual Translator",
+        "description": "Performs natural translation between English, Korean, and other languages."
       },
       "summarizer": {
-        "title": "テキスト要約",
-        "description": "長い文章を3つの重要なポイントに分かりやすく要約します。"
+        "title": "Text Summarizer",
+        "description": "Summarizes long text into 3 clean, key points."
       },
       "find-skills": {
         "title": "Find Skills",
-        "description": "新しいスキル機能を探索してインストールします。"
+        "description": "Search and install new skill features."
       },
       "code_reviewer": {
-        "title": "コードレビューア",
-        "description": "提出されたコードの問題点を見つけ、改善のアイデアを提案します。"
+        "title": "Code Reviewer",
+        "description": "Finds problems in submitted code and suggests improvement ideas."
       },
       "code_mentor": {
-        "title": "シニア開発者メンター",
-        "description": "作成したコードに対するフィードバックを提供し、より良いアーキテクチャや設計方法を指導します。"
+        "title": "Senior Dev Mentor",
+        "description": "Provides feedback on written code, and mentors on better architecture and design."
       },
       "business_editor": {
-        "title": "ビジネスメールエディター",
-        "description": "状況に合わせて礼儀正しくプロフェッショナルなビジネスメールの下書きを作成し、校正します。"
+        "title": "Business Mail Editor",
+        "description": "Drafts and refines formal and professional business email drafts based on scenarios."
       }
     },
     "activation": {
@@ -171,8 +173,8 @@
     }
   },
   "history": {
-    "header": "HISTORY",
-    "empty": "保存された会話はありません。",
+    "header": "会話履歴",
+    "empty": "履歴はありません。",
     "unnamed": "以前の会話",
     "delete": "会話を削除",
     "newSession": "新しい会話",
@@ -187,7 +189,7 @@
       "botSettings": "ボットルール設定",
       "calculator": "スマート計算機",
       "exchange": "リアルタイム為替",
-      "translator": "AI 翻訳ツール",
+      "translator": "翻訳",
       "memo": "メモ・タスク",
       "skillFinder": "スキル探索"
     },
@@ -202,7 +204,16 @@
       "light": "☀️ ライト",
       "tabAi": "🤖 AI 設定",
       "tabAppearance": "🎨 外観",
-      "tabLauncher": "⚙️ 起動設定"
+      "tabDiagnostics": "💻 环境诊断",
+      "tabEngine": "⚙️ エンジン設定",
+      "skinMode": "🎨 画面モード",
+      "localEngine": "オンデバイス (Local)",
+      "apiEngine": "外部 API (Hybrid)",
+      "fallbackTitle": "オンデバイスフォールバック連動",
+      "fallbackDesc": "API障害時にローカルAIエンジンに切り替え",
+      "fallbackModel": "フォールバックモデル (ダウンロードサイズ)",
+      "fallbackPath": "モデル保存フォルダパス",
+      "fallbackPathPlaceholder": "例: C:/NanoBot/models"
     },
     "diagnostics": {
       "sectionEnv": "環境・セキュリティ",
@@ -317,17 +328,12 @@
     "avatarDescPrefix": "💡 カスタム画像を",
     "avatarDescMiddle": "に入れるとプリセット一覧に自動反映されます。または",
     "avatarDescSuffix": "ボタンでローカルファイルを直接設定できます。",
-    "displayTitle": "チャットボット窓の規格を直接設定",
-    "ratioLock": "比率固定",
-    "width": "横幅",
-    "height": "高さ",
-    "fontSize": "フォントサイズ",
     "temperature": "回答の創造性 (TEMPERATURE: {temp})",
     "tempConservative": "保守的",
     "tempBalanced": "バランス",
     "tempCreative": "創造的",
     "bypassTitle": "環境を強制的に有効化",
-    "bypassDesc": "オンデバイスAIの検出に失敗した場合でも、強制的にウィジェットを起動します。"
+    "bypassDesc": "オンデバイスAIの検出に失敗した場合でも、強制的にチャットボットを有効化します。"
   },
   "session": {
     "clearContext": "🧹 **AIの以前の会話コンテキストメモリがクリアされました。** (以降の質問は以前の内容とリンクされず、完全に新しく回答されます。)",
@@ -377,7 +383,8 @@
       "sourceUrl": "ソースURL",
       "charCount": "抽出された文字数",
       "footer": "分析基準時刻: {time} | AI ウェブ要約および分析",
-      "reportHeader": "### 📄 **{title} 要約および分析レポート**\n\n"
+      "reportHeader": "### 📄 **{title} 要約および分析レポート**\n\n",
+      "analyzeCurrentSite": "現在のサイトを分析 ⚡"
     },
     "ragStart": "🔍 **選択されたショートカットプロンプトに基づいてリアルタイム検索連携を開始します。**",
     "errorOccurred": "エラーが発生しました。ブラウザおよびオンデバイスの設定を確認してください。",
@@ -390,6 +397,9 @@
     }
   },
   "tools": {
+    "calculator": {
+      "title": "スマート計算機＆変換器"
+    },
     "calc": {
       "title": "🧮 電卓",
       "converterTitle": "📏 スマート単位換算器",
@@ -402,8 +412,10 @@
       "fahrenheit": "華氏 (°F)"
     },
     "translator": {
+      "title": "翻訳",
       "placeholder": "ここに翻訳するテキストを入力してください...",
       "btnTranslate": "リアルタイム翻訳を実行 ⚡",
+      "translating": "翻訳処理中...",
       "errorApi": "API リクエストエラーが発生しました。",
       "errorFail": "翻訳処理に失敗しました。オンデバイスエンジンの状態または API 接続を確認してください。",
       "sourceLabel": "翻訳する原文を入力",
@@ -412,18 +424,21 @@
       "copied": "コピー完了！",
       "copy": "コピーする",
       "languages": {
-        "en": "English (英語)",
-        "ko": "Korean (韓国語)",
-        "ja": "Japanese (日本語)",
-        "zh": "Chinese (中国語)",
-        "es": "Spanish (スペイン語)",
-        "fr": "French (フランス語)"
+        "en": "English",
+        "ko": "Korean",
+        "ja": "Japanese",
+        "zh": "Chinese",
+        "es": "Spanish",
+        "fr": "French"
       }
     },
     "exchange": {
+      "info": "為替レート情報",
+      "calculatorTitle": "金額直接計算",
       "offline": "デフォルト (オフライン)",
       "refresh": "更新",
       "errorFallback": "エラー (バックアップ為替適用)",
+      "valInput": "金額を入力",
       "currencies": {
         "USD": "$ (ドル)",
         "KRW": "₩ (ウォン)",
@@ -464,7 +479,7 @@
       "aiStockAnalyze": "AI 銘柄分析",
       "aiWebAnalyze": "AI ウェブページ分析",
       "findSkills": "スキル探索 (Find Skills)",
-      "translator": "AI 翻訳ツール",
+      "translator": "翻訳",
       "exchange": "リアルタイム為替換算機",
       "calculator": "スマート計算機",
       "memo": "メモ＆ToDo",
@@ -510,15 +525,23 @@
   },
   "popup": {
     "openSidepanel": "サイドパネルを開く",
-    "floatingWidget": "ウェブページでフローティングボットを起動",
     "bypassApiMode": "Bypass API Mode (外部LLM接続)",
     "systemPersona": "System Persona (プロンプト指示)",
     "personaPlaceholder": "AIの行動方針を入力してください..."
+  },
+  "dialog": {
+    "reset": {
+      "title": "会話の初期化",
+      "message": "現在のセッションのすべての会話履歴を消去して初期化しますか？"
+    }
   },
   "common": {
     "confirm": "確認",
     "cancel": "キャンセル",
     "delete": "削除",
-    "edit": "編集"
+    "edit": "編集",
+    "sidebarLength": "回答長",
+    "copied": "コピー完了!",
+    "copy": "コピー"
   }
 }

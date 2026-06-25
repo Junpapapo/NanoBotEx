@@ -4,6 +4,7 @@ export interface Message {
   content: string;
   isStreaming?: boolean;
   suggestions?: any[];
+  isWebAnalyzeIntro?: boolean;
 }
 
 export type ScenarioType =
@@ -47,10 +48,6 @@ export interface UserSettings {
   nano_ai_persona: string;
   nano_ai_temperature: number;
   nano_ai_context_level: "minimal" | "standard" | "detailed";
-  nano_chat_width: number;
-  nano_chat_height: number;
-  nano_ratio_lock: boolean;
-  nano_font_size: number;
   api_mode: "local" | "api";
   api_key?: string;
   api_url: string;

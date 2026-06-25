@@ -7,7 +7,15 @@ import { I18nProvider, useTranslation } from "../shared/components/i18n/i18n-con
 import { ChatbotView } from "../shared/components/ChatbotView";
 import "../index.css";
 
-function SidepanelApp({ settings, updateSettings }: { settings: UserSettings, updateSettings: (s: Partial<UserSettings>) => void }) {
+function SidepanelApp({ 
+  settings, 
+  updateSettings, 
+  isSettingsLoaded 
+}: { 
+  settings: UserSettings; 
+  updateSettings: (s: Partial<UserSettings>) => void; 
+  isSettingsLoaded: boolean; 
+}) {
   const [skills] = useChromeStorage<Skill[]>("user_skills", DEFAULT_SKILLS);
   const [activeSkill, setActiveSkill] = useState<Skill | null>(null);
   const { t, locale } = useTranslation();
@@ -21,16 +29,18 @@ function SidepanelApp({ settings, updateSettings }: { settings: UserSettings, up
         activeSkill={activeSkill}
         setActiveSkill={setActiveSkill}
         isSupported={true}
-        effectiveAIAvatar="public/nanobots/bot-default.png"
+        effectiveAIAvatar={settings.nano_ai_avatar || "/nanobots/bot-default.png"}
+        layoutMode="sidepanel"
         t={t}
         locale={locale}
+        isSettingsLoaded={isSettingsLoaded}
       />
     </div>
   );
 }
 
 function Main() {
-  const [settings, setSettings] = useChromeStorage<UserSettings>("user_settings", DEFAULT_SETTINGS);
+  const [settings, setSettings, isSettingsLoaded] = useChromeStorage<UserSettings>("user_settings", DEFAULT_SETTINGS);
   
   const handleUpdateSettings = (newSettings: Partial<UserSettings>) => {
     setSettings((prev: UserSettings) => ({
@@ -40,8 +50,12 @@ function Main() {
   };
 
   return (
-    <I18nProvider settings={settings} updateSettings={handleUpdateSettings}>
-      <SidepanelApp settings={settings} updateSettings={handleUpdateSettings} />
+    <I18nProvider settings={settings} updateSettings={handleUpdateSettings} isSettingsLoaded={isSettingsLoaded}>
+      <SidepanelApp 
+        settings={settings} 
+        updateSettings={handleUpdateSettings} 
+        isSettingsLoaded={isSettingsLoaded} 
+      />
     </I18nProvider>
   );
 }

@@ -8,18 +8,33 @@ interface AIAvatarProps {
 
 export function AIAvatar({ avatarPath, size = 32, className = "" }: AIAvatarProps) {
   const getAvatarUrl = (path: string) => {
-    const defaultPath = "public/nanobots/bot-default.png";
-    const actualPath = path === "random" || !path ? defaultPath : path;
+    const defaultPath = "nanobots/bot-01.webp";
+    let actualPath = path === "random" || path === undefined ? defaultPath : path;
+
+    // Migrate obsolete/non-existent paths to bot-01.webp
+    if (actualPath.includes("bot-default.png") || actualPath.includes("bot-cynic.png") || actualPath.includes("bot-mentor.png")) {
+      actualPath = defaultPath;
+    }
+
     if (actualPath.startsWith("http")) return actualPath;
+
+    let cleanPath = actualPath;
+    if (cleanPath.startsWith("/")) {
+      cleanPath = cleanPath.slice(1);
+    }
+    if (cleanPath.startsWith("public/")) {
+      cleanPath = cleanPath.replace("public/", "");
+    }
+
     try {
-      return chrome.runtime.getURL(actualPath);
+      return chrome.runtime.getURL(cleanPath);
     } catch {
-      return actualPath;
+      return "/" + cleanPath;
     }
   };
 
-  const path = avatarPath === "random" || !avatarPath ? "public/nanobots/bot-default.png" : avatarPath;
-  const isImageAvatar = path && (path.startsWith("/") || path.startsWith("public/") || path.startsWith("http"));
+  const path = avatarPath === "random" || avatarPath === undefined ? "nanobots/bot-01.webp" : avatarPath;
+  const isImageAvatar = !!path;
 
   return (
     <div

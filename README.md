@@ -10,8 +10,19 @@ A lightweight utility that brings a customized AI assistant directly onto your b
 - **On-Device LLM (Gemini Nano)**: Runs local inference inside your browser. No external API calling required when configured correctly.
 - **External LLM Bypass**: Optional connection to standard OpenAI-compatible API endpoints for more complex queries.
 - **Floating Widget & Sidepanel UI**: Run the chatbot as a floating widget on any web page (via Shadow DOM to prevent CSS leaks) or inside the browser's sidepanel.
-- **Memos & Bookmarks**: Save notes, schedule tasks, and organize quick financial/educational shortcuts.
-- **Bespoke Asymmetric Design**: Implemented with Tailwind CSS for a premium, dark-mode-first visual experience.
+- **Memos & Global Bookmarks**: 
+  - Save quick notes and tasks directly in the panel.
+  - Organized with 8 major global shortcuts (GitHub, Hugging Face, Google, ChatGPT, Stack Overflow, YouTube, Reddit, Wikipedia) with automatic legacy migration.
+- **Compact & Intuitive Popup Dashboard**:
+  - Compact `350px` width layout optimized for fast access.
+  - Profile customization featuring random avatar toggles, instant avatar image shuffling, and custom bot name editing.
+  - Quick support settings icon linking directly to GitHub Discussions and Issue tracking.
+  - Real-time Local AI Engine check button (`AI ON`).
+- **Chrome Web Store Policy Compliant Tools**:
+  - Built-in **Smart Calculator & Unit Converter** (Pyung/㎡ & Temperature).
+  - Fully compliant with Web Store security guidelines (zero dynamic code execution; mathematical evaluations run through a secure custom tokenizer instead of unsafe `eval()`).
+- **Multilingual Support**: Supports English, Korean (한국어), and Japanese (日本語).
+- **Modern Responsive Design**: Premium dark-mode-first aesthetic with dynamic CSS skin mode (Dark/Light) and customizable theme color accents.
 
 ## Setup Requirements
 
@@ -46,6 +57,10 @@ The compiled extension files will be created in the `dist` directory.
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Privacy Policy
+
+Please see the [Privacy Policy](PRIVACY.md) file for details on data processing and user privacy.
 
 ## Contact & Support
 

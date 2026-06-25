@@ -118,7 +118,9 @@
       "install": "설치",
       "installing": "설치 중",
       "placeholderDesc": "스킬 키워드를 검색하여\n새로운 기능을 설치해 보세요.",
-      "inputPlaceholder": "예: web search, react, testing..."
+      "inputPlaceholder": "예: web search, react, testing...",
+      "searchTooltip": "검색",
+      "infoTooltip": "스킬 정보 확인"
     },
     "dangerZone": {
       "title": "Danger Zone",
@@ -130,36 +132,36 @@
     },
     "presets": {
       "visualizer": {
-        "title": "데이터 시각화 & 표 메이커",
-        "description": "복잡한 텍스트 데이터를 일목요연한 표와 시각화 차트 형태로 가공해 줍니다."
+        "title": "Data Visualization & Table Maker",
+        "description": "Processes complex text data into neat tables and visual charts."
       },
       "tutor": {
-        "title": "친절한 AI 선생님",
-        "description": "어려운 개념을 학생 눈높이에서 글과 표, 예문을 활용해 알기 쉽게 교육합니다."
+        "title": "Friendly AI Teacher",
+        "description": "Explains complex concepts easily at a student's level using text, tables, and examples."
       },
       "translator": {
-        "title": "다국어 번역가",
-        "description": "한국어와 영어 등 타국어 간 자연스러운 번역을 수행합니다."
+        "title": "Multilingual Translator",
+        "description": "Performs natural translation between English, Korean, and other languages."
       },
       "summarizer": {
-        "title": "텍스트 요약기",
-        "description": "긴 글을 핵심 요점 3줄로 깔끔하게 요약해 줍니다."
+        "title": "Text Summarizer",
+        "description": "Summarizes long text into 3 clean, key points."
       },
       "find-skills": {
         "title": "Find Skills",
-        "description": "새로운 스킬 기능을 탐색하고 설치합니다."
+        "description": "Search and install new skill features."
       },
       "code_reviewer": {
-        "title": "코드 리뷰어",
-        "description": "제출한 코드의 문제점을 찾고 개선 아이디어를 제안합니다."
+        "title": "Code Reviewer",
+        "description": "Finds problems in submitted code and suggests improvement ideas."
       },
       "code_mentor": {
-        "title": "시니어 개발자 멘토",
-        "description": "작성한 코드에 대해 피드백을 제공하고, 더 나은 아키텍처 및 설계 방안을 멘토링해 줍니다."
+        "title": "Senior Dev Mentor",
+        "description": "Provides feedback on written code, and mentors on better architecture and design."
       },
       "business_editor": {
-        "title": "비즈니스 메일 에디터",
-        "description": "상황에 맞게 격식 있고 프로페셔널한 비즈니스 이메일 초안을 작성하고 교정해 줍니다."
+        "title": "Business Mail Editor",
+        "description": "Drafts and refines formal and professional business email drafts based on scenarios."
       }
     },
     "activation": {
@@ -171,7 +173,7 @@
     }
   },
   "history": {
-    "header": "HISTORY",
+    "header": "대화 기록",
     "empty": "저장된 대화가 없습니다.",
     "unnamed": "이전 대화",
     "delete": "대화 삭제",
@@ -187,7 +189,7 @@
       "botSettings": "봇 지침 규칙 설정",
       "calculator": "스마트 계산기",
       "exchange": "실시간 환율 변환",
-      "translator": "독립형 AI 번역기",
+      "translator": "번역",
       "memo": "도구 메모 및 할 일",
       "skillFinder": "스킬 탐색기"
     },
@@ -202,7 +204,16 @@
       "light": "☀️ 라이트",
       "tabAi": "🤖 AI 설정",
       "tabAppearance": "🎨 외관 설정",
-      "tabLauncher": "⚙️ 기동 설정"
+      "tabDiagnostics": "💻 환경 진단",
+      "tabEngine": "⚙️ 엔진 설정",
+      "skinMode": "🎨 화면 모드",
+      "localEngine": "온디바이스 (Local)",
+      "apiEngine": "외부 API (Hybrid)",
+      "fallbackTitle": "온디바이스 폴백 연동",
+      "fallbackDesc": "API 장애 시 로컬 AI 엔진으로 전환",
+      "fallbackModel": "폴백 엔진 모델 (다운로드 용량)",
+      "fallbackPath": "모델 저장 폴더 경로",
+      "fallbackPathPlaceholder": "예: C:/NanoBot/models"
     },
     "diagnostics": {
       "sectionEnv": "환경 및 보안",
@@ -255,8 +266,8 @@
       "generalPlaceholder": "일반 자유 대화 시에만 특별히 적용할 규칙을 입력하세요...",
       "saveSynced": "✓ 규칙이 안전하게 동기화됨!",
       "saveBtn": "저장 및 봇 엔진 동기화",
-      "defaultGlobalRules": "- 모든 답변은 반드시 정중하고 친절한 한국어 존댓말(경어체)을 사용하세요.\n- 제공된 실시간 수치나 뉴스 데이터 등의 팩트 정보를 왜곡하거나 없는 사실을 지어내지 마세요.\n- 금액이나 수치 정보를 표시할 때는 반드시 천단위 쉼표(,)를 붙여서 가독성을 높여주세요.",
-      "defaultGeneralRules": "- 일반 대화나 질문에 답할 때는 친근하게 소통하되, 간결하고 명확한 대답을 우선으로 해주세요.\n- 투자 판단이나 매매 기법 등에 관해 답변할 때는 \"투자의 책임은 본인에게 있으므로 신중한 결정이 필요합니다\"라는 리스크 환기 메시지를 덧붙여주세요.\n- 어려운 금융/거시경제 용어가 나오면 직관적인 비유를 섞어 이해하기 쉽게 설명해주세요."
+      "defaultGlobalRules": "- Always use a polite and friendly tone in all replies.\n- Do not distort or make up facts regarding real-time numbers or news data provided.\n- When displaying money or numerical information, always use thousand separators (,) for better readability.",
+      "defaultGeneralRules": "- When answering general conversation or questions, communicate friendly but prioritize concise and clear answers.\n- When answering about investment decisions or trading techniques, add a risk reminder message: \"Since investment responsibility lies with oneself, careful decision-making is required.\"\n- When difficult financial/macroeconomic terms appear, mix in intuitive analogies to explain them easily."
     }
   },
   "settings": {
@@ -319,17 +330,12 @@
     "avatarDescPrefix": "💡 커스텀 이미지를",
     "avatarDescMiddle": "에 넣으면 프리셋 목록에 자동 반영됩니다. 또는",
     "avatarDescSuffix": "버튼으로 로컬 파일을 직접 설정할 수 있습니다.",
-    "displayTitle": "챗봇 창 규격 직접 설정",
-    "ratioLock": "비율 고정",
-    "width": "가로 폭",
-    "height": "세로 높이",
-    "fontSize": "글꼴 크기",
     "temperature": "답변 창의성 (TEMPERATURE: {temp})",
     "tempConservative": "보수적",
     "tempBalanced": "균형적",
     "tempCreative": "창의적",
     "bypassTitle": "환경 강제 활성화",
-    "bypassDesc": "내장 AI 검출 실패 시에도 위젯을 강제 기동합니다."
+    "bypassDesc": "내장 AI 검출 실패 시에도 챗봇을 강제 활성화합니다."
   },
   "session": {
     "clearContext": "🧹 **AI의 이전 대화 맥락 기억이 클리어되었습니다.** (이후의 질문은 이전 내용과 연계되지 않고 완전히 새롭게 답변됩니다.)",
@@ -379,7 +385,8 @@
       "sourceUrl": "출처 URL",
       "charCount": "추출된 글자 수",
       "footer": "분석 기준 시각: {time} | AI 웹 요약 및 분석",
-      "reportHeader": "### 📄 **{title} 요약 및 분석 보고서**\n\n"
+      "reportHeader": "### 📄 **{title} 요약 및 분석 보고서**\n\n",
+      "analyzeCurrentSite": "현재 활성화된 사이트 분석 ⚡"
     },
     "ragStart": "🔍 **선택하신 숏컷 프롬프트에 기반하여 실시간 검색 연동을 시작합니다.**",
     "errorOccurred": "오류가 발생했습니다. 브라우저 및 온디바이스 설정을 확인해 주세요.",
@@ -392,6 +399,9 @@
     }
   },
   "tools": {
+    "calculator": {
+      "title": "스마트 계산기 & 변환기"
+    },
     "calc": {
       "title": "🧮 일반 계산기",
       "converterTitle": "📏 스마트 단위 변환기",
@@ -404,8 +414,10 @@
       "fahrenheit": "화씨 (°F)"
     },
     "translator": {
+      "title": "번역",
       "placeholder": "여기에 번역할 텍스트를 입력하세요...",
       "btnTranslate": "실시간 번역 실행 ⚡",
+      "translating": "번역 진행 중...",
       "errorApi": "API 요청 오류가 발생했습니다.",
       "errorFail": "번역 처리에 실패했습니다. 온디바이스 엔진 상태 또는 API 연결을 확인하세요.",
       "sourceLabel": "번역할 원문 입력",
@@ -414,18 +426,21 @@
       "copied": "복사 완료!",
       "copy": "복사하기",
       "languages": {
-        "en": "English (영어)",
-        "ko": "Korean (한국어)",
-        "ja": "Japanese (일본어)",
-        "zh": "Chinese (중국어)",
-        "es": "Spanish (스페인어)",
-        "fr": "French (프랑스어)"
+        "en": "English",
+        "ko": "Korean",
+        "ja": "Japanese",
+        "zh": "Chinese",
+        "es": "Spanish",
+        "fr": "French"
       }
     },
     "exchange": {
+      "info": "환율 정보",
+      "calculatorTitle": "금액 직접 계산",
       "offline": "기본값(오프라인)",
       "refresh": "새로고침",
       "errorFallback": "오류 (백업 환율 적용)",
+      "valInput": "금액 입력",
       "currencies": {
         "USD": "$ (달러)",
         "KRW": "₩ (원)",
@@ -466,7 +481,7 @@
       "aiStockAnalyze": "AI 종목 분석",
       "aiWebAnalyze": "AI 웹 페이지 분석",
       "findSkills": "스킬 탐색기 (Find Skills)",
-      "translator": "독립형 AI 번역기",
+      "translator": "번역",
       "exchange": "실시간 환율 변환기",
       "calculator": "스마트 계산기",
       "memo": "도구 메모 및 할 일",
@@ -512,15 +527,23 @@
   },
   "popup": {
     "openSidepanel": "사이드패널 열기 (Open Sidepanel)",
-    "floatingWidget": "웹페이지 플로팅 봇 기동",
     "bypassApiMode": "Bypass API Mode (외부 LLM 연결)",
     "systemPersona": "System Persona (프롬프트 지침)",
     "personaPlaceholder": "AI 행동 지침을 작성하세요..."
+  },
+  "dialog": {
+    "reset": {
+      "title": "대화 초기화",
+      "message": "현재 세션의 모든 대화 기록을 지우고 초기화하시겠습니까?"
+    }
   },
   "common": {
     "confirm": "확인",
     "cancel": "취소",
     "delete": "삭제",
-    "edit": "수정"
+    "edit": "수정",
+    "sidebarLength": "답변 길이",
+    "copied": "복사 완료!",
+    "copy": "복사하기"
   }
 }

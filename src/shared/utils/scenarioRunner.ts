@@ -165,11 +165,13 @@ export async function runWebScrapeAndAnalyze(
   session: any,
   apiMode: "local" | "api",
   updateContent: (text: string) => void,
-  isAborted: () => boolean
+  isAborted: () => boolean,
+  contextLevel?: string
 ): Promise<void> {
-  const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
   const trimmedText = url.trim();
-  if (!urlRegex.test(trimmedText)) {
+  const isDirectScraped = trimmedText.startsWith("scraped-direct:");
+  const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
+  if (!isDirectScraped && !urlRegex.test(trimmedText)) {
     updateContent(t("session.webAnalyze.invalidUrl", "❌ **올바른 형식의 웹 페이지 주소(URL)를 입력해 주세요.** (http:// 또는 https:// 로 시작하는 주소)"));
     return;
   }
@@ -180,45 +182,99 @@ export async function runWebScrapeAndAnalyze(
     return;
   }
 
+  // 1. 답변길이(contextLevel)에 맞춘 원본 텍스트 물리적 슬라이싱 (인풋 토큰 한계 조율)
+  const maxChars = contextLevel === "minimal" 
+    ? 1500 
+    : contextLevel === "detailed" 
+      ? 8000 
+      : 3500;
+  
+  const slicedText = result.text.substring(0, maxChars);
+
   let systemPrompt = "";
   const checkLang = t("session.webAnalyze.item", "구분");
   
   if (checkLang === "Item") {
-    systemPrompt = `You are a professional Web Page Analyzer AI. Your task is to analyze the provided web page content and write a detailed, structured analysis report.
+    let engGuidelines = "";
+    if (contextLevel === "minimal") {
+      engGuidelines = `1. Core summary of the page (strictly 1 sentence).
+2. List 3 key keywords.
+- Keep it extremely short and compact. Omit detailed explanations.`;
+    } else if (contextLevel === "detailed") {
+      engGuidelines = `1. Detailed summary of the page core contents (5 sentences).
+2. Comprehensive explanation of key concepts and main topics.
+3. Draw 3 deep insights or take-aways with potential risks or opportunities.
+- Provide a rich, thorough, and context-filled report.`;
+    } else {
+      engGuidelines = `1. Concise summary of the page core contents (3 sentences).
+2. Explain the key concepts and main topics.
+3. Draw 2 key insights or take-aways.`;
+    }
+
+    systemPrompt = `You are a professional Web Page Analyzer AI. Your task is to analyze the provided web page content and write a structured analysis report.
 Guidelines:
-1. Provide a concise summary of the page core contents (3-5 sentences).
-2. Explain the key concepts, main topics, or keywords.
-3. Draw 2-3 key insights or takeaways for the user.
-4. Base your response 100% on the provided content. No hallucination.
-5. Write the entire report in English.
+${engGuidelines}
+- Base your response 100% on the provided content. No hallucination.
+Write the entire report in English.
 
 [Web Page Title]: ${result.title}
 [Web Page Content]:
-${result.text}`;
+${slicedText}`;
   } else if (checkLang === "区分") {
-    systemPrompt = `あなたは専門的なウェブページ分析AIです。提供されたウェブページの内容を分析し、詳細で構造化された分析レポートを作成してください。
+    let jpnGuidelines = "";
+    if (contextLevel === "minimal") {
+      jpnGuidelines = `1. ページの核心内容の要約（厳密に1文のみ）。
+2. 主要なキーワード3つをリストアップ。
+- 詳細な説明は省略し、極めて簡潔に作成してください。`;
+    } else if (contextLevel === "detailed") {
+      jpnGuidelines = `1. ページの核心内容の詳細な要約（5文程度）。
+2. 主要な概念や主要トピックについての包括的かつ詳細な説明。
+3. ユーザーのための深い洞察や要点・リスクなどを3つ抽出。
+- 背景情報を含め、総合的で詳細なレポートを作成してください。`;
+    } else {
+      jpnGuidelines = `1. ページの核心内容の要約（3文程度）。
+2. 主要な概念、主要なトピック、またはキーワードの説明。
+3. ユーザーのための2つの重要な洞察または要点の抽出。`;
+    }
+
+    systemPrompt = `あなたは専門的なウェブページ分析AIです。提供されたウェブページの内容を分析し、構造化された分析レポートを作成してください。
 ガイドライン：
-1. ページの核心内容を簡潔に要約する（3〜5文）。
-2. 主要な概念、主要なトピック、またはキーワードを説明する。
-3. ユーザーのための2〜3の重要な洞察または要点を導き出す。
-4. 提供されたコンテンツに100％基づいて回答してください。
-5. レポート全体を日本語で作成してください。
+${jpnGuidelines}
+- 提供されたコンテンツに100％基づいて回答してください。
+レポート全体を日本語で作成してください。
 
 [ウェブページのタイトル]: ${result.title}
 [ウェブコンテンツ]:
-${result.text}`;
+${slicedText}`;
   } else {
-    systemPrompt = `당신은 전문적인 웹 페이지 요약 및 분석 AI입니다. 아래 제공된 웹 페이지 본문 내용을 바탕으로 다음 형식에 맞추어 심도 있는 금융/일반 분석 보고서를 작성해 주세요.
-[작성 가이드라인]
-1. 웹 페이지의 핵심 내용 요약 (3~5문장 내외)
-2. 주요 키워드 및 개념 설명
-3. 독자를 위한 핵심 인사이트 또는 요약 포인트 2~3가지 도출
+    let guidelines = "";
+    if (contextLevel === "minimal") {
+      guidelines = `[작성 가이드라인 - 짧은 요약 모드(S)]
+1. 웹 페이지 핵심 내용 요약 (딱 1문장으로만 간결하게 요약)
+2. 주요 키워드 3가지 나열
+- 상세 정보 및 분석 포인트는 생략하고 최대한 콤팩트하게 작성하세요.`;
+    } else if (contextLevel === "detailed") {
+      guidelines = `[작성 가이드라인 - 상세 분석 모드(L)]
+1. 웹 페이지 상세 요약 및 흐름 분석 (5문장 내외)
+2. 주요 핵심 개념 및 키워드들에 대한 깊이 있는 상세 설명
+3. 독자를 위한 금융/일반 관점의 세부 인사이트 및 리스크 포인트 3가지 도출
+- 배경지식을 풍부하게 활용하여 종합적인 보고서 형태로 자세히 서술하세요.`;
+    } else {
+      guidelines = `[작성 가이드라인 - 표준 요약 모드(M)]
+1. 웹 페이지 핵심 내용 요약 (3문장 내외)
+2. 핵심 키워드 및 개념 설명
+3. 독자를 위한 핵심 요약 포인트 2가지 도출`;
+    }
+
+    systemPrompt = `당신은 전문적인 웹 페이지 요약 및 분석 AI입니다. 아래 제공된 웹 페이지 본문 내용을 바탕으로 다음 작성 가이드라인에 맞추어 금융/일반 분석 보고서를 작성해 주세요.
+
+${guidelines}
 - 제공된 텍스트 본문 내용만을 100% 근거로 하여 사실만 작성하고, 절대 가상의 정보나 없는 사실을 지어내지 마세요.
 - 전체 보고서는 한국어로 작성해 주세요.
 
 [웹 페이지 제목]: ${result.title}
 [웹 페이지 본문]:
-${result.text}`;
+${slicedText}`;
   }
 
   let aiAnalyzedText = "";
@@ -234,11 +290,14 @@ ${result.text}`;
     const stream = session.promptStreaming(systemPrompt);
     for await (const chunk of stream) {
       if (isAborted()) break;
-      // cumulative vs incremental diff
-      if (aiAnalyzedText && chunk.startsWith(aiAnalyzedText)) {
-        aiAnalyzedText = chunk;
-      } else {
-        aiAnalyzedText = chunk;
+      
+      // 누적형(Cumulative)과 델타형(Delta) 청크 스펙 모두 완벽 호환되도록 지능형 누적 처리
+      if (chunk) {
+        if (chunk.startsWith(aiAnalyzedText)) {
+          aiAnalyzedText = chunk;
+        } else {
+          aiAnalyzedText += chunk;
+        }
       }
       updateContent(`${headerTemplate}${aiAnalyzedText}`);
     }
@@ -254,7 +313,7 @@ ${result.text}`;
   let dataContent = `\n\n#### **📊 ${t("session.webAnalyze.sourceInfo", "분석 근거 정보")}**\n`;
   dataContent += `| ${t("session.webAnalyze.item", "구분")} | ${t("session.webAnalyze.detail", "정보")} |\n| :--- | :--- |\n`;
   dataContent += `| **${t("session.webAnalyze.sourceUrl", "출처 URL")}** | [${result.title}](${result.url}) |\n`;
-  dataContent += `| **${t("session.webAnalyze.charCount", "추출된 글자 수")}** | ${result.text.length.toLocaleString()} 자 |\n`;
+  dataContent += `| **${t("session.webAnalyze.charCount", "추출된 글자 수")}** | ${slicedText.length.toLocaleString()} 자 (원본 ${result.text.length.toLocaleString()} 자) |\n`;
   
   const footerTime = t("session.webAnalyze.footer", "분석 기준 시각: {time} | AI 웹 요약 및 분석").replace("{time}", getNowString());
   const finalContent = `${headerTemplate}${aiAnalyzedText}${dataContent}\n---\n*(${footerTime})*`;
