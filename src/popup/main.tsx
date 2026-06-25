@@ -20,6 +20,8 @@ import {
   Settings as SettingsIcon,
   Bug,
   ExternalLink,
+  ShieldCheck,
+  X,
 } from "lucide-react";
 import {
   I18nProvider,
@@ -68,6 +70,7 @@ function PopupContent({
     "idle" | "testing" | "success" | "fail"
   >("idle");
   const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [showShieldModal, setShowShieldModal] = useState<boolean>(false);
 
   const theme = getThemePalette(
     settings.nano_theme_color || "indigo",
@@ -168,8 +171,64 @@ function PopupContent({
 
   return (
     <div
-      className={`w-[350px] ${theme.bgSub} ${theme.textMain} p-4 font-sans border ${theme.borderMuted} shadow-2xl rounded-xl transition-all duration-200`}
+      className={`w-[350px] ${theme.bgSub} ${theme.textMain} p-4 font-sans border ${theme.borderMuted} shadow-2xl rounded-xl transition-all duration-200 relative`}
     >
+      {/* Security & Privacy 모달 오버레이 */}
+      {showShieldModal && (
+        <div
+          className="absolute inset-0 z-[200] flex items-center justify-center rounded-xl"
+          style={{ backdropFilter: "blur(6px)", backgroundColor: "rgba(0,0,0,0.65)" }}
+          onClick={() => setShowShieldModal(false)}
+        >
+          <div
+            className={`relative mx-4 rounded-2xl border ${theme.borderMuted} ${theme.bgSub} p-6 flex flex-col items-center gap-3 shadow-2xl text-center`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 닫기 버튼 */}
+            <button
+              onClick={() => setShowShieldModal(false)}
+              className={`absolute top-3 right-3 p-1 rounded-full ${theme.textSub} hover:${theme.textMain} ${theme.bgHover} transition-colors cursor-pointer`}
+            >
+              <X size={12} />
+            </button>
+
+            {/* 방패 아이콘 */}
+            <div className={`w-12 h-12 rounded-full ${theme.primary} flex items-center justify-center shadow-lg`}>
+              <ShieldCheck size={24} className="text-white" />
+            </div>
+
+            {/* 제목 */}
+            <h2 className={`text-sm font-black ${theme.textMain}`}>Security & Privacy First</h2>
+
+            {/* 설명 */}
+            <div className={`text-[10.5px] leading-relaxed ${theme.textSub} space-y-2`}>
+              <p>
+                <span className="font-bold text-emerald-400">🔒 All data stays on your device.</span>{" "}
+                NanoBot never transmits your conversations, bookmarks, or memos to external servers.
+                Everything is stored exclusively in your browser's local storage.
+              </p>
+              <p>
+                <span className="font-bold text-indigo-400">🤖 On-device AI only.</span>{" "}
+                Responses are generated locally using Gemini Nano running entirely inside your browser.
+                No cloud calls, no data leaks.
+              </p>
+              <p>
+                <span className="font-bold text-amber-400">🛡️ Dual-Pass Safety Guardrails.</span>{" "}
+                Every message is pre-screened by a dedicated safety classifier before reaching the main AI.
+                Sexual, violent, illegal, or jailbreak content is blocked immediately.
+              </p>
+            </div>
+
+            {/* 닫기 버튼 */}
+            <button
+              onClick={() => setShowShieldModal(false)}
+              className={`mt-1 w-full py-2 rounded-xl text-[10.5px] font-extrabold ${theme.primary} text-white transition-all hover:opacity-90 cursor-pointer`}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       {/* 팝업 상단 타이틀 */}
       <div
         className={`flex items-center justify-between pb-3 border-b ${theme.borderMuted} mb-3 relative`}
@@ -221,6 +280,16 @@ function PopupContent({
               )}
             </button>
           )}
+
+          {/* Shield 보안 안내 아이콘 */}
+          <button
+            type="button"
+            onClick={() => setShowShieldModal(true)}
+            className={`p-1 rounded hover:${theme.bgHover} text-emerald-400 hover:text-emerald-300 transition cursor-pointer flex items-center justify-center`}
+            title="Security & Privacy"
+          >
+            <ShieldCheck size={13} />
+          </button>
 
           {/* 설정 메뉴 아이콘 및 드롭다운 */}
           <div className="relative">
