@@ -1,18 +1,52 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { useChromeStorage } from "../shared/hooks/useChromeStorage";
-import { DEFAULT_SETTINGS, THEME_PALETTES, getThemePalette } from "../shared/chatbot-constants";
+import {
+  DEFAULT_SETTINGS,
+  THEME_PALETTES,
+  getThemePalette,
+} from "../shared/chatbot-constants";
 import { ALL_AVATARS } from "../shared/components/tools/settings-panel/avatar-list";
 import { UserSettings } from "../shared/chatbot-types";
-import { Sparkles, MessageSquare, ChevronLeft, ChevronRight, Sun, Moon, Globe, Shuffle, Settings as SettingsIcon, Bug, ExternalLink } from "lucide-react";
-import { I18nProvider, useTranslation } from "../shared/components/i18n/i18n-context";
+import {
+  Sparkles,
+  MessageSquare,
+  ChevronLeft,
+  ChevronRight,
+  Sun,
+  Moon,
+  Globe,
+  Shuffle,
+  Settings as SettingsIcon,
+  Bug,
+  ExternalLink,
+} from "lucide-react";
+import {
+  I18nProvider,
+  useTranslation,
+} from "../shared/components/i18n/i18n-context";
 import { useAISession } from "../shared/hooks/useAISession";
 import "../index.css";
 
 function DefaultBotSvg() {
   return (
-    <svg width="60%" height="60%" viewBox="0 0 64 64" fill="none" className="text-indigo-400">
-      <rect x="17" y="22" width="30" height="24" rx="9" fill="#0f172a" stroke="currentColor" strokeWidth="3.5" />
+    <svg
+      width="60%"
+      height="60%"
+      viewBox="0 0 64 64"
+      fill="none"
+      className="text-indigo-400"
+    >
+      <rect
+        x="17"
+        y="22"
+        width="30"
+        height="24"
+        rx="9"
+        fill="#0f172a"
+        stroke="currentColor"
+        strokeWidth="3.5"
+      />
       <circle cx="28" cy="31.5" r="2.5" fill="#38bdf8" />
       <circle cx="36" cy="31.5" r="2.5" fill="#38bdf8" />
     </svg>
@@ -21,21 +55,30 @@ function DefaultBotSvg() {
 
 function PopupContent({
   settings,
-  setSettings
+  setSettings,
 }: {
   settings: UserSettings;
-  setSettings: (val: UserSettings | ((prev: UserSettings) => UserSettings)) => void;
+  setSettings: (
+    val: UserSettings | ((prev: UserSettings) => UserSettings),
+  ) => void;
 }) {
   const { t } = useTranslation();
   const { isSupported } = useAISession();
-  const [testStatus, setTestStatus] = useState<"idle" | "testing" | "success" | "fail">("idle");
+  const [testStatus, setTestStatus] = useState<
+    "idle" | "testing" | "success" | "fail"
+  >("idle");
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
-  const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
+  const theme = getThemePalette(
+    settings.nano_theme_color || "indigo",
+    settings.nano_skin_mode || "dark",
+  );
   const isLight = settings.nano_skin_mode === "light";
 
   // 아바타 선택 인덱스 구하기
-  const currentAvatarIndex = ALL_AVATARS.findIndex(av => av.path === settings.nano_ai_avatar);
+  const currentAvatarIndex = ALL_AVATARS.findIndex(
+    (av) => av.path === settings.nano_ai_avatar,
+  );
   const avatarIndex = currentAvatarIndex !== -1 ? currentAvatarIndex : 0;
 
   const handlePrevAvatar = () => {
@@ -57,7 +100,13 @@ function PopupContent({
     if (testStatus === "testing") return;
     setTestStatus("testing");
     try {
-      const glob = (typeof window !== "undefined" ? window : (typeof self !== "undefined" ? self : globalThis)) as any;
+      const glob = (
+        typeof window !== "undefined"
+          ? window
+          : typeof self !== "undefined"
+            ? self
+            : globalThis
+      ) as any;
       let lm = glob.ai?.languageModel;
       if (!lm && glob.chrome?.ai?.languageModel) {
         lm = glob.chrome.ai.languageModel;
@@ -74,7 +123,7 @@ function PopupContent({
       }
 
       const session = await lm.create({
-        systemPrompt: "Reply with OK only."
+        systemPrompt: "Reply with OK only.",
       });
 
       let response = "";
@@ -107,24 +156,37 @@ function PopupContent({
     });
   };
 
-  const updateSettingField = <K extends keyof UserSettings>(key: K, val: UserSettings[K]) => {
+  const updateSettingField = <K extends keyof UserSettings>(
+    key: K,
+    val: UserSettings[K],
+  ) => {
     setSettings((prev: UserSettings) => ({
       ...prev,
-      [key]: val
+      [key]: val,
     }));
   };
 
   return (
-    <div className={`w-[350px] ${theme.bgSub} ${theme.textMain} p-4 font-sans border ${theme.borderMuted} shadow-2xl rounded-xl transition-all duration-200`}>
+    <div
+      className={`w-[350px] ${theme.bgSub} ${theme.textMain} p-4 font-sans border ${theme.borderMuted} shadow-2xl rounded-xl transition-all duration-200`}
+    >
       {/* 팝업 상단 타이틀 */}
-      <div className={`flex items-center justify-between pb-3 border-b ${theme.borderMuted} mb-3 relative`}>
-        <span className={`text-sm font-black flex items-center gap-2 ${theme.text}`}>
-          <img 
-            src={typeof chrome !== "undefined" && chrome.runtime?.getURL ? chrome.runtime.getURL("icons/icon32.png") : "/icons/icon32.png"} 
-            alt="NanoBot Logo" 
+      <div
+        className={`flex items-center justify-between pb-3 border-b ${theme.borderMuted} mb-3 relative`}
+      >
+        <span
+          className={`text-sm font-black flex items-center gap-2 ${theme.text}`}
+        >
+          <img
+            src={
+              typeof chrome !== "undefined" && chrome.runtime?.getURL
+                ? chrome.runtime.getURL("icons/icon32.png")
+                : "/icons/icon32.png"
+            }
+            alt="NanoBot Logo"
             className="h-7.5 w-7.5 rounded-lg object-contain shadow-sm"
           />
-          NanoBotEx AI
+          NanoBot AI
         </span>
         <div className="flex items-center gap-1.5 z-[100]">
           {settings.api_mode !== "api" && isSupported && (
@@ -135,10 +197,10 @@ function PopupContent({
                 testStatus === "testing"
                   ? "bg-indigo-950/80 text-indigo-350 border border-indigo-500/30 animate-pulse"
                   : testStatus === "success"
-                  ? "bg-emerald-950/80 text-emerald-350 border border-emerald-500/40"
-                  : testStatus === "fail"
-                  ? "bg-rose-950/80 text-rose-350 border border-rose-500/40"
-                  : "bg-purple-950/80 text-purple-300 border border-purple-500/30 hover:bg-purple-900"
+                    ? "bg-emerald-950/80 text-emerald-350 border border-emerald-500/40"
+                    : testStatus === "fail"
+                      ? "bg-rose-950/80 text-rose-350 border border-rose-500/40"
+                      : "bg-purple-950/80 text-purple-300 border border-purple-500/30 hover:bg-purple-900"
               }`}
               title="클릭하여 로컬 AI 엔진 수동 테스트"
             >
@@ -173,8 +235,13 @@ function PopupContent({
 
             {showMenu && (
               <>
-                <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
-                <div className={`absolute right-0 mt-1.5 w-[210px] rounded-lg border ${theme.borderMuted} ${theme.bgSub} py-1 shadow-2xl z-50 animate-in fade-in slide-in-from-top-1 duration-150`}>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowMenu(false)}
+                />
+                <div
+                  className={`absolute right-0 mt-1.5 w-[210px] rounded-lg border ${theme.borderMuted} ${theme.bgSub} py-1 shadow-2xl z-50 animate-in fade-in slide-in-from-top-1 duration-150`}
+                >
                   <a
                     href="https://github.com/Junpapapo/NanoBotEx/issues"
                     target="_blank"
@@ -211,23 +278,40 @@ function PopupContent({
       {/* 2열 그리드 구조 */}
       <div className="grid grid-cols-2 gap-3 pb-2 border-b border-white/[0.04]">
         {/* 왼쪽 열: 아바타 설정 & 봇 이름 입력 */}
-        <div className={`flex flex-col items-center justify-between p-3 rounded-xl border ${theme.borderMuted} ${theme.bgInput} space-y-2`}>
+        <div
+          className={`flex flex-col items-center justify-between p-3 rounded-xl border ${theme.borderMuted} ${theme.bgInput} space-y-2`}
+        >
           <div className="flex justify-between items-center w-full px-0.5 select-none">
-            <span className={`text-[9px] font-black ${theme.textSub} uppercase tracking-wider block`}>
+            <span
+              className={`text-[9px] font-black ${theme.textSub} uppercase tracking-wider block`}
+            >
               NAME
             </span>
             <div className="flex items-center gap-1.5">
-              <span className="text-[8.5px] text-slate-500 font-extrabold">{t("settings.random", "랜덤")}</span>
+              <span className="text-[8.5px] text-slate-500 font-extrabold">
+                {t("settings.random", "랜덤")}
+              </span>
               <button
                 type="button"
-                onClick={() => updateSettingField("nano_ai_random_avatar", !settings.nano_ai_random_avatar)}
+                onClick={() =>
+                  updateSettingField(
+                    "nano_ai_random_avatar",
+                    !settings.nano_ai_random_avatar,
+                  )
+                }
                 className={`w-7 h-4 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer ${
-                  settings.nano_ai_random_avatar ? theme.primary : isLight ? "bg-slate-200 border border-slate-300" : "bg-slate-950 border border-white/[0.08]"
+                  settings.nano_ai_random_avatar
+                    ? theme.primary
+                    : isLight
+                      ? "bg-slate-200 border border-slate-300"
+                      : "bg-slate-950 border border-white/[0.08]"
                 }`}
               >
                 <div
                   className={`w-2.5 h-2.5 rounded-full bg-white transition-transform duration-200 ${
-                    settings.nano_ai_random_avatar ? "translate-x-3.5" : "translate-x-0"
+                    settings.nano_ai_random_avatar
+                      ? "translate-x-3.5"
+                      : "translate-x-0"
                   }`}
                 />
               </button>
@@ -235,23 +319,29 @@ function PopupContent({
           </div>
           {/* 아바타 선택 카루셀 */}
           <div className="flex items-center justify-between w-full select-none">
-            <button 
-              type="button" 
-              onClick={handlePrevAvatar} 
+            <button
+              type="button"
+              onClick={handlePrevAvatar}
               className={`p-1.5 rounded-lg hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer`}
             >
               <ChevronLeft size={16} />
             </button>
-            <div className={`relative w-[60px] h-[60px] rounded-xl flex items-center justify-center ${isLight ? "bg-white border-slate-200" : "bg-slate-950 border-white/[0.08]"} border overflow-hidden`}>
+            <div
+              className={`relative w-[60px] h-[60px] rounded-xl flex items-center justify-center ${isLight ? "bg-white border-slate-200" : "bg-slate-950 border-white/[0.08]"} border overflow-hidden`}
+            >
               {settings.nano_ai_avatar ? (
-                <img src={settings.nano_ai_avatar} alt="Bot Avatar" className="w-full h-full object-cover" />
+                <img
+                  src={settings.nano_ai_avatar}
+                  alt="Bot Avatar"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <DefaultBotSvg />
               )}
             </div>
-            <button 
-              type="button" 
-              onClick={handleNextAvatar} 
+            <button
+              type="button"
+              onClick={handleNextAvatar}
               className={`p-1.5 rounded-lg hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer`}
             >
               <ChevronRight size={16} />
@@ -262,7 +352,9 @@ function PopupContent({
             <input
               type="text"
               value={settings.nano_ai_avatar_name || ""}
-              onChange={(e) => updateSettingField("nano_ai_avatar_name", e.target.value)}
+              onChange={(e) =>
+                updateSettingField("nano_ai_avatar_name", e.target.value)
+              }
               className={`w-0 flex-1 text-[10px] text-center ${isLight ? "bg-white border-slate-200 text-slate-800" : "bg-slate-950 border-white/[0.08] text-white"} border rounded-lg py-1.5 px-2 focus:outline-none ${theme.focusBorder} font-bold`}
               placeholder="Name"
             />
@@ -278,14 +370,18 @@ function PopupContent({
         </div>
 
         {/* 오른쪽 열: 사이드패널 실행 버튼 */}
-        <div className={`flex flex-col items-center justify-center p-3 rounded-xl border ${theme.borderMuted} ${theme.bgInput}`}>
+        <div
+          className={`flex flex-col items-center justify-center p-3 rounded-xl border ${theme.borderMuted} ${theme.bgInput}`}
+        >
           <button
             type="button"
             onClick={handleOpenSidePanel}
             className={`w-full h-full min-h-[108px] rounded-xl ${theme.primary} text-white font-bold text-[11px] flex flex-col items-center justify-center gap-2 transition cursor-pointer ${theme.shadow} border border-white/[0.06] hover:scale-[1.02] active:scale-[0.98]`}
           >
             <MessageSquare className="h-4.5 w-4.5" />
-            <span className="text-center px-1">{t("popup.openSidepanel", "사이드패널 열기 (Open Sidepanel)")}</span>
+            <span className="text-center px-1">
+              {t("popup.openSidepanel", "사이드패널 열기 (Open Sidepanel)")}
+            </span>
           </button>
         </div>
       </div>
@@ -294,7 +390,9 @@ function PopupContent({
       <div className="flex flex-col gap-2.5 pt-2">
         {/* 1. 언어 선택 */}
         <div className="flex items-center justify-between text-xs">
-          <span className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}>
+          <span
+            className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}
+          >
             {t("settings.language", "언어")}
           </span>
           <select
@@ -310,10 +408,14 @@ function PopupContent({
 
         {/* 2. 화면 스타일 모드 (다크/라이트) */}
         <div className="flex items-center justify-between text-xs">
-          <span className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}>
+          <span
+            className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}
+          >
             {t("panel.settings.skinMode", "화면 모드")}
           </span>
-          <div className={`flex ${isLight ? "bg-slate-100 border-slate-200" : "bg-slate-950 border border-white/[0.08]"} p-0.5 rounded-lg border select-none`}>
+          <div
+            className={`flex ${isLight ? "bg-slate-100 border-slate-200" : "bg-slate-950 border border-white/[0.08]"} p-0.5 rounded-lg border select-none`}
+          >
             <button
               type="button"
               onClick={() => updateSettingField("nano_skin_mode", "dark")}
@@ -343,7 +445,9 @@ function PopupContent({
 
         {/* 3. 테마 컬러 칩 */}
         <div className="flex items-center justify-between text-xs">
-          <span className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}>
+          <span
+            className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}
+          >
             {t("panel.settings.theme", "테마 설정")}
           </span>
           <div className="flex items-center gap-2">
@@ -356,8 +460,12 @@ function PopupContent({
                   onClick={() => updateSettingField("nano_theme_color", key)}
                   className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer hover:scale-110 border ${
                     isSelected
-                      ? (isLight ? "border-slate-800 bg-slate-100 shadow-md" : "border-white bg-slate-900 shadow-md")
-                      : (isLight ? "border-slate-200 bg-white hover:border-slate-350" : "border-white/[0.08] bg-slate-950 hover:border-white/[0.2]")
+                      ? isLight
+                        ? "border-slate-800 bg-slate-100 shadow-md"
+                        : "border-white bg-slate-900 shadow-md"
+                      : isLight
+                        ? "border-slate-200 bg-white hover:border-slate-350"
+                        : "border-white/[0.08] bg-slate-950 hover:border-white/[0.2]"
                   }`}
                   title={val.name}
                 >
@@ -376,12 +484,15 @@ function PopupContent({
 }
 
 function PopupApp() {
-  const [settings, setSettings, isSettingsLoaded] = useChromeStorage<UserSettings>("user_settings", DEFAULT_SETTINGS);
+  const [settings, setSettings, isSettingsLoaded] =
+    useChromeStorage<UserSettings>("user_settings", DEFAULT_SETTINGS);
 
   return (
     <I18nProvider
       settings={settings}
-      updateSettings={(newSettings) => setSettings((prev: UserSettings) => ({ ...prev, ...newSettings }))}
+      updateSettings={(newSettings) =>
+        setSettings((prev: UserSettings) => ({ ...prev, ...newSettings }))
+      }
       isSettingsLoaded={isSettingsLoaded}
     >
       <PopupContent settings={settings} setSettings={setSettings} />
@@ -394,6 +505,6 @@ if (rootEl) {
   ReactDOM.createRoot(rootEl).render(
     <React.StrictMode>
       <PopupApp />
-    </React.StrictMode>
+    </React.StrictMode>,
   );
 }

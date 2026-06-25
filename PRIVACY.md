@@ -1,14 +1,14 @@
-# Privacy Policy for NanoBotEx AI
+# Privacy Policy for NanoBot AI
 
 *Effective Date: June 25, 2026*
 
-This Privacy Policy explains how **NanoBotEx AI** ("we", "our", or "the Extension") handles user information and data. We are highly committed to protecting user privacy and ensuring a transparent, secure browsing experience.
+This Privacy Policy explains how **NanoBot AI** ("we", "our", or "the Extension") handles user information and data. We are highly committed to protecting user privacy and ensuring a transparent, secure browsing experience.
 
 ---
 
 ## 1. Information Collection and Use
 
-**NanoBotEx AI** operates with a privacy-first, decentralized model. We do **NOT** run any database servers, telemetry trackers, or cloud analytics backends.
+**NanoBot AI** operates with a privacy-first, decentralized model. We do **NOT** run any database servers, telemetry trackers, or cloud analytics backends.
 
 *   **API Keys & Chat Logs**: All API Keys (e.g., OpenAI API, Gemini API) and chat logs with the AI assistant are stored exclusively in your local browser storage (`chrome.storage.local`). We never collect, transmit, or share your API keys or chatbot conversations with our servers.
 *   **Webpage Content (ActiveTab & Scripting)**: To summarize webpages or answer questions about your active tab, the Extension reads the text content of your currently active browser tab. This process occurs entirely on your device. The content is sent only to the AI engine of your choice (local Gemini Nano or your configured OpenAI API key endpoint) and is never sent to any third party.
@@ -48,7 +48,7 @@ If you have questions about this Privacy Policy, please open a ticket on our [Gi
 
 *시행일자: 2026년 6월 25일*
 
-본 개인정보처리방침은 **NanoBotEx AI**("이하 확장 프로그램")의 사용자 데이터 및 개인정보 처리 방식을 설명합니다.
+본 개인정보처리방침은 **NanoBot AI**("이하 확장 프로그램")의 사용자 데이터 및 개인정보 처리 방식을 설명합니다.
 
 ## 1. 개인정보 수집 및 이용 목적
 이 확장 프로그램은 어떠한 외부 데이터 수집 서버나 텔레메트리(분석용 추적) 수집 서버도 운영하지 않으며 사용자 정보를 수집하지 않습니다.
