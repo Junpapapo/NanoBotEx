@@ -16,7 +16,7 @@ export async function searchSymbols(query: string, market: "KR" | "US"): Promise
     const data = await res.json();
     return data.status === "success" ? (data.data || []) : [];
   } catch (e) {
-    console.error("Symbol search error:", e);
+    console.warn("Symbol search error:", e);
     return [];
   }
 }
@@ -34,7 +34,7 @@ export async function getStockInfo(code: string, market: string): Promise<any> {
     const data = await res.json();
     return data.status === "success" ? data.data : null;
   } catch (e) {
-    console.error("Stock info fetch error:", e);
+    console.warn("Stock info fetch error:", e);
     return null;
   }
 }
@@ -52,7 +52,7 @@ export async function getStockNews(code: string, market: string): Promise<any[]>
     const data = await res.json();
     return data.status === "success" ? (data.data || []) : [];
   } catch (e) {
-    console.error("Stock news fetch error:", e);
+    console.warn("Stock news fetch error:", e);
     return [];
   }
 }
@@ -64,7 +64,7 @@ export async function optimizePortfolio(tickers: string): Promise<any> {
     const data = await res.json();
     return data.status === "success" ? data : null;
   } catch (e) {
-    console.error("Portfolio optimization error:", e);
+    console.warn("Portfolio optimization error:", e);
     return null;
   }
 }
@@ -80,7 +80,7 @@ export async function runTPocketRAG(prompt: string): Promise<string> {
     const data = await res.json();
     return data.response || "";
   } catch (e: any) {
-    console.error("TPocket RAG proxy error:", e);
+    console.warn("TPocket RAG proxy error:", e);
     throw e;
   }
 }
@@ -109,7 +109,7 @@ export async function scrapeWebPage(url: string): Promise<any> {
     }
     return await res.json();
   } catch (e: any) {
-    console.error("Web page scrape error:", e);
+    console.warn("Web page scrape error:", e);
     return { status: "error", message: e.message || "Network error" };
   }
 }

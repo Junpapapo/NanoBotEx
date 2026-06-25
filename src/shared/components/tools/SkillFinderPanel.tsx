@@ -39,7 +39,7 @@ export function SkillFinderPanel({ t, theme }: SkillFinderPanelProps) {
         setMessage({ type: "error", text: t("skills.finder.searchFailed", "스킬 검색에 실패했습니다.") });
       }
     } catch (err) {
-      console.error("Search skills failed:", err);
+      console.warn("Search skills failed:", err);
       setMessage({ type: "error", text: t("skills.finder.serverError", "서버 연결에 실패했습니다.") });
     } finally {
       setSearching(false);
@@ -77,7 +77,7 @@ export function SkillFinderPanel({ t, theme }: SkillFinderPanelProps) {
         setMessage({ type: "error", text: errData.detail || t("skills.finder.installFailed", "스킬 설치에 실패했습니다.") });
       }
     } catch (err) {
-      console.error("Install skill failed:", err);
+      console.warn("Install skill failed:", err);
       setMessage({ type: "error", text: t("skills.finder.serverError", "서버 연결에 실패했습니다.") });
     } finally {
       setInstallingId(null);
