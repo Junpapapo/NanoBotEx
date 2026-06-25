@@ -247,7 +247,15 @@ export function SystemSidebar({
         >
           <CheckSquare size={12} />
         </button>
+      </div>
 
+      {/* 5. PROMPT 섹션 */}
+      <div className="flex items-center gap-1.5 w-full px-2 mt-4 mb-2.5 shrink-0">
+        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-slate-500/20" />
+        <span className="text-[8px] font-black text-slate-400/90 tracking-widest uppercase select-none">PROMPT</span>
+        <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-slate-500/20" />
+      </div>
+      <div className="grid grid-cols-2 gap-x-2 gap-y-2.5 w-full px-2 justify-items-center shrink-0">
         {/* 프롬프트 스킬 카피 버튼 6종 */}
         <button
           type="button"
