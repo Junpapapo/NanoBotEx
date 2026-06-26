@@ -333,7 +333,7 @@ export function ChatbotView({
 
   return (
     <div 
-      className={`flex w-full h-full ${theme.bgMain} ${theme.textMain} ${theme.mainShadow} font-sans overflow-hidden relative`}
+      className={`flex justify-end w-full h-full ${theme.bgMain} ${theme.textMain} ${theme.mainShadow} font-sans overflow-hidden relative`}
       id="nanobot-chat-frame"
     >
       {/* 1. 왼쪽 슬라이딩 서브 패널 */}
