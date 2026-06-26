@@ -1,4 +1,5 @@
 let activeAISession: any = null;
+let activeBuddySession: any = null; // 프라이빗 AI 버디 세션 (메인 세션과 독립)
 let activeSafetySession: any = null; // Dual-Pass Guardrails 전용 판별 세션 (상시 유지)
 
 // 백그라운드 AI 지원 여부 체크 헬퍼
@@ -58,6 +59,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return false;
   }
 
+  if (message.action === "check_buddy_session_active") {
+    sendResponse({ active: !!activeBuddySession });
+    return false;
+  }
+
   if (message.action === "diagnose_ai_support") {
     const glob = globalThis as any;
     sendResponse({
@@ -78,6 +84,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.action === "init_buddy_session") {
+    initBackgroundBuddySession(message.systemPrompt, message.temperature)
+      .then(() => sendResponse({ success: true }))
+      .catch((err) => sendResponse({ success: false, error: err.message || String(err) }));
+    return true;
+  }
+
   if (message.action === "prompt_ai") {
     if (!activeAISession) {
       sendResponse({ success: false, error: "Session not initialized" });
@@ -89,8 +102,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.action === "prompt_buddy") {
+    if (!activeBuddySession) {
+      sendResponse({ success: false, error: "Buddy session not initialized" });
+      return;
+    }
+    activeBuddySession.prompt(message.promptText)
+      .then((res: string) => sendResponse({ success: true, result: res }))
+      .catch((err: any) => sendResponse({ success: false, error: err.message || String(err) }));
+    return true;
+  }
+
   if (message.action === "destroy_ai_session") {
     destroyBackgroundSession();
+    sendResponse({ success: true });
+    return;
+  }
+
+  if (message.action === "destroy_buddy_session") {
+    destroyBackgroundBuddySession();
     sendResponse({ success: true });
     return;
   }
@@ -139,6 +169,41 @@ async function initBackgroundAISession(systemPrompt?: string, temperature?: numb
   }
 }
 
+async function initBackgroundBuddySession(systemPrompt?: string, temperature?: number) {
+  destroyBackgroundBuddySession();
+  const lm = await getAIModel();
+  if (!lm) throw new Error("Local AI is not available in background context");
+
+  const runCreate = async (opts: any) => {
+    return await lm.create(opts);
+  };
+
+  try {
+    const opts: any = {
+      expectedOutputs: [{ type: "text", languages: ["en", "ja"] }],
+      topK: 3
+    };
+    if (temperature !== undefined) opts.temperature = temperature;
+    if (systemPrompt) opts.systemPrompt = systemPrompt;
+    activeBuddySession = await runCreate(opts);
+  } catch (err1) {
+    try {
+      const opts: any = {};
+      if (temperature !== undefined) opts.temperature = temperature;
+      if (systemPrompt) opts.systemPrompt = systemPrompt;
+      activeBuddySession = await runCreate(opts);
+    } catch (err2) {
+      try {
+        const opts: any = {};
+        if (systemPrompt) opts.systemPrompt = systemPrompt;
+        activeBuddySession = await runCreate(opts);
+      } catch (err3) {
+        activeBuddySession = await runCreate({});
+      }
+    }
+  }
+}
+
 function destroyBackgroundSession() {
   if (activeAISession) {
     try {
@@ -158,6 +223,18 @@ function destroyBackgroundSession() {
       console.warn("Failed to destroy safety session:", e);
     }
     activeSafetySession = null;
+  }
+}
+
+function destroyBackgroundBuddySession() {
+  if (activeBuddySession) {
+    try {
+      if (typeof activeBuddySession.destroy === "function") activeBuddySession.destroy();
+      else if (typeof activeBuddySession.close === "function") activeBuddySession.close();
+    } catch (e) {
+      console.warn("Failed to destroy buddy session:", e);
+    }
+    activeBuddySession = null;
   }
 }
 
@@ -237,6 +314,40 @@ chrome.runtime.onConnect.addListener((port) => {
         } else {
           // fallback to standard prompt
           activeAISession.prompt(msg.promptText)
+            .then((res: string) => {
+              port.postMessage({ type: "chunk", chunk: res });
+              port.postMessage({ type: "done" });
+            })
+            .catch((err: any) => {
+              port.postMessage({ type: "error", error: err.message || String(err) });
+            });
+        }
+      }
+    });
+  }
+
+  if (port.name.startsWith("buddy-stream-")) {
+    port.onMessage.addListener((msg) => {
+      if (msg.action === "stream_prompt") {
+        if (!activeBuddySession) {
+          port.postMessage({ type: "error", error: "Buddy session not initialized" });
+          return;
+        }
+        
+        if (typeof activeBuddySession.promptStreaming === "function") {
+          const stream = activeBuddySession.promptStreaming(msg.promptText);
+          (async () => {
+            try {
+              for await (const chunk of stream) {
+                port.postMessage({ type: "chunk", chunk });
+              }
+              port.postMessage({ type: "done" });
+            } catch (err: any) {
+              port.postMessage({ type: "error", error: err.message || String(err) });
+            }
+          })();
+        } else {
+          activeBuddySession.prompt(msg.promptText)
             .then((res: string) => {
               port.postMessage({ type: "chunk", chunk: res });
               port.postMessage({ type: "done" });

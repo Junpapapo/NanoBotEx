@@ -24,6 +24,9 @@ import { SettingsPanel } from "./tools/SettingsPanel";
 import { ALL_AVATARS } from "./tools/settings-panel/avatar-list";
 import { AnimatePresence } from "framer-motion";
 import { X, Maximize2, Minimize2 } from "lucide-react";
+import { ENABLE_PREMIUM } from "../../premium/premium-config";
+import { useBuddySession, BuddyChatView, DEFAULT_BUDDY_SETTINGS } from "../../premium/buddy";
+import { BuddySettings } from "../chatbot-types";
 
 interface ChatbotViewProps {
   settings: UserSettings;
@@ -69,6 +72,21 @@ export function ChatbotView({
 
   const [activePanel, setActivePanel] = useState<PanelType>("none");
   const [showChat, setShowChat] = useState<boolean>(true);
+  const [activeMode, setActiveMode] = useState<"bot" | "buddy">("bot");
+  
+  const [buddySettings] = useChromeStorage<BuddySettings>(
+    "buddy_settings",
+    DEFAULT_BUDDY_SETTINGS
+  );
+
+  const {
+    messages: buddyMessages,
+    memories: buddyMemories,
+    isSending: isBuddySending,
+    sendMessage: sendBuddyMessage,
+    stopGeneration: stopBuddyGeneration,
+  } = useBuddySession(activeMode === "buddy", t);
+
   const [isPromptsBarOpen, setIsPromptsBarOpen] = useChromeStorage<boolean>("nano_show_prompts_bar", true);
   const [isBookmarksBarOpen, setIsBookmarksBarOpen] = useChromeStorage<boolean>("nano_show_bookmarks_bar", true);
   const [isBookmarksExpanded, setIsBookmarksExpanded] = useState<boolean>(false);
@@ -395,41 +413,66 @@ export function ChatbotView({
           } as React.CSSProperties}
         >
           <ChatHeader
-            settings={settings}
+            settings={
+              ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized
+                ? ({ ...settings, nano_ai_avatar_name: buddySettings.buddy_name } as any)
+                : settings
+            }
             isSupported={isSupported}
-            effectiveAIAvatar={effectiveAIAvatar}
+            effectiveAIAvatar={
+              ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized
+                ? buddySettings.buddy_avatar
+                : effectiveAIAvatar
+            }
             isMaximized={false}
             onToggleMaximize={() => {}}
             onMinimize={() => {}}
             onClose={() => {}}
-            isSending={isSending}
+            isSending={
+              ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized
+                ? isBuddySending
+                : isSending
+            }
             showRightMenu={isRightMenuOpen}
             onToggleRightMenu={() => setIsRightMenuOpen(!isRightMenuOpen)}
             layoutMode={layoutMode}
             t={t}
           />
 
-          <ChatMessageList
-            messages={messages}
-            settings={settings}
-            isSupported={isSupported}
-            effectiveAIAvatar={effectiveAIAvatar}
-            onQuickQuestion={handleQuickQuestion}
-            onOpenGuideSection={() => setActivePanel("guide")}
-            t={t}
-          />
+          {ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized ? (
+            <BuddyChatView
+              messages={buddyMessages}
+              memoriesCount={buddyMemories.length}
+              isSending={isBuddySending}
+              sendMessage={sendBuddyMessage}
+              stopGeneration={stopBuddyGeneration}
+              buddySettings={buddySettings}
+              theme={theme}
+              t={t}
+            />
+          ) : (
+            <>
+              <ChatMessageList
+                messages={messages}
+                settings={settings}
+                isSupported={isSupported}
+                effectiveAIAvatar={effectiveAIAvatar}
+                onQuickQuestion={handleQuickQuestion}
+                onOpenGuideSection={() => setActivePanel("guide")}
+                t={t}
+              />
 
-
-
-          <ChatInput
-            onSendMessage={sendMessage}
-            isSending={isSending}
-            onStop={stopGeneration}
-            settings={settings}
-            t={t}
-            externalText={promptToInject}
-            onClearExternalText={() => setPromptToInject("")}
-          />
+              <ChatInput
+                onSendMessage={sendMessage}
+                isSending={isSending}
+                onStop={stopGeneration}
+                settings={settings}
+                t={t}
+                externalText={promptToInject}
+                onClearExternalText={() => setPromptToInject("")}
+              />
+            </>
+          )}
         </div>
       )}
 
@@ -484,6 +527,9 @@ export function ChatbotView({
           updateSettings={updateSettings}
           showChat={showChat}
           onToggleChat={handleToggleChat}
+          activeMode={activeMode}
+          onModeChange={setActiveMode}
+          buddySettings={buddySettings}
         />
       )}
 

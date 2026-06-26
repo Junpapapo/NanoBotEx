@@ -28,6 +28,8 @@ import {
 } from "../shared/components/i18n/i18n-context";
 import { useAISession } from "../shared/hooks/useAISession";
 import "../index.css";
+import { ENABLE_PREMIUM } from "../premium/premium-config";
+import { BuddySettingsPanel } from "../premium/buddy";
 
 function DefaultBotSvg() {
   return (
@@ -425,7 +427,7 @@ function PopupContent({
             </button>
           </div>
           {/* 봇 이름 입력 및 랜덤 셔플 버튼 */}
-          <div className="flex items-center gap-1.5 w-full">
+          <div className="flex items-center gap-1.5 w-full pb-1">
             <input
               type="text"
               value={settings.nano_ai_avatar_name || ""}
@@ -444,23 +446,39 @@ function PopupContent({
               <Shuffle size={12} />
             </button>
           </div>
+
+          {/* 프리미엄 활성화 시 아바타 선택 행 밑에 사이드패널 버튼 표시 */}
+          {ENABLE_PREMIUM && (
+            <button
+              type="button"
+              onClick={handleOpenSidePanel}
+              className={`w-full py-1.5 rounded-lg ${theme.primary} text-white font-extrabold text-[10px] flex items-center justify-center gap-1.5 transition cursor-pointer ${theme.shadow} border border-white/[0.06] hover:scale-[1.01] active:scale-[0.99]`}
+            >
+              <MessageSquare size={11} />
+              <span>{t("popup.openSidepanel", "사이드패널 열기")}</span>
+            </button>
+          )}
         </div>
 
-        {/* 오른쪽 열: 사이드패널 실행 버튼 */}
-        <div
-          className={`flex flex-col items-center justify-center p-3 rounded-xl border ${theme.borderMuted} ${theme.bgInput}`}
-        >
-          <button
-            type="button"
-            onClick={handleOpenSidePanel}
-            className={`w-full h-full min-h-[108px] rounded-xl ${theme.primary} text-white font-bold text-[11px] flex flex-col items-center justify-center gap-2 transition cursor-pointer ${theme.shadow} border border-white/[0.06] hover:scale-[1.02] active:scale-[0.98]`}
+        {/* 오른쪽 열: 프리미엄 활성화 시 버디 패널, 비프리미엄 시 기존 큰 사이드패널 버튼 */}
+        {ENABLE_PREMIUM ? (
+          <BuddySettingsPanel theme={theme} t={t} />
+        ) : (
+          <div
+            className={`flex flex-col items-center justify-center p-3 rounded-xl border ${theme.borderMuted} ${theme.bgInput}`}
           >
-            <MessageSquare className="h-4.5 w-4.5" />
-            <span className="text-center px-1">
-              {t("popup.openSidepanel", "사이드패널 열기 (Open Sidepanel)")}
-            </span>
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={handleOpenSidePanel}
+              className={`w-full h-full min-h-[108px] rounded-xl ${theme.primary} text-white font-bold text-[11px] flex flex-col items-center justify-center gap-2 transition cursor-pointer ${theme.shadow} border border-white/[0.06] hover:scale-[1.02] active:scale-[0.98]`}
+            >
+              <MessageSquare className="h-4.5 w-4.5" />
+              <span className="text-center px-1">
+                {t("popup.openSidepanel", "사이드패널 열기 (Open Sidepanel)")}
+              </span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 하단 Preferences 세팅 슬롯 */}

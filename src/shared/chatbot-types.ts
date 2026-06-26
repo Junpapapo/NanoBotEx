@@ -96,3 +96,39 @@ export interface ChatbotContextType {
   setActiveSkill: (skill: Skill | null) => void;
   effectiveAIAvatar: string;
 }
+
+/** 버디 성격 프리셋 */
+export type BuddyPersonalityPreset =
+  | "caring"       // caring (다정한 친구)
+  | "cheerful"     // cheerful (활발한 동생)
+  | "tsundere"     // tsundere (츤데레)
+  | "wise"         // wise (지적인 멘토)
+  | "humorous"     // humorous (유머러스한 개그맨)
+  | "calm"         // calm (차분한 상담사)
+  | "custom";      // custom (사용자 직접 입력)
+
+/** 버디 메모리 항목 (사용자가 "기억해"라고 요청한 것) */
+export interface BuddyMemory {
+  id: string;
+  content: string;       // 기억할 내용
+  createdAt: number;     // 저장 시각
+  context?: string;      // 어떤 대화 맥락에서 저장되었는지
+}
+
+/** 버디 설정 (Chrome Storage에 저장, 비암호화) */
+export interface BuddySettings {
+  buddy_avatar: string;
+  buddy_name: string;
+  buddy_personality_preset: BuddyPersonalityPreset;
+  buddy_personality_custom: string;
+  buddy_password_hash: string;     // 초기화용 비밀번호 SHA-256 해시
+  buddy_initialized: boolean;     // 최초 비밀번호 설정 완료 여부
+}
+
+/** 버디 대화 데이터 (암호화된 상태로 저장) */
+export interface BuddyChatData {
+  messages_encrypted: string;    // AES-GCM 암호화된 Message[] JSON
+  memories_encrypted: string;    // AES-GCM 암호화된 BuddyMemory[] JSON
+  iv: string;                   // 초기화 벡터 (Base64)
+}
+

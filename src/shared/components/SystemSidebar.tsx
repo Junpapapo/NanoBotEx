@@ -23,7 +23,8 @@ import {
   MessageSquare,
   MessageSquareOff
 } from "lucide-react";
-import { UserSettings, ScenarioType } from "../chatbot-types";
+import { UserSettings, ScenarioType, BuddySettings } from "../chatbot-types";
+import { ENABLE_PREMIUM } from "../../premium/premium-config";
 
 export type PanelType = 
   | "none" 
@@ -54,6 +55,9 @@ interface SystemSidebarProps {
   updateSettings: (settings: Partial<UserSettings>) => void;
   showChat: boolean;
   onToggleChat: () => void;
+  activeMode: "bot" | "buddy";
+  onModeChange: (mode: "bot" | "buddy") => void;
+  buddySettings: BuddySettings | null;
 }
 
 export function SystemSidebar({
@@ -72,7 +76,10 @@ export function SystemSidebar({
   settings,
   updateSettings,
   showChat,
-  onToggleChat
+  onToggleChat,
+  activeMode,
+  onModeChange,
+  buddySettings
 }: SystemSidebarProps) {
   const isLight = settings.nano_skin_mode === "light";
 
@@ -314,6 +321,37 @@ export function SystemSidebar({
 
       {/* 맨 밑 토글바 버튼 영역 */}
       <div className="flex flex-col items-center gap-2 w-full px-2 shrink-0 mt-auto pb-2 pt-4">
+        {/* 프리미엄 봇/버디 스위치 */}
+        {ENABLE_PREMIUM && buddySettings?.buddy_initialized && (
+          <div className="flex flex-col gap-2 items-center w-full px-2 mb-2 shrink-0 select-none">
+            {/* 1. 메인 봇 아바타 */}
+            <button
+              onClick={() => onModeChange("bot")}
+              className={`relative w-8 h-8 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+                activeMode === "bot"
+                  ? "border-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)] scale-105"
+                  : "border-transparent opacity-60 hover:opacity-90"
+              }`}
+              title={t("sidebar.switch.bot", "일반 나노봇 모드")}
+            >
+              <img src={settings.nano_ai_avatar} className="w-full h-full object-cover" />
+            </button>
+            
+            {/* 2. 버디 아바타 */}
+            <button
+              onClick={() => onModeChange("buddy")}
+              className={`relative w-8 h-8 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+                activeMode === "buddy"
+                  ? "border-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)] scale-105"
+                  : "border-transparent opacity-60 hover:opacity-90"
+              }`}
+              title={t("sidebar.switch.buddy", "프라이빗 버디 모드")}
+            >
+              <img src={buddySettings.buddy_avatar} className="w-full h-full object-cover" />
+            </button>
+          </div>
+        )}
+
         {/* 답변 길이 조절 3단 슬라이더 */}
         <div className="w-full flex flex-col items-center gap-1 mb-2 shrink-0">
           <span className="text-[7.5px] font-bold text-slate-500 tracking-wider">

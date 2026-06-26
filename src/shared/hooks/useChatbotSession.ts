@@ -3,6 +3,7 @@ import { Message, UserSettings, Skill } from "../chatbot-types";
 import { useSessionHistory } from "./useSessionHistory";
 import { useAISession } from "./useAISession";
 import { ChatbotModel } from "../chatbot-model";
+import { checkSafety } from "../utils/safety-guard";
 
 export function useChatbotSession(
   isEnabled: boolean,
@@ -278,19 +279,10 @@ export function useChatbotSession(
         // ──────────────────────────────────────────────
         // Dual-Pass Guardrails: 메인 AI에 전달 전 안전성 선제 판별
         // ──────────────────────────────────────────────
-        const safetyResult = await new Promise<{ success: boolean; safe?: boolean }>((resolve) => {
-          try {
-            chrome.runtime.sendMessage(
-              { action: "evaluate_safety", userInput: text },
-              (res) => resolve(res || { success: false })
-            );
-          } catch (e) {
-            resolve({ success: false });
-          }
-        });
+        const isSafe = await checkSafety(text);
 
-        // 판별에 성공하고 unsafe로 판정된 경우 즉시 차단
-        if (safetyResult.success && safetyResult.safe === false) {
+        // unsafe로 판정된 경우 즉시 차단
+        if (!isSafe) {
           updateContent(
             t(
               "guardrail.blocked",
