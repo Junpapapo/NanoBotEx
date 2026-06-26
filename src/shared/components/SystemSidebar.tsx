@@ -136,9 +136,9 @@ export function SystemSidebar({
         <button
           type="button"
           onClick={onClearContext}
-          disabled={isSending}
-          className={`w-7 h-7 rounded-lg border ${btnMutedClass} text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-sm disabled:opacity-30`}
-          title={t("sidebar.tooltips.clearContext", "기억 클리어")}
+          disabled={isSending || activeMode === "buddy"}
+          className={`w-7 h-7 rounded-lg border ${btnMutedClass} text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-sm disabled:opacity-30 disabled:cursor-not-allowed`}
+          title={activeMode === "buddy" ? t("sidebar.tooltips.clearContextDisabled", "버디 모드에서는 메인 봇 기억 클리어가 제한됩니다") : t("sidebar.tooltips.clearContext", "기억 클리어")}
         >
           <Eraser size={12} />
         </button>
@@ -147,13 +147,13 @@ export function SystemSidebar({
         <button
           type="button"
           onClick={onResetConversation}
-          disabled={isSending}
+          disabled={isSending || activeMode === "buddy"}
           className={`w-7 h-7 rounded-lg border ${
             isLight
               ? "bg-white border-slate-200 hover:border-rose-400 hover:bg-rose-50 text-slate-500 hover:text-rose-600"
-              : "bg-slate-900 border border-white/[0.06] hover:border-rose-500/50 hover:bg-slate-800 text-slate-400 hover:text-rose-400"
-          } flex items-center justify-center transition-all cursor-pointer shadow-sm disabled:opacity-30`}
-          title={t("sidebar.tooltips.resetChat", "대화 리셋")}
+              : "bg-slate-950 border border-white/[0.06] hover:border-rose-500/50 hover:bg-slate-800 text-slate-400 hover:text-rose-400"
+          } flex items-center justify-center transition-all cursor-pointer shadow-sm disabled:opacity-30 disabled:cursor-not-allowed`}
+          title={activeMode === "buddy" ? t("sidebar.tooltips.resetChatDisabled", "버디 모드에서는 메인 봇 대화 리셋이 제한됩니다") : t("sidebar.tooltips.resetChat", "대화 리셋")}
         >
           <RotateCcw size={12} />
         </button>
