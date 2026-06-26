@@ -446,39 +446,32 @@ function PopupContent({
               <Shuffle size={12} />
             </button>
           </div>
-
-          {/* 프리미엄 활성화 시 아바타 선택 행 밑에 사이드패널 버튼 표시 */}
-          {ENABLE_PREMIUM && (
-            <button
-              type="button"
-              onClick={handleOpenSidePanel}
-              className={`w-full py-1.5 rounded-lg ${theme.primary} text-white font-extrabold text-[10px] flex items-center justify-center gap-1.5 transition cursor-pointer ${theme.shadow} border border-white/[0.06] hover:scale-[1.01] active:scale-[0.99]`}
-            >
-              <MessageSquare size={11} />
-              <span>{t("popup.openSidepanel", "사이드패널 열기")}</span>
-            </button>
-          )}
         </div>
 
-        {/* 오른쪽 열: 프리미엄 활성화 시 버디 패널, 비프리미엄 시 기존 큰 사이드패널 버튼 */}
+        {/* 오른쪽 열: 프리미엄 활성화 시 버디 패널 */}
         {ENABLE_PREMIUM ? (
           <BuddySettingsPanel theme={theme} t={t} />
         ) : (
           <div
-            className={`flex flex-col items-center justify-center p-3 rounded-xl border ${theme.borderMuted} ${theme.bgInput}`}
+            className={`flex flex-col items-center justify-center p-3 rounded-xl border ${theme.borderMuted} ${theme.bgInput} opacity-40`}
           >
-            <button
-              type="button"
-              onClick={handleOpenSidePanel}
-              className={`w-full h-full min-h-[108px] rounded-xl ${theme.primary} text-white font-bold text-[11px] flex flex-col items-center justify-center gap-2 transition cursor-pointer ${theme.shadow} border border-white/[0.06] hover:scale-[1.02] active:scale-[0.98]`}
-            >
-              <MessageSquare className="h-4.5 w-4.5" />
-              <span className="text-center px-1">
-                {t("popup.openSidepanel", "사이드패널 열기 (Open Sidepanel)")}
-              </span>
-            </button>
+            <span className="text-[10px] font-bold text-slate-500">Premium Only</span>
           </div>
         )}
+      </div>
+
+      {/* 사이드패널 열기 버튼 (위 아바타 영역과 독립적으로 하단에 1행으로 길게 배치) */}
+      <div className="pt-3 pb-2 border-b border-white/[0.04]">
+        <button
+          type="button"
+          onClick={handleOpenSidePanel}
+          className={`w-full py-2.5 rounded-xl ${theme.primary} text-white font-extrabold text-[11px] flex items-center justify-center gap-2 transition cursor-pointer ${theme.shadow} border border-white/[0.06] hover:scale-[1.01] active:scale-[0.99]`}
+        >
+          <MessageSquare className="h-4 w-4" />
+          <span>
+            {t("popup.openSidepanel", "사이드패널 열기 (Open Sidepanel)")}
+          </span>
+        </button>
       </div>
 
       {/* 하단 Preferences 세팅 슬롯 */}

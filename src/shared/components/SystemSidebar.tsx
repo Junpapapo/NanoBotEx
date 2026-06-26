@@ -323,32 +323,50 @@ export function SystemSidebar({
       <div className="flex flex-col items-center gap-2 w-full px-2 shrink-0 mt-auto pb-2 pt-4">
         {/* 프리미엄 봇/버디 스위치 */}
         {ENABLE_PREMIUM && buddySettings?.buddy_initialized && (
-          <div className="flex flex-col gap-2 items-center w-full px-2 mb-2 shrink-0 select-none">
+          <div className="flex flex-col gap-3.5 items-center w-full px-1.5 mb-3.5 shrink-0 select-none">
             {/* 1. 메인 봇 아바타 */}
-            <button
-              onClick={() => onModeChange("bot")}
-              className={`relative w-8 h-8 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
-                activeMode === "bot"
-                  ? "border-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)] scale-105"
-                  : "border-transparent opacity-60 hover:opacity-90"
-              }`}
-              title={t("sidebar.switch.bot", "일반 나노봇 모드")}
-            >
-              <img src={settings.nano_ai_avatar} className="w-full h-full object-cover" />
-            </button>
+            <div className="flex flex-col items-center gap-0.5 w-full">
+              <button
+                onClick={() => onModeChange("bot")}
+                className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                  activeMode === "bot"
+                    ? "border-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)] scale-105"
+                    : "border-transparent opacity-50 hover:opacity-90"
+                }`}
+                title={t("sidebar.switch.bot", "일반 나노봇 모드")}
+              >
+                <img src={settings.nano_ai_avatar} className="w-full h-full object-cover" />
+              </button>
+              <span
+                className={`text-[8.5px] font-black text-center truncate max-w-[68px] ${
+                  activeMode === "bot" ? "text-indigo-400" : "text-slate-500"
+                }`}
+              >
+                {settings.nano_ai_avatar_name || "NanoBot"}
+              </span>
+            </div>
             
             {/* 2. 버디 아바타 */}
-            <button
-              onClick={() => onModeChange("buddy")}
-              className={`relative w-8 h-8 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
-                activeMode === "buddy"
-                  ? "border-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)] scale-105"
-                  : "border-transparent opacity-60 hover:opacity-90"
-              }`}
-              title={t("sidebar.switch.buddy", "프라이빗 버디 모드")}
-            >
-              <img src={buddySettings.buddy_avatar} className="w-full h-full object-cover" />
-            </button>
+            <div className="flex flex-col items-center gap-0.5 w-full">
+              <button
+                onClick={() => onModeChange("buddy")}
+                className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                  activeMode === "buddy"
+                    ? "border-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)] scale-105"
+                    : "border-transparent opacity-50 hover:opacity-90"
+                }`}
+                title={t("sidebar.switch.buddy", "프라이빗 버디 모드")}
+              >
+                <img src={buddySettings.buddy_avatar} className="w-full h-full object-cover" />
+              </button>
+              <span
+                className={`text-[8.5px] font-black text-center truncate max-w-[68px] ${
+                  activeMode === "buddy" ? "text-purple-400" : "text-slate-500"
+                }`}
+              >
+                {buddySettings.buddy_name || "Buddy"}
+              </span>
+            </div>
           </div>
         )}
 
