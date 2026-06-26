@@ -59,6 +59,7 @@ export function BuddyChatView({
         onQuickQuestion={(text) => sendMessage(text)}
         onOpenGuideSection={() => {}}
         t={t}
+        isBuddy={true}
       />
 
       {/* 입력기 */}
