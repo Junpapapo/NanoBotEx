@@ -1,5 +1,5 @@
 import React from "react";
-import { Minus, Maximize2, Minimize2, X, PanelRight } from "lucide-react";
+import { Minus, Maximize2, Minimize2, X, PanelRight, MessageSquare, MessageSquareOff } from "lucide-react";
 import { UserSettings } from "../chatbot-types";
 import { getThemePalette } from "../chatbot-constants";
 
@@ -29,6 +29,8 @@ interface ChatHeaderProps {
   onToggleRightMenu: () => void;
   layoutMode: "sidepanel" | "widget";
   t: any;
+  showChat: boolean;
+  onToggleChat: () => void;
 }
 
 export function ChatHeader({
@@ -43,7 +45,9 @@ export function ChatHeader({
   showRightMenu,
   onToggleRightMenu,
   layoutMode,
-  t
+  t,
+  showChat,
+  onToggleChat
 }: ChatHeaderProps) {
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
   
@@ -103,6 +107,16 @@ export function ChatHeader({
       </div>
 
       <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={onToggleChat}
+          className={`w-7 h-7 rounded-lg ${theme.bgHover} flex items-center justify-center ${
+            showChat ? theme.textMain : "text-slate-500 hover:text-slate-350"
+          } transition-all cursor-pointer`}
+          title={showChat ? t("chatbot.tooltips.hideChat", "채팅창 숨기기") : t("chatbot.tooltips.showChat", "채팅창 보이기")}
+        >
+          {showChat ? <MessageSquareOff size={14} /> : <MessageSquare size={14} />}
+        </button>
         <button
           type="button"
           onClick={onToggleRightMenu}

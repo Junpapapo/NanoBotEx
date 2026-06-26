@@ -175,12 +175,15 @@ export function ChatbotView({
   const [panelWidth, setPanelWidth] = useState<number>(300);
   const [isResizing, setIsResizing] = useState<boolean>(false);
 
+  const handleModeChange = (mode: "bot" | "buddy") => {
+    setActiveMode(mode);
+    setShowChat(true); // 아바타 선택 시 자동으로 채팅창 보이기 활성화
+  };
+
   const handleToggleChat = () => {
     if (showChat) {
       setShowChat(false);
-      if (activePanel === "none") {
-        setActivePanel("bot-settings");
-      }
+      setActivePanel("none"); // 채팅창 비표시 시 서브패널도 완전히 접음 (사이드바 최소화)
     } else {
       setShowChat(true);
     }
@@ -437,6 +440,8 @@ export function ChatbotView({
             onToggleRightMenu={() => setIsRightMenuOpen(!isRightMenuOpen)}
             layoutMode={layoutMode}
             t={t}
+            showChat={showChat}
+            onToggleChat={handleToggleChat}
           />
 
           {ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized ? (
@@ -528,7 +533,7 @@ export function ChatbotView({
           showChat={showChat}
           onToggleChat={handleToggleChat}
           activeMode={activeMode}
-          onModeChange={setActiveMode}
+          onModeChange={handleModeChange}
           buddySettings={buddySettings}
         />
       )}
