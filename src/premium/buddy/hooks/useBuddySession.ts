@@ -3,7 +3,6 @@ import { Message, BuddySettings, BuddyMemory, BuddyChatData } from "../../../sha
 import { useChromeStorage } from "../../../shared/hooks/useChromeStorage";
 import { DEFAULT_BUDDY_SETTINGS } from "../components/BuddySettingsPanel";
 import { generateEncryptionKey, encryptData, decryptData } from "../utils/buddy-crypto";
-import { checkSafety } from "../../../shared/utils/safety-guard";
 
 export function useBuddySession(
   isEnabled: boolean,
@@ -212,23 +211,7 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
       };
 
       try {
-        // 1. Safety Guard Check
-        const isSafe = await checkSafety(text);
-        if (!isSafe) {
-          updateContent(
-            t(
-              "guardrail.blocked",
-              "🚫 **안전 가이드라인 위반이 감지되었습니다.**\n\n해당 요청은 선정적이거나 위험한 내용을 포함하고 있어 답변을 제공할 수 없습니다.\n일반적인 질문으로 다시 시도해 주세요."
-            )
-          );
-          setMessages((prev) =>
-            prev.map((m) => (m.id === assistantMsgId ? { ...m, isStreaming: false } : m))
-          );
-          setIsSending(false);
-          return;
-        }
-
-        // 2. Initialize Buddy Background Session
+        // 1. Initialize Buddy Background Session
         const sysPrompt = buildSystemPrompt();
         await new Promise<void>((resolve, reject) => {
           chrome.runtime.sendMessage(
