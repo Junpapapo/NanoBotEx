@@ -176,38 +176,54 @@ function PopupContent({
       {showShieldModal && (
         <div
           className="absolute inset-0 z-[200] flex items-center justify-center rounded-xl"
-          style={{ backdropFilter: "blur(6px)", backgroundColor: "rgba(0,0,0,0.65)" }}
+          style={{
+            backdropFilter: "blur(6px)",
+            backgroundColor: "rgba(0,0,0,0.65)",
+          }}
           onClick={() => setShowShieldModal(false)}
         >
           <div
             className={`relative mx-4 rounded-2xl border ${theme.borderMuted} ${theme.bgSub} p-6 flex flex-col items-center gap-3 shadow-2xl text-center`}
             onClick={(e) => e.stopPropagation()}
           >
-
             {/* 방패 아이콘 */}
-            <div className={`w-12 h-12 rounded-full ${theme.primary} flex items-center justify-center shadow-lg`}>
+            <div
+              className={`w-12 h-12 rounded-full ${theme.primary} flex items-center justify-center shadow-lg`}
+            >
               <ShieldCheck size={24} className="text-white" />
             </div>
 
             {/* 제목 */}
-            <h2 className={`text-sm font-black ${theme.textMain}`}>Security & Privacy First</h2>
+            <h2 className={`text-sm font-black ${theme.textMain}`}>
+              Security & Privacy First
+            </h2>
 
             {/* 설명 */}
-            <div className={`text-[10.5px] leading-relaxed ${theme.textSub} space-y-2`}>
+            <div
+              className={`text-[10.5px] leading-relaxed ${theme.textSub} space-y-2`}
+            >
               <p>
-                <span className="font-bold text-emerald-400">🔒 All data stays on your device.</span>{" "}
-                NanoBot never transmits your conversations, bookmarks, or memos to external servers.
-                Everything is stored exclusively in your browser's local storage.
+                <span className="font-bold text-emerald-400">
+                  🔒 All data stays on your device.
+                </span>{" "}
+                NanoBot never transmits your conversations, bookmarks, or memos
+                to external servers. Everything is stored exclusively in your
+                browser's local storage.
               </p>
               <p>
-                <span className="font-bold text-indigo-400">🤖 On-device AI only.</span>{" "}
-                Responses are generated locally using Gemini Nano running entirely inside your browser.
-                No cloud calls, no data leaks.
+                <span className="font-bold text-indigo-400">
+                  🤖 On-device AI only.
+                </span>{" "}
+                Responses are generated locally using Gemini Nano running
+                entirely inside your browser. No cloud calls, no data leaks.
               </p>
               <p>
-                <span className="font-bold text-amber-400">🛡️ Dual-Pass Safety Guardrails.</span>{" "}
-                Every message is pre-screened by a dedicated safety classifier before reaching the main AI.
-                Sexual, violent, illegal, or jailbreak content is blocked immediately.
+                <span className="font-bold text-amber-400">
+                  🛡️ Dual-Pass Safety Guardrails.
+                </span>{" "}
+                Every message is pre-screened by a dedicated safety classifier
+                before reaching the main AI. Sexual, violent, illegal, or
+                jailbreak content is blocked immediately.
               </p>
             </div>
 
@@ -235,7 +251,7 @@ function PopupContent({
                 : "/icons/icon32.png"
             }
             alt="NanoBot Logo"
-            className="h-7.5 w-7.5 rounded-lg object-contain shadow-sm"
+            className="h-8 w-8 rounded-lg object-contain shadow-sm"
           />
           NanoBot AI
         </span>
