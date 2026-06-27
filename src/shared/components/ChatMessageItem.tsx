@@ -17,9 +17,10 @@ interface ChatMessageItemProps {
   onQuickQuestion?: (text: string) => void;
   t?: any;
   quickMenuItems?: QuickMenuItem[];
+  onConfirmAction?: (confirmed: boolean) => void;
 }
 
-export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t, quickMenuItems }: ChatMessageItemProps) {
+export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t, quickMenuItems, onConfirmAction }: ChatMessageItemProps) {
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
   const isUser = message.role === "user";
   const isLight = settings.nano_skin_mode === "light";
@@ -330,6 +331,25 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
                     {t ? t(item.labelKey, item.defaultLabel) : item.defaultLabel}
                   </button>
                 ))}
+              </div>
+            )}
+
+            {message.isConfirm && onConfirmAction && (
+              <div className={`mt-3 pt-2.5 border-t border-dashed ${isLight ? "border-slate-200" : "border-white/10"} flex items-center justify-center gap-3`}>
+                <button
+                  type="button"
+                  onClick={() => onConfirmAction(true)}
+                  className={`flex-1 py-1.5 px-4 rounded-lg border text-[10px] font-black transition-all cursor-pointer shadow-sm text-center bg-emerald-600 border-emerald-500/30 hover:bg-emerald-500 text-white`}
+                >
+                  {t ? t("common.yes", "예") : "예"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onConfirmAction(false)}
+                  className={`flex-1 py-1.5 px-4 rounded-lg border text-[10px] font-black transition-all cursor-pointer shadow-sm text-center bg-rose-600 border-rose-500/30 hover:bg-rose-500 text-white`}
+                >
+                  {t ? t("common.no", "아니오") : "아니오"}
+                </button>
               </div>
             )}
           </div>

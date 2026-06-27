@@ -15,6 +15,8 @@ export function useBuddySession(
   const [memories, setMemories] = useState<BuddyMemory[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [encryptionKey, setEncryptionKey] = useState<string | null>(null);
+  const [buddySaveState, setBuddySaveState] = useState<"idle" | "waiting_input" | "confirming_save">("idle");
+  const [tempMemoryContent, setTempMemoryContent] = useState<string>("");
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const isAbortedRef = useRef(false);
@@ -195,6 +197,85 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
     async (text: string) => {
       if (!text.trim() || isSending) return;
 
+      // 1. 확인 버튼 대기 중일 때는 사용자 추가 입력 차단
+      if (buddySaveState === "confirming_save") return;
+
+      // 2. 명령어 분기 처리
+      if (text === "/buddy/save") {
+        const assistantMsgId = Math.random().toString(36).substring(7);
+        const newMsg: Message = {
+          id: assistantMsgId,
+          role: "assistant",
+          content: t("buddy.chat.savePrompt", "어떤 내용을 기억할까요? 기억하고 싶은 내용을 입력해 주세요."),
+        };
+        const nextMsgs = [...messages, newMsg];
+        setMessages(nextMsgs);
+        saveEncryptedData(nextMsgs, memories);
+        setBuddySaveState("waiting_input");
+        return;
+      }
+
+      if (text === "/buddy/view") {
+        const assistantMsgId = Math.random().toString(36).substring(7);
+        let tableContent = "";
+        
+        if (memories.length > 0) {
+          const header = t("buddy.chat.memoriesListHeader", "현재 제가 기억하고 있는 내용 목록입니다:\n\n");
+          const colContent = t("buddy.chat.memoryContent", "기억한 내용");
+          const colDate = t("buddy.chat.memoryDate", "저장일");
+          
+          tableContent = header +
+            `| No | ${colContent} | ${colDate} |\n` +
+            `|---|---|---|\n` +
+            memories.map((m, idx) => {
+              const dateStr = new Date(m.createdAt).toLocaleDateString();
+              return `| ${idx + 1} | ${m.content} | ${dateStr} |`;
+            }).join("\n");
+        } else {
+          tableContent = t("buddy.chat.noMemories", "아직 기억하고 있는 내용이 없어요. 저에게 기억할 만한 이야기를 들려주세요! 🐾");
+        }
+
+        const newMsg: Message = {
+          id: assistantMsgId,
+          role: "assistant",
+          content: tableContent,
+        };
+        const nextMsgs = [...messages, newMsg];
+        setMessages(nextMsgs);
+        saveEncryptedData(nextMsgs, memories);
+        return;
+      }
+
+      if (text === "/buddy/guide") {
+        text = t("buddy.quickMenu.items.guide.prompt", "버디의 핵심 특징과 메모리(기억) 시스템 사용 팁을 알려줘.");
+      }
+
+      // 3. 입력 대기 중 상태에서 온 메시지인 경우 -> 확인 질문으로 가로채기
+      if (buddySaveState === "waiting_input") {
+        const userMsgId = Math.random().toString(36).substring(7);
+        const assistantMsgId = Math.random().toString(36).substring(7);
+        const confirmMsgContent = t("buddy.chat.confirmSave", "기억하고 싶은 내용이 [ {text} ] 맞나요?").replace("{text}", text);
+
+        const nextMsgs: Message[] = [
+          ...messages,
+          { id: userMsgId, role: "user", content: text },
+          {
+            id: assistantMsgId,
+            role: "assistant",
+            content: confirmMsgContent,
+            isConfirm: true,
+            confirmText: text
+          }
+        ];
+        
+        setMessages(nextMsgs);
+        saveEncryptedData(nextMsgs, memories);
+        setTempMemoryContent(text);
+        setBuddySaveState("confirming_save");
+        return;
+      }
+
+      // 4. 일반 대화 처리
       setIsSending(true);
       isAbortedRef.current = false;
       if (abortControllerRef.current) abortControllerRef.current.abort();
@@ -256,7 +337,6 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
         let accumulated = "";
 
         // 이전 챗 히스토리 컨텍스트 주입
-        // 로컬 Nano 세션의 프롬프트 전송
         let promptText = "";
         const historyMsgs = messages.slice(-6); // 최근 6개 대화만 컨텍스트로 전달
         historyMsgs.forEach((m) => {
@@ -290,38 +370,40 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
         // 4. Memory Save parsing (`[MEMORY_SAVE]...[/MEMORY_SAVE]`)
         const memoryRegex = /\[MEMORY_SAVE\]([\s\S]*?)\[\/MEMORY_SAVE\]/i;
         const match = accumulated.match(memoryRegex);
-        let updatedMemories = [...memories];
 
-        if (match && match[1]) {
-          const memoryContent = match[1].trim().substring(0, 200); // 200자 제한
-
-          if (memoryContent && !memories.some((m) => m.content === memoryContent)) {
-            const newMemory: BuddyMemory = {
-              id: Math.random().toString(36).substring(7),
-              content: memoryContent,
-              createdAt: Date.now(),
-              context: text,
-            };
-
-            // FIFO 50개 제한
-            if (updatedMemories.length >= 50) {
-              updatedMemories.shift(); // 가장 오래된 기억 제거
-            }
-            updatedMemories.push(newMemory);
-            setMemories(updatedMemories);
-          }
-        }
-
-        // [MEMORY_SAVE] 태그는 유저 화면에 출력되지 않도록 필터링하여 저장
+        // [MEMORY_SAVE] 태그는 유저 화면에 출력되지 않도록 필터링
         const cleanedContent = accumulated.replace(memoryRegex, "").trim();
         updateContent(cleanedContent);
 
-        const finalMsgs: Message[] = [
+        let finalMsgs: Message[] = [
           ...nextMsgs,
           { id: assistantMsgId, role: "assistant", content: cleanedContent },
         ];
+
+        if (match && match[1]) {
+          const memoryContent = match[1].trim().substring(0, 200); // 200자 제한
+          if (memoryContent) {
+            const confirmMsgId = Math.random().toString(36).substring(7);
+            const confirmMsgContent = t("buddy.chat.confirmSave", "기억하고 싶은 내용이 [ {text} ] 맞나요?").replace("{text}", memoryContent);
+            
+            finalMsgs = [
+              ...finalMsgs,
+              {
+                id: confirmMsgId,
+                role: "assistant",
+                content: confirmMsgContent,
+                isConfirm: true,
+                confirmText: memoryContent
+              }
+            ];
+            
+            setTempMemoryContent(memoryContent);
+            setBuddySaveState("confirming_save");
+          }
+        }
+
         setMessages(finalMsgs);
-        saveEncryptedData(finalMsgs, updatedMemories);
+        saveEncryptedData(finalMsgs, memories);
       } catch (err: any) {
         console.error(err);
         updateContent(`Error: ${err.message || String(err)}`);
@@ -333,7 +415,7 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
         abortControllerRef.current = null;
       }
     },
-    [messages, memories, isSending, buildSystemPrompt, saveEncryptedData, t]
+    [messages, memories, isSending, buddySaveState, buildSystemPrompt, saveEncryptedData, t]
   );
 
   const triggerQuickMenu = useCallback(() => {
@@ -349,12 +431,55 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
     saveEncryptedData(nextMsgs, memories);
   }, [messages, memories, saveEncryptedData, t]);
 
+  const handleConfirmAction = useCallback((confirmed: boolean) => {
+    if (buddySaveState !== "confirming_save" || !tempMemoryContent) return;
+
+    const assistantMsgId = Math.random().toString(36).substring(7);
+    let replyContent = "";
+    let updatedMemories = [...memories];
+
+    if (confirmed) {
+      replyContent = t("buddy.chat.saveSuccess", "기억하겠어요! 🧠✨");
+      const newMemory: BuddyMemory = {
+        id: Math.random().toString(36).substring(7),
+        content: tempMemoryContent.substring(0, 200),
+        createdAt: Date.now(),
+      };
+      if (updatedMemories.length >= 50) {
+        updatedMemories.shift();
+      }
+      updatedMemories.push(newMemory);
+      setMemories(updatedMemories);
+    } else {
+      replyContent = t("buddy.chat.saveCancel", "기억 저장을 취소했습니다.");
+    }
+
+    // 예/아니오 확인 메시지에서 isConfirm을 비활성화 처리하여 중복 클릭 방지
+    const cleanedMessages = messages.map(msg => 
+      msg.isConfirm ? { ...msg, isConfirm: false } : msg
+    );
+
+    const nextMsgs: Message[] = [
+      ...cleanedMessages,
+      { id: assistantMsgId, role: "assistant", content: replyContent }
+    ];
+
+    setMessages(nextMsgs);
+    saveEncryptedData(nextMsgs, updatedMemories);
+    
+    // 상태 초기화
+    setTempMemoryContent("");
+    setBuddySaveState("idle");
+  }, [buddySaveState, tempMemoryContent, memories, messages, saveEncryptedData, t]);
+
   return {
     messages,
     memories,
     isSending,
     sendMessage,
     stopGeneration,
-    triggerQuickMenu
+    triggerQuickMenu,
+    handleConfirmAction,
+    buddySaveState
   };
 }

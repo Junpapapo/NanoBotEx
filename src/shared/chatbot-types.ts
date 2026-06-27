@@ -6,6 +6,8 @@ export interface Message {
   suggestions?: any[];
   isWebAnalyzeIntro?: boolean;
   isMenu?: boolean;
+  isConfirm?: boolean;
+  confirmText?: string;
 }
 
 export interface QuickMenuItem {

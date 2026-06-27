@@ -506,20 +506,32 @@
       "items": {
         "guide": {
           "label": "🐾 Guide Info",
-          "prompt": "Tell me about your core features and tips on how to use the memory system."
+          "prompt": "/buddy/guide"
         },
         "save": {
           "label": "💾 Request Memory Save",
-          "prompt": "My hobbies are coding and listening to music. Please remember this."
+          "prompt": "/buddy/save"
         },
         "view": {
           "label": "🧠 Check Memory List",
-          "prompt": "Please list all the facts you currently remember about me."
+          "prompt": "/buddy/view"
         }
       }
     },
     "chat": {
-      "secure": "Private End-to-End Encryption Enabled"
+      "secure": "Private End-to-End Encryption Enabled",
+      "savePrompt": "What would you like me to remember? Please enter the content.",
+      "confirmSave": "Is [ {text} ] the correct content you want me to remember?",
+      "saveSuccess": "I will remember that! 🧠✨",
+      "saveCancel": "Memory save cancelled.",
+      "memoriesListHeader": "Here is the list of things I currently remember:\n\n",
+      "memoryContent": "Memory Content",
+      "memoryDate": "Saved Date",
+      "noMemories": "I don't have any memories saved yet. Tell me something to remember! 🐾"
     }
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No"
   }
 }

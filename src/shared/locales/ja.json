@@ -504,20 +504,32 @@
       "items": {
         "guide": {
           "label": "🐾 ガイド案内",
-          "prompt": "バディ의主な特徴とメモリ（記憶）システム의使い方について教えて。"
+          "prompt": "/buddy/guide"
         },
         "save": {
           "label": "💾 記憶의保存をリクエスト",
-          "prompt": "私의趣味はコーディングと音楽鑑賞だよ。これ、絶対に覚えておいてね。"
+          "prompt": "/buddy/save"
         },
         "view": {
           "label": "🧠 記憶しているリスト의確認",
-          "prompt": "私についてあなたがお使いの現在記憶しているすべて의事実を教えて。"
+          "prompt": "/buddy/view"
         }
       }
     },
     "chat": {
-      "secure": "プライベートエンドツーエンド暗号化適用済み"
+      "secure": "プライベートエンドツーエンド暗号化適用済み",
+      "savePrompt": "何を覚えましょうか？ 記憶したい内容を入力してください。",
+      "confirmSave": "記憶したい内容は [ {text} ] で間違いありませんか？",
+      "saveSuccess": "覚えておきますね！ 🧠✨",
+      "saveCancel": "記憶の保存をキャンセルしました。",
+      "memoriesListHeader": "現在私が記憶している内容の一覧です:\n\n",
+      "memoryContent": "記憶内容",
+      "memoryDate": "保存日",
+      "noMemories": "まだ記憶している内容がありません。何か覚えておきたいことを教えてください！ 🐾"
     }
+  },
+  "common": {
+    "yes": "はい",
+    "no": "いいえ"
   }
 }

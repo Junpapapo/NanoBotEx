@@ -85,6 +85,8 @@ export function ChatbotView({
     sendMessage: sendBuddyMessage,
     stopGeneration: stopBuddyGeneration,
     triggerQuickMenu: triggerBuddyQuickMenu,
+    handleConfirmAction: handleBuddyConfirmAction,
+    buddySaveState
   } = useBuddySession(activeMode === "buddy", t);
 
   const [isPromptsBarOpen, setIsPromptsBarOpen] = useChromeStorage<boolean>("nano_show_prompts_bar", true);
@@ -444,6 +446,8 @@ export function ChatbotView({
                 setGuideSection(section);
                 setActivePanel("guide");
               }}
+              onConfirmAction={handleBuddyConfirmAction}
+              buddySaveState={buddySaveState}
             />
           ) : (
             <>

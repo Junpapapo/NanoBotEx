@@ -15,6 +15,7 @@ interface ChatMessageListProps {
   t: any;
   isBuddy?: boolean;
   quickMenuItems?: QuickMenuItem[];
+  onConfirmAction?: (confirmed: boolean) => void;
 }
 
 export function ChatMessageList({
@@ -26,7 +27,8 @@ export function ChatMessageList({
   onOpenGuideSection,
   t,
   isBuddy = false,
-  quickMenuItems
+  quickMenuItems,
+  onConfirmAction
 }: ChatMessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
@@ -119,6 +121,7 @@ export function ChatMessageList({
             onQuickQuestion={onQuickQuestion}
             t={t}
             quickMenuItems={quickMenuItems}
+            onConfirmAction={onConfirmAction}
           />
         ))
       )}

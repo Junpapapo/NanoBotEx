@@ -15,6 +15,8 @@ interface BuddyChatViewProps {
   theme: any;
   t: (key: string, def: string) => string;
   onOpenGuideSection?: (section: string) => void;
+  onConfirmAction?: (confirmed: boolean) => void;
+  buddySaveState?: "idle" | "waiting_input" | "confirming_save";
 }
 
 export function BuddyChatView({
@@ -26,7 +28,9 @@ export function BuddyChatView({
   buddySettings,
   theme,
   t,
-  onOpenGuideSection
+  onOpenGuideSection,
+  onConfirmAction,
+  buddySaveState = "idle"
 }: BuddyChatViewProps) {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden relative">
@@ -70,12 +74,13 @@ export function BuddyChatView({
         t={t}
         isBuddy={true}
         quickMenuItems={BUDDY_QUICK_MENU_ITEMS}
+        onConfirmAction={onConfirmAction}
       />
 
       {/* 입력기 */}
       <ChatInput
         onSendMessage={sendMessage}
-        isSending={isSending}
+        isSending={isSending || buddySaveState === "confirming_save"}
         onStop={stopGeneration}
         settings={
           {
