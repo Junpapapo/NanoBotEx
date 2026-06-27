@@ -85,10 +85,12 @@ export function useBuddySession(
         const msgsStr = JSON.stringify(currentMsgs);
         const memStr = JSON.stringify(currentMem);
 
-        // 메시지 암호화
-        const encMsgs = await encryptData(msgsStr, encryptionKey);
-        // 메모리는 동일한 키와 생성된 IV를 활용해 암호화 (구조 보존)
-        const encMem = await encryptData(memStr, encryptionKey);
+        // 메시지와 메모리가 동일한 초기화 벡터(IV)를 사용하여 암복호화되도록 공유 IV 생성
+        const sharedIv = crypto.getRandomValues(new Uint8Array(12));
+
+        // 공유 IV를 주입하여 메시지 및 메모리 암호화
+        const encMsgs = await encryptData(msgsStr, encryptionKey, sharedIv);
+        const encMem = await encryptData(memStr, encryptionKey, sharedIv);
 
         const chatData: BuddyChatData = {
           messages_encrypted: encMsgs.encrypted,

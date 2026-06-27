@@ -45,7 +45,8 @@ export async function generateEncryptionKey(): Promise<string> {
  */
 export async function encryptData(
   data: string,
-  keyBase64: string
+  keyBase64: string,
+  customIv?: Uint8Array
 ): Promise<{ encrypted: string; iv: string }> {
   const rawKey = base64ToBuffer(keyBase64);
   const cryptoKey = await crypto.subtle.importKey(
@@ -56,15 +57,15 @@ export async function encryptData(
     ["encrypt"]
   );
 
-  // 12바이트 IV 생성
-  const iv = crypto.getRandomValues(new Uint8Array(12));
+  // 12바이트 IV 사용 (주입받거나 신규 생성)
+  const iv = (customIv || crypto.getRandomValues(new Uint8Array(12))) as Uint8Array;
   const encoder = new TextEncoder();
   const encodedData = encoder.encode(data);
 
   const encryptedBuffer = await crypto.subtle.encrypt(
     {
       name: "AES-GCM",
-      iv: iv,
+      iv: iv as any,
     },
     cryptoKey,
     encodedData
@@ -72,7 +73,7 @@ export async function encryptData(
 
   return {
     encrypted: bufferToBase64(encryptedBuffer),
-    iv: bufferToBase64(iv.buffer),
+    iv: bufferToBase64(iv.buffer as ArrayBuffer),
   };
 }
 
