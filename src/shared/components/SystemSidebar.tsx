@@ -53,11 +53,10 @@ interface SystemSidebarProps {
   t: any;
   settings: UserSettings;
   updateSettings: (settings: Partial<UserSettings>) => void;
-  showChat: boolean;
-  onToggleChat: () => void;
   activeMode: "bot" | "buddy";
   onModeChange: (mode: "bot" | "buddy") => void;
   buddySettings: BuddySettings | null;
+  onTriggerQuickMenu?: () => void;
 }
 
 export function SystemSidebar({
@@ -75,11 +74,10 @@ export function SystemSidebar({
   t,
   settings,
   updateSettings,
-  showChat,
-  onToggleChat,
   activeMode,
   onModeChange,
-  buddySettings
+  buddySettings,
+  onTriggerQuickMenu
 }: SystemSidebarProps) {
   const isLight = settings.nano_skin_mode === "light";
 
@@ -104,18 +102,18 @@ export function SystemSidebar({
       </div>
       
       <div className="grid grid-cols-2 gap-2 w-full px-2 justify-items-center shrink-0">
-        {/* 봇창 토글 (구 환경 진단 자리) */}
+        {/* 환경 진단 */}
         <button
           type="button"
-          onClick={onToggleChat}
+          onClick={() => handleTabToggle("diagnostics")}
           className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer shadow-sm border ${
-            !showChat
-              ? "bg-rose-500/20 text-rose-500 border-rose-500/35 shadow-[0_2px_8px_rgba(244,63,94,0.25)]"
+            activePanel === "diagnostics"
+              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
               : btnMutedClass
           }`}
-          title={showChat ? t("sidebar.tooltips.hideChat", "봇채팅창 가리기") : t("sidebar.tooltips.showChat", "봇채팅창 보이기")}
+          title={t("sidebar.tooltips.diagnostics", "환경 진단")}
         >
-          {showChat ? <MessageSquare size={12} /> : <MessageSquareOff size={12} />}
+          <Activity size={12} />
         </button>
 
         {/* 가이드 */}
@@ -366,6 +364,15 @@ export function SystemSidebar({
               >
                 {buddySettings.buddy_name || "Buddy"}
               </span>
+              {activeMode === "buddy" && onTriggerQuickMenu && (
+                <button
+                  type="button"
+                  onClick={onTriggerQuickMenu}
+                  className="mt-1 px-1.5 py-0.5 rounded text-[8px] font-black bg-purple-600 hover:bg-purple-500 text-white transition-all cursor-pointer shadow-sm w-12 text-center"
+                >
+                  Quick
+                </button>
+              )}
             </div>
           </div>
         )}

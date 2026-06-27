@@ -2,7 +2,8 @@ import React from "react";
 import { Message, BuddySettings } from "../../../shared/chatbot-types";
 import { ChatMessageList } from "../../../shared/components/ChatMessageList";
 import { ChatInput } from "../../../shared/components/ChatInput";
-import { ShieldCheck, Brain } from "lucide-react";
+import { Key, Brain, ShieldCheck } from "lucide-react";
+import { BUDDY_QUICK_MENU_ITEMS } from "../buddy-constants";
 
 interface BuddyChatViewProps {
   messages: Message[];
@@ -13,6 +14,7 @@ interface BuddyChatViewProps {
   buddySettings: BuddySettings;
   theme: any;
   t: (key: string, def: string) => string;
+  onOpenGuideSection?: (section: string) => void;
 }
 
 export function BuddyChatView({
@@ -24,6 +26,7 @@ export function BuddyChatView({
   buddySettings,
   theme,
   t,
+  onOpenGuideSection
 }: BuddyChatViewProps) {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden relative">
@@ -31,9 +34,15 @@ export function BuddyChatView({
       <div
         className={`px-4 py-2 text-[10.5px] border-b ${theme.borderMuted} ${theme.bgInput} flex items-center justify-between z-[5] select-none`}
       >
-        <div className="flex items-center gap-1.5 text-purple-400 font-black">
-          <ShieldCheck size={12} />
-          <span>{t("buddy.chat.secure", "🔒 프라이빗 종단간 암호화 적용됨")}</span>
+        <div className="relative group flex items-center cursor-help">
+          <div className="flex items-center gap-1 text-purple-400 font-black transition-opacity hover:opacity-85">
+            <ShieldCheck size={12} />
+            <Key size={12} className="text-amber-400" />
+          </div>
+          {/* 커스텀 툴팁 */}
+          <div className="absolute left-0 top-6 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-150 origin-top-left flex items-center bg-slate-950/95 border border-white/[0.08] text-white text-[9.5px] py-1.5 px-2.5 rounded-lg whitespace-nowrap shadow-2xl z-[60]">
+            <span>{t("buddy.chat.secure", "프라이빗 종단간 암호화 적용됨")}</span>
+          </div>
         </div>
         <div className="flex items-center gap-1 text-slate-400 font-extrabold text-[10px]">
           <Brain size={11} className="text-purple-400" />
@@ -57,9 +66,10 @@ export function BuddyChatView({
         isSupported={true}
         effectiveAIAvatar={buddySettings.buddy_avatar}
         onQuickQuestion={(text) => sendMessage(text)}
-        onOpenGuideSection={() => {}}
+        onOpenGuideSection={onOpenGuideSection}
         t={t}
         isBuddy={true}
+        quickMenuItems={BUDDY_QUICK_MENU_ITEMS}
       />
 
       {/* 입력기 */}

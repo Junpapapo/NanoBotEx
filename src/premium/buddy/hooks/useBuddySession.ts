@@ -67,7 +67,12 @@ export function useBuddySession(
           setMemories(JSON.parse(decryptedMemStr));
         }
       } catch (err) {
-        console.error("Failed to decrypt buddy chat data:", err);
+        console.error("Failed to decrypt buddy chat data. Clearing corrupted data...", err);
+        setMessages([]);
+        setMemories([]);
+        chrome.storage.local.remove(["buddy_chat_data"], () => {
+          console.log("Corrupted buddy chat data has been cleared.");
+        });
       }
     });
   }, [isEnabled, encryptionKey]);
@@ -329,11 +334,25 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
     [messages, memories, isSending, buildSystemPrompt, saveEncryptedData, t]
   );
 
+  const triggerQuickMenu = useCallback(() => {
+    const menuMsgId = "quick-menu-" + Date.now();
+    const newMsg: Message = {
+      id: menuMsgId,
+      role: "system",
+      content: t("buddy.quickMenu.message", "아래 퀵메뉴에서 원하는 서비스를 선택해 주세요."),
+      isMenu: true
+    };
+    const nextMsgs = [...messages, newMsg];
+    setMessages(nextMsgs);
+    saveEncryptedData(nextMsgs, memories);
+  }, [messages, memories, saveEncryptedData, t]);
+
   return {
     messages,
     memories,
     isSending,
     sendMessage,
     stopGeneration,
+    triggerQuickMenu
   };
 }

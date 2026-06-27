@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Message, UserSettings } from "../chatbot-types";
+import { Message, UserSettings, QuickMenuItem } from "../chatbot-types";
 import { AIAvatar } from "./AIAvatar";
 import { CodeBlock } from "./CodeBlock";
 import { MiniChart } from "./MiniChart";
@@ -16,9 +16,10 @@ interface ChatMessageItemProps {
   effectiveAIAvatar: string;
   onQuickQuestion?: (text: string) => void;
   t?: any;
+  quickMenuItems?: QuickMenuItem[];
 }
 
-export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t }: ChatMessageItemProps) {
+export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t, quickMenuItems }: ChatMessageItemProps) {
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
   const isUser = message.role === "user";
   const isLight = settings.nano_skin_mode === "light";
@@ -310,6 +311,25 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
             {charts.length > 0 && (
               <div className="flex flex-col gap-2.5 w-full">
                 {charts}
+              </div>
+            )}
+
+            {message.isMenu && quickMenuItems && quickMenuItems.length > 0 && onQuickQuestion && (
+              <div className={`mt-3 pt-2.5 border-t border-dashed ${isLight ? "border-slate-200" : "border-white/10"} grid grid-cols-1 gap-1.5`}>
+                {quickMenuItems.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => onQuickQuestion(t ? t(item.promptKey, item.defaultPrompt) : item.defaultPrompt)}
+                    className={`text-left py-2 px-3 rounded-lg border text-[10px] font-bold transition-all cursor-pointer shadow-sm
+                      ${isLight 
+                        ? "bg-slate-50 border-slate-200 text-slate-700 hover:bg-purple-50 hover:border-purple-300 hover:text-purple-700"
+                        : "bg-slate-900 border-white/[0.06] text-slate-300 hover:bg-purple-950/20 hover:border-purple-500/40 hover:text-purple-400"
+                      }`}
+                  >
+                    {t ? t(item.labelKey, item.defaultLabel) : item.defaultLabel}
+                  </button>
+                ))}
               </div>
             )}
           </div>

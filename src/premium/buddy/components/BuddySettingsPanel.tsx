@@ -3,7 +3,7 @@ import { useChromeStorage } from "../../../shared/hooks/useChromeStorage";
 import { BuddySettings, BuddyPersonalityPreset } from "../../../shared/chatbot-types";
 import { BUDDY_AVATAR_LIST } from "./buddy-avatar-list";
 import { BuddyPasswordModal } from "./BuddyPasswordModal";
-import { ChevronLeft, ChevronRight, Trash2, ShieldCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, Trash2, ShieldCheck, Shuffle } from "lucide-react";
 
 export const DEFAULT_BUDDY_SETTINGS: BuddySettings = {
   buddy_avatar: "/buddies/buddy-01.webp",
@@ -57,6 +57,11 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
   const handleNextAvatar = () => {
     const nextIdx = (avatarIndex + 1) % BUDDY_AVATAR_LIST.length;
     updateField("buddy_avatar", BUDDY_AVATAR_LIST[nextIdx].path);
+  };
+
+  const handleShuffleBuddyAvatar = () => {
+    const randomIndex = Math.floor(Math.random() * BUDDY_AVATAR_LIST.length);
+    updateField("buddy_avatar", BUDDY_AVATAR_LIST[randomIndex].path);
   };
 
   // 비밀번호 완료 콜백 (최초 설정)
@@ -178,13 +183,23 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
 
       {/* 버디 이름 입력 및 성격 프리셋 설정 */}
       <div className="flex flex-col gap-1.5 w-full">
-        <input
-          type="text"
-          value={buddySettings.buddy_name || ""}
-          onChange={(e) => updateField("buddy_name", e.target.value)}
-          className="w-full text-[9.5px] text-center bg-slate-950 border border-white/[0.08] text-white rounded-lg py-1 px-2 focus:outline-none theme.focusBorder font-bold"
-          placeholder="Buddy Name"
-        />
+        <div className="flex items-center gap-1.5 w-full pb-1">
+          <input
+            type="text"
+            value={buddySettings.buddy_name || ""}
+            onChange={(e) => updateField("buddy_name", e.target.value)}
+            className="w-0 flex-1 text-[9.5px] text-center bg-slate-950 border border-white/[0.08] text-white rounded-lg py-1.5 px-2 focus:outline-none theme.focusBorder font-bold"
+            placeholder="Buddy Name"
+          />
+          <button
+            type="button"
+            onClick={handleShuffleBuddyAvatar}
+            className={`p-1.5 rounded-lg hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer border border-white/[0.08] bg-slate-950 text-slate-400 hover:text-white flex items-center justify-center shrink-0 h-[29px] w-[29px]`}
+            title={t("buddy.tooltip.shuffleAvatar", "버디 아바타 무작위 선택")}
+          >
+            <Shuffle size={12} />
+          </button>
+        </div>
 
         <select
           value={buddySettings.buddy_personality_preset}

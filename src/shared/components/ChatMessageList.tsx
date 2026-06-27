@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { Message, UserSettings } from "../chatbot-types";
+import { Message, UserSettings, QuickMenuItem } from "../chatbot-types";
 import { ChatMessageItem } from "./ChatMessageItem";
 import { Terminal } from "lucide-react";
 import { getThemePalette } from "../chatbot-constants";
@@ -14,6 +14,7 @@ interface ChatMessageListProps {
   onOpenGuideSection?: (section: string) => void;
   t: any;
   isBuddy?: boolean;
+  quickMenuItems?: QuickMenuItem[];
 }
 
 export function ChatMessageList({
@@ -24,7 +25,8 @@ export function ChatMessageList({
   onQuickQuestion,
   onOpenGuideSection,
   t,
-  isBuddy = false
+  isBuddy = false,
+  quickMenuItems
 }: ChatMessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
@@ -70,25 +72,27 @@ export function ChatMessageList({
           </h3>
           <p className={`text-[11px] ${theme.textSub} leading-relaxed max-w-[280px] mb-6`}>
             {isBuddy 
-              ? t("buddy.welcome.desc", "나만의 프라이빗 AI 친구. 대화를 로컬 기기에 AES 암호화하여 철저히 보안 보관하고, 지정해둔 나만의 정보들을 영구 기억하여 대답합니다.")
+              ? t("buddy.welcome.desc", "안녕! 너만을 위한 비밀스러운 AI 친구, 버디야. 쉿! 우리끼리 나누는 대화는 철저히 비밀로 보장되고, 네가 들려준 소중한 기억들은 영구히 간직할게. 언제든 편하게 말 걸어줘! ✨")
               : t("chatbot.welcome.desc", "Chrome의 온디바이스 AI(Gemini Nano) 또는 외부 API 연동을 활용해 동작하는 범용 챗봇입니다.")
             }
           </p>
 
-          <div className="w-full max-w-[320px] flex flex-col gap-2">
-            <div className={`text-[9px] font-bold ${theme.textSub} tracking-wider uppercase text-left pl-1 flex items-center gap-1.5`}>
-              <Terminal size={10} /> {t("chatbot.quickPrompts.title", "빠른 시작 프롬프트")}
+          {!isBuddy && (
+            <div className="w-full max-w-[320px] flex flex-col gap-2">
+              <div className={`text-[9px] font-bold ${theme.textSub} tracking-wider uppercase text-left pl-1 flex items-center gap-1.5`}>
+                <Terminal size={10} /> {t("chatbot.quickPrompts.title", "빠른 시작 프롬프트")}
+              </div>
+              {quickPrompts.map((p, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => onQuickQuestion(p.text)}
+                  className={`w-full text-left py-2.5 px-4 rounded-xl border ${theme.borderMuted} ${theme.bgInput} hover:bg-indigo-600/10 hover:border-indigo-500/30 ${theme.textSub} hover:${theme.textMain} text-xs font-medium transition-all duration-200 cursor-pointer shadow-sm`}
+                >
+                  {p.label}
+                </button>
+              ))}
             </div>
-            {quickPrompts.map((p, idx) => (
-              <button
-                key={idx}
-                onClick={() => onQuickQuestion(p.text)}
-                className={`w-full text-left py-2.5 px-4 rounded-xl border ${theme.borderMuted} ${theme.bgInput} hover:bg-indigo-600/10 hover:border-indigo-500/30 ${theme.textSub} hover:${theme.textMain} text-xs font-medium transition-all duration-200 cursor-pointer shadow-sm`}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
+          )}
 
           <div className="w-full max-w-[320px] flex flex-col gap-2 mt-4 pt-4 border-t border-white/[0.04]">
             <div className={`text-[9px] font-bold ${theme.textSub} tracking-wider uppercase text-left pl-1 flex items-center gap-1.5`}>
@@ -114,6 +118,7 @@ export function ChatMessageList({
             effectiveAIAvatar={effectiveAIAvatar} 
             onQuickQuestion={onQuickQuestion}
             t={t}
+            quickMenuItems={quickMenuItems}
           />
         ))
       )}

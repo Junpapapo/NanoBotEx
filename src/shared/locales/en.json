@@ -469,5 +469,57 @@
     "sidebarLength": "Length",
     "copied": "Copied!",
     "copy": "Copy"
+  },
+  "buddy": {
+    "welcome": {
+      "desc": "Hi there! I'm your private AI Buddy. Shh, our conversations are strictly between us, and I'll keep your precious memories safe forever. Feel free to talk to me anytime! ✨"
+    },
+    "quickPrompts": {
+      "title": "Quick Start Prompts",
+      "p1": {
+        "label": "🐾 Buddy Guide & Tips",
+        "text": "Tell me about your core features and tips on how to use the memory system."
+      },
+      "p2": {
+        "label": "💾 Save a Memory",
+        "text": "My hobbies are coding and listening to music. Please remember this."
+      },
+      "p3": {
+        "label": "🧠 View Stored Memories",
+        "text": "Please list all the facts you currently remember about me."
+      }
+    },
+    "setupGuides": {
+      "title": "Buddy Privacy & Feature Guide",
+      "g1": {
+        "label": "🗑️ How to Reset Buddy Chats & Memories"
+      },
+      "g2": {
+        "label": "🔒 AES-256 Local Encryption Principle"
+      },
+      "g3": {
+        "label": "🎨 Presets & Custom Personality Configuration"
+      }
+    },
+    "quickMenu": {
+      "message": "Please select a service from the quick menu below:",
+      "items": {
+        "guide": {
+          "label": "🐾 Guide Info",
+          "prompt": "Tell me about your core features and tips on how to use the memory system."
+        },
+        "save": {
+          "label": "💾 Request Memory Save",
+          "prompt": "My hobbies are coding and listening to music. Please remember this."
+        },
+        "view": {
+          "label": "🧠 Check Memory List",
+          "prompt": "Please list all the facts you currently remember about me."
+        }
+      }
+    },
+    "chat": {
+      "secure": "Private End-to-End Encryption Enabled"
+    }
   }
 }

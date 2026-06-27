@@ -1,5 +1,5 @@
 import React from "react";
-import { Minus, Maximize2, Minimize2, X, PanelRight, MessageSquare, MessageSquareOff } from "lucide-react";
+import { Minus, Maximize2, Minimize2, X, PanelRight } from "lucide-react";
 import { UserSettings } from "../chatbot-types";
 import { getThemePalette } from "../chatbot-constants";
 
@@ -29,8 +29,6 @@ interface ChatHeaderProps {
   onToggleRightMenu: () => void;
   layoutMode: "sidepanel" | "widget";
   t: any;
-  showChat: boolean;
-  onToggleChat: () => void;
 }
 
 export function ChatHeader({
@@ -45,9 +43,7 @@ export function ChatHeader({
   showRightMenu,
   onToggleRightMenu,
   layoutMode,
-  t,
-  showChat,
-  onToggleChat
+  t
 }: ChatHeaderProps) {
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
   
@@ -71,9 +67,9 @@ export function ChatHeader({
   const quoteShadow = isLight ? "none" : "0 1px 2px rgba(0,0,0,0.3)";
 
   return (
-    <div className={`h-14 border-b ${theme.borderMuted} ${theme.bgHeader} px-4 flex items-center justify-between flex-shrink-0 select-none`}>
-      <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-3">
-        <div className="relative flex-shrink-0">
+    <div className={`h-14 border-b ${theme.borderMuted} ${theme.bgHeader} pl-4 pr-1 flex items-start pt-[7px] pb-[7px] justify-between flex-shrink-0 select-none`}>
+      <div className="flex items-start gap-2.5 min-w-0 flex-1 mr-3">
+        <div className="relative flex-shrink-0 mt-[3px]">
           {effectiveAIAvatar ? (
             <img src={getAvatarUrl(effectiveAIAvatar)} alt="avatar" className="w-7 h-7 rounded-full object-cover" />
           ) : (
@@ -87,8 +83,8 @@ export function ChatHeader({
                 : "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"
           }`} />
         </div>
-        <div className="min-w-0 flex-1">
-          <div className={`text-xs font-black ${theme.textMain} flex items-center gap-1.5`}>
+        <div className="min-w-0 flex-1 flex flex-col justify-start">
+          <div className={`text-xs font-black ${theme.textMain} flex items-center gap-1.5 leading-tight`}>
             <span className="truncate">{settings.nano_ai_avatar_name || "NanoBot"}</span>
             {settings.api_mode === "api" && (
               <span className="text-[9px] px-1 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 uppercase font-mono flex-shrink-0">
@@ -97,7 +93,7 @@ export function ChatHeader({
             )}
           </div>
           <div 
-            className="text-[9.5px] font-normal font-serif italic tracking-wide truncate w-full" 
+            className="text-[9.5px] font-normal font-serif italic tracking-wide line-clamp-2 whitespace-normal w-full mt-0.5 leading-normal" 
             style={{ color: quoteColor, textShadow: quoteShadow }}
             title={quote}
           >
@@ -106,17 +102,7 @@ export function ChatHeader({
         </div>
       </div>
 
-      <div className="flex items-center gap-1">
-        <button
-          type="button"
-          onClick={onToggleChat}
-          className={`w-7 h-7 rounded-lg ${theme.bgHover} flex items-center justify-center ${
-            showChat ? theme.textMain : "text-slate-500 hover:text-slate-350"
-          } transition-all cursor-pointer`}
-          title={showChat ? t("chatbot.tooltips.hideChat", "채팅창 숨기기") : t("chatbot.tooltips.showChat", "채팅창 보이기")}
-        >
-          {showChat ? <MessageSquareOff size={14} /> : <MessageSquare size={14} />}
-        </button>
+      <div className="flex items-center gap-[2px] mt-[3px]">
         <button
           type="button"
           onClick={onToggleRightMenu}

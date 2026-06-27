@@ -71,7 +71,6 @@ export function ChatbotView({
   } = useChatbotSession(true, settings, activeSkill, skills, t);
 
   const [activePanel, setActivePanel] = useState<PanelType>("none");
-  const [showChat, setShowChat] = useState<boolean>(true);
   const [activeMode, setActiveMode] = useState<"bot" | "buddy">("bot");
   
   const [buddySettings] = useChromeStorage<BuddySettings>(
@@ -85,6 +84,7 @@ export function ChatbotView({
     isSending: isBuddySending,
     sendMessage: sendBuddyMessage,
     stopGeneration: stopBuddyGeneration,
+    triggerQuickMenu: triggerBuddyQuickMenu,
   } = useBuddySession(activeMode === "buddy", t);
 
   const [isPromptsBarOpen, setIsPromptsBarOpen] = useChromeStorage<boolean>("nano_show_prompts_bar", true);
@@ -92,6 +92,7 @@ export function ChatbotView({
   const [isBookmarksExpanded, setIsBookmarksExpanded] = useState<boolean>(false);
   const [isShortcutsExpanded, setIsShortcutsExpanded] = useState<boolean>(false);
   const [promptToInject, setPromptToInject] = useState<string>("");
+  const [guideSection, setGuideSection] = useState<string>("flags");
 
   // 즐겨찾기 상태 연동
   const defaultBookmarks = [
@@ -177,20 +178,10 @@ export function ChatbotView({
 
   const handleModeChange = (mode: "bot" | "buddy") => {
     setActiveMode(mode);
-    setShowChat(true); // 아바타 선택 시 자동으로 채팅창 보이기 활성화
-  };
-
-  const handleToggleChat = () => {
-    if (showChat) {
-      setShowChat(false);
-      setActivePanel("none"); // 채팅창 비표시 시 서브패널도 완전히 접음 (사이드바 최소화)
-    } else {
-      setShowChat(true);
-    }
   };
 
   const currentPanelWidth = activePanel !== "none"
-    ? (!showChat ? "calc(100% - 80px)" : `${panelWidth}px`)
+    ? `${panelWidth}px`
     : "0px";
 
   const [dialogState, setDialogState] = useState<{
@@ -353,7 +344,14 @@ export function ChatbotView({
             />
           )}
           {activePanel === "memo" && <MemoPanel locale={locale} t={t} theme={theme} />}
-          {activePanel === "guide" && <GuidePanel t={t} theme={theme} />}
+          {activePanel === "guide" && (
+            <GuidePanel 
+              t={t} 
+              theme={theme} 
+              isBuddy={activeMode === "buddy"} 
+              initialTab={guideSection} 
+            />
+          )}
           {activePanel === "translator" && <TranslatorPanel settings={settings} t={t} theme={theme} />}
           {activePanel === "exchange" && <ExchangePanel t={t} theme={theme} locale={locale} />}
           {activePanel === "calculator" && <CalculatorPanel t={t} theme={theme} />}
@@ -371,19 +369,10 @@ export function ChatbotView({
 
           {activePanel !== "none" && (
             <div className="absolute top-4.5 right-4 z-[30] flex items-center gap-1.5">
-              {/* 최대화/복구 단추 */}
-              <button
-                onClick={() => setShowChat(!showChat)}
-                className={`p-1 ${theme.textSub} hover:${theme.textMain} ${theme.bgHover} rounded transition-colors cursor-pointer`}
-                title={!showChat ? t("common.restore", "이전 크기로") : t("common.maximize", "최대화")}
-              >
-                {!showChat ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
-              </button>
               {/* 닫기 단추 */}
               <button
                 onClick={() => {
                   setActivePanel("none");
-                  setShowChat(true);
                 }}
                 className={`p-1 ${theme.textSub} hover:${theme.textMain} ${theme.bgHover} rounded transition-colors cursor-pointer`}
                 title={t("common.close", "닫기")}
@@ -403,46 +392,43 @@ export function ChatbotView({
       </div>
 
       {/* 2. 중앙 메인 채팅 영역 */}
-      {showChat && (
-        <div
-          className={`flex-1 flex flex-col h-full overflow-hidden ${theme.bgMain} relative`}
-          style={{
-            "--nano-chat-font-size": settings.nano_chat_font_size === "small" ? "11px" : settings.nano_chat_font_size === "large" ? "15px" : "13px",
-            "--nano-chat-font-family":
-              settings.nano_chat_font === "inter" ? "'Inter', sans-serif" :
-              settings.nano_chat_font === "noto"  ? "'Noto Sans KR', sans-serif" :
-              settings.nano_chat_font === "mono"  ? "'JetBrains Mono', 'Fira Code', monospace" :
-              "ui-sans-serif, system-ui, sans-serif",
-          } as React.CSSProperties}
-        >
-          <ChatHeader
-            settings={
-              ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized
-                ? ({ ...settings, nano_ai_avatar_name: buddySettings.buddy_name } as any)
-                : settings
-            }
-            isSupported={isSupported}
-            effectiveAIAvatar={
-              ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized
-                ? buddySettings.buddy_avatar
-                : effectiveAIAvatar
-            }
-            isMaximized={false}
-            onToggleMaximize={() => {}}
-            onMinimize={() => {}}
-            onClose={() => {}}
-            isSending={
-              ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized
-                ? isBuddySending
-                : isSending
-            }
-            showRightMenu={isRightMenuOpen}
-            onToggleRightMenu={() => setIsRightMenuOpen(!isRightMenuOpen)}
-            layoutMode={layoutMode}
-            t={t}
-            showChat={showChat}
-            onToggleChat={handleToggleChat}
-          />
+      <div
+        className={`flex-1 flex flex-col h-full overflow-hidden ${theme.bgMain} relative`}
+        style={{
+          "--nano-chat-font-size": settings.nano_chat_font_size === "small" ? "11px" : settings.nano_chat_font_size === "large" ? "15px" : "13px",
+          "--nano-chat-font-family":
+            settings.nano_chat_font === "inter" ? "'Inter', sans-serif" :
+            settings.nano_chat_font === "noto"  ? "'Noto Sans KR', sans-serif" :
+            settings.nano_chat_font === "mono"  ? "'JetBrains Mono', 'Fira Code', monospace" :
+            "ui-sans-serif, system-ui, sans-serif",
+        } as React.CSSProperties}
+      >
+        <ChatHeader
+          settings={
+            ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized
+              ? ({ ...settings, nano_ai_avatar_name: buddySettings.buddy_name } as any)
+              : settings
+          }
+          isSupported={isSupported}
+          effectiveAIAvatar={
+            ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized
+              ? buddySettings.buddy_avatar
+              : effectiveAIAvatar
+          }
+          isMaximized={false}
+          onToggleMaximize={() => {}}
+          onMinimize={() => {}}
+          onClose={() => {}}
+          isSending={
+            ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized
+              ? isBuddySending
+              : isSending
+          }
+          showRightMenu={isRightMenuOpen}
+          onToggleRightMenu={() => setIsRightMenuOpen(!isRightMenuOpen)}
+          layoutMode={layoutMode}
+          t={t}
+        />
 
           {ENABLE_PREMIUM && activeMode === "buddy" && buddySettings?.buddy_initialized ? (
             <BuddyChatView
@@ -454,6 +440,10 @@ export function ChatbotView({
               buddySettings={buddySettings}
               theme={theme}
               t={t}
+              onOpenGuideSection={(section) => {
+                setGuideSection(section);
+                setActivePanel("guide");
+              }}
             />
           ) : (
             <>
@@ -463,7 +453,10 @@ export function ChatbotView({
                 isSupported={isSupported}
                 effectiveAIAvatar={effectiveAIAvatar}
                 onQuickQuestion={handleQuickQuestion}
-                onOpenGuideSection={() => setActivePanel("guide")}
+                onOpenGuideSection={(section) => {
+                  setGuideSection(section);
+                  setActivePanel("guide");
+                }}
                 t={t}
               />
 
@@ -479,7 +472,6 @@ export function ChatbotView({
             </>
           )}
         </div>
-      )}
 
       {/* 2.5 오른쪽 PromptsSidebar (스킬 바) */}
       {isRightMenuOpen && (
@@ -530,11 +522,10 @@ export function ChatbotView({
           t={t}
           settings={settings}
           updateSettings={updateSettings}
-          showChat={showChat}
-          onToggleChat={handleToggleChat}
           activeMode={activeMode}
           onModeChange={handleModeChange}
           buddySettings={buddySettings}
+          onTriggerQuickMenu={triggerBuddyQuickMenu}
         />
       )}
 

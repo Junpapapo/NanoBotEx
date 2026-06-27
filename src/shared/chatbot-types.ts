@@ -1,10 +1,19 @@
 export interface Message {
   id: string;
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system";
   content: string;
   isStreaming?: boolean;
   suggestions?: any[];
   isWebAnalyzeIntro?: boolean;
+  isMenu?: boolean;
+}
+
+export interface QuickMenuItem {
+  id: string;
+  labelKey: string;
+  defaultLabel: string;
+  promptKey: string;
+  defaultPrompt: string;
 }
 
 export type ScenarioType =
