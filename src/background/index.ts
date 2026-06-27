@@ -149,18 +149,27 @@ async function initBackgroundAISession(systemPrompt?: string, temperature?: numb
       topK: 3
     };
     if (temperature !== undefined) opts.temperature = temperature;
-    if (systemPrompt) opts.systemPrompt = systemPrompt;
+    if (systemPrompt) {
+      opts.systemPrompt = systemPrompt;
+      opts.systemInstruction = systemPrompt;
+    }
     activeAISession = await runCreate(opts);
   } catch (err1) {
     try {
       const opts: any = {};
       if (temperature !== undefined) opts.temperature = temperature;
-      if (systemPrompt) opts.systemPrompt = systemPrompt;
+      if (systemPrompt) {
+        opts.systemPrompt = systemPrompt;
+        opts.systemInstruction = systemPrompt;
+      }
       activeAISession = await runCreate(opts);
     } catch (err2) {
       try {
         const opts: any = {};
-        if (systemPrompt) opts.systemPrompt = systemPrompt;
+        if (systemPrompt) {
+          opts.systemPrompt = systemPrompt;
+          opts.systemInstruction = systemPrompt;
+        }
         activeAISession = await runCreate(opts);
       } catch (err3) {
         activeAISession = await runCreate({});
@@ -184,18 +193,27 @@ async function initBackgroundBuddySession(systemPrompt?: string, temperature?: n
       topK: 3
     };
     if (temperature !== undefined) opts.temperature = temperature;
-    if (systemPrompt) opts.systemPrompt = systemPrompt;
+    if (systemPrompt) {
+      opts.systemPrompt = systemPrompt;
+      opts.systemInstruction = systemPrompt;
+    }
     activeBuddySession = await runCreate(opts);
   } catch (err1) {
     try {
       const opts: any = {};
       if (temperature !== undefined) opts.temperature = temperature;
-      if (systemPrompt) opts.systemPrompt = systemPrompt;
+      if (systemPrompt) {
+        opts.systemPrompt = systemPrompt;
+        opts.systemInstruction = systemPrompt;
+      }
       activeBuddySession = await runCreate(opts);
     } catch (err2) {
       try {
         const opts: any = {};
-        if (systemPrompt) opts.systemPrompt = systemPrompt;
+        if (systemPrompt) {
+          opts.systemPrompt = systemPrompt;
+          opts.systemInstruction = systemPrompt;
+        }
         activeBuddySession = await runCreate(opts);
       } catch (err3) {
         activeBuddySession = await runCreate({});

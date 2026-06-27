@@ -21,7 +21,9 @@ import {
   Lightbulb,
   History,
   MessageSquare,
-  MessageSquareOff
+  MessageSquareOff,
+  SlidersHorizontal,
+  BookOpen
 } from "lucide-react";
 import { UserSettings, ScenarioType, BuddySettings } from "../chatbot-types";
 import { ENABLE_PREMIUM } from "../../premium/premium-config";
@@ -36,7 +38,9 @@ export type PanelType =
   | "calculator" 
   | "diagnostics" 
   | "settings" 
-  | "bot-settings";
+  | "bot-settings"
+  | "buddy-settings"
+  | "buddy-diary";
 
 interface SystemSidebarProps {
   activePanel: PanelType;
@@ -57,6 +61,7 @@ interface SystemSidebarProps {
   onModeChange: (mode: "bot" | "buddy") => void;
   buddySettings: BuddySettings | null;
   onTriggerQuickMenu?: () => void;
+  onTriggerQuickQuestion?: (text: string) => void;
 }
 
 export function SystemSidebar({
@@ -77,7 +82,8 @@ export function SystemSidebar({
   activeMode,
   onModeChange,
   buddySettings,
-  onTriggerQuickMenu
+  onTriggerQuickMenu,
+  onTriggerQuickQuestion
 }: SystemSidebarProps) {
   const isLight = settings.nano_skin_mode === "light";
 
@@ -372,6 +378,33 @@ export function SystemSidebar({
                 >
                   Quick
                 </button>
+              )}
+              {/* Quick 아래 2그리드: 왜쪽 빈 플레이스홀더, 오른쪽 버디 세부설정 */}
+              {activeMode === "buddy" && (
+                <div className="grid grid-cols-2 gap-1.5 w-full justify-items-center shrink-0 mt-1.5">
+                  {/* 왼쪽: 버디 일기장 아이콘 */}
+                  <button
+                    type="button"
+                    onClick={() => setActivePanel(activePanel === "buddy-diary" ? "none" : "buddy-diary")}
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer shadow-sm border ${btnMutedClass}`}
+                    title="버디 일기장"
+                  >
+                    <BookOpen size={11} />
+                  </button>
+                  {/* 오른쪽: 버디 세부설정 아이콘 */}
+                  <button
+                    type="button"
+                    onClick={() => handleTabToggle("buddy-settings")}
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer shadow-sm border ${
+                      activePanel === "buddy-settings"
+                        ? "bg-purple-500/20 text-purple-400 border-purple-500/35"
+                        : btnMutedClass
+                    }`}
+                    title="버디 세부 설정"
+                  >
+                    <SlidersHorizontal size={11} />
+                  </button>
+                </div>
               )}
             </div>
           </div>

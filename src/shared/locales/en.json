@@ -23,7 +23,8 @@
       "minimize": "Minimize",
       "maximize": "Maximize",
       "restore": "Restore",
-      "close": "Close"
+      "close": "Close",
+      "clearScreen": "Clear screen messages"
     },
     "input": {
       "placeholder": "Type a message...",
@@ -381,6 +382,7 @@
       "memoTab": "Memos",
       "newTodoPlaceholder": "Add a new to-do task...",
       "emptyTodo": "No to-do tasks registered.\nAdd a mission for today!",
+      "emptyTodoDate": "No tasks for this date.\nAdd one using the input above!",
       "emptyMemo": "No saved memos.\nClick [+] at the top right to write a new memo!",
       "emptyActiveMemo": "No memo selected.\nSelect a memo from the list or write a new one!",
       "memoTitlePlaceholder": "Enter memo title...",
@@ -442,11 +444,11 @@
     "textareaPlaceholder": "Directly configure the AI's persona and response style...",
     "presets": {
       "trader": "⚡ Short-term Trader",
-      "traderValue": "You are a cynical, strict technical analysis trading expert. Answer with sharp, data-focused metrics and highlight risks aggressively. Keep it extremely brief. Please reply in English.",
+      "traderValue": "You are a cynical, strict technical analysis trading expert. Answer with sharp, data-focused metrics and highlight risks aggressively. Keep it extremely brief.",
       "mentor": "☕ Value Investing Mentor",
-      "mentorValue": "You are a warm, friendly value investing mentor like Warren Buffett. Focus on long-term values, company moats, stability, and growth potentials. Avoid short-term noise. Please reply in English.",
+      "mentorValue": "You are a warm, friendly value investing mentor like Warren Buffett. Focus on long-term values, company moats, stability, and growth potentials. Avoid short-term noise.",
       "restore": "🔄 Restore Default",
-      "restoreValue": "You are a friendly and intelligent AI assistant named 'Nano AI'. Provide helpful, concise, and professional answers in English. Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text."
+      "restoreValue": "You are a friendly and intelligent AI assistant named 'NanoBot'. Provide helpful, concise, and professional answers. Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text."
     }
   },
   "popup": {
@@ -466,13 +468,130 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
+    "save": "Save",
     "sidebarLength": "Length",
     "copied": "Copied!",
-    "copy": "Copy"
+    "copy": "Copy",
+    "yes": "Yes",
+    "no": "No"
   },
   "buddy": {
     "welcome": {
       "desc": "Hi there! I'm your private AI Buddy. Shh, our conversations are strictly between us, and I'll keep your precious memories safe forever. Feel free to talk to me anytime! ✨"
+    },
+    "guide": {
+      "text": "🐾 **Private Buddy User Guide**\n\nBuddy securely preserves your stories and engages in diverse conversations tailored to your chosen personality preset.\n\n**💡 Key Feature Command Guide**\n1. **Save Memory (\\`/buddy/save\\`)**\n   - Tell Buddy what you want it to remember (e.g., hobbies, favorite foods) to store in its memory.\n2. **View Memories (\\`/buddy/view\\`)**\n   - Display a list of all memories Buddy has saved about you in a table format.\n3. **Diary (\\`/buddy/diary\\`)**\n   - View a list of daily diaries compiled by Buddy based on your conversations in the chat window.\n4. **Write Today's Diary (\\`/buddy/write_diary\\`)**\n   - Request Buddy to generate and save a daily diary based on today's conversation history.\n\n*Click the Settings (⚙️) icon at the bottom right to customize emoji levels, TTS voice feedback, privacy locks, and more!*"
+    },
+    "settings": {
+      "personality": "Personality Presets",
+      "currentPrompt": "Current Personality Directive",
+      "title": "Buddy Detail Settings",
+      "tab": {
+        "personality": "Personality",
+        "detail": "Settings"
+      },
+      "avatar": "Select Avatar"
+    },
+    "setup": {
+      "desc": "Activate your private AI buddy that remembers conversations and protects them with encryption.",
+      "activate": "Set Password & Activate"
+    },
+    "pwd": {
+      "titleSetup": "Set Master Password",
+      "titleConfirm": "Confirm Password to Reset",
+      "descSetup": "Register a master password for deleting or resetting Buddy.",
+      "descConfirm": "Enter your password to reset all Buddy data.",
+      "empty": "Please enter a password.",
+      "mismatch": "Passwords do not match.",
+      "wrong": "Incorrect password.",
+      "error": "An error occurred while processing the password.",
+      "labelPassword": "Password",
+      "labelConfirm": "Confirm Password"
+    },
+    "placeholder": {
+      "custom": "Enter custom personality..."
+    },
+    "tooltip": {
+      "shuffleAvatar": "Shuffle Avatar",
+      "reset": "Reset All Buddy Data"
+    },
+    "detail": {
+      "emoji": {
+        "label": "Emoji Frequency",
+        "none": "None",
+        "some": "Normal",
+        "lots": "Frequent"
+      },
+      "length": {
+        "label": "Response Length",
+        "short": "Short",
+        "medium": "Medium",
+        "long": "Long"
+      },
+      "empathy": {
+        "label": "Empathy Level",
+        "cool": "Cool",
+        "medium": "Medium",
+        "warm": "Warm"
+      },
+      "tts": {
+        "label": "Read Response (TTS)",
+        "rate": {
+          "label": "Speech Rate"
+        },
+        "pitch": {
+          "label": "Voice Pitch"
+        }
+      },
+      "lock": {
+        "label": "Enable Privacy Lock"
+      }
+    },
+    "personality": {
+      "motivator": {
+        "name": "The Fire-Spitting Motivator",
+        "desc": "A passionate coach who smashes laziness with uncompromising facts and spicy remarks."
+      },
+      "tsundere": {
+        "name": "The Snarky Tsundere",
+        "desc": "A snarky close friend who complains a lot but takes care of you in critical moments."
+      },
+      "bard": {
+        "name": "The Overly Dramatic Bard",
+        "desc": "A romantic bard who glorifies mundane tasks as grand epic prophecies or heroic quests."
+      },
+      "aristocrat": {
+        "name": "The Victorian Time-Traveler",
+        "desc": "An elegant Victorian gentleman/lady who is bewildered by modern technology."
+      },
+      "cyberpunk": {
+        "name": "The Cyberpunk Netrunner",
+        "desc": "A cold hacker who provides objective solutions focused on system optimization."
+      },
+      "grandma": {
+        "name": "The Grumpy Warm Grandparent",
+        "desc": "A nagging grandparent who complains about screens but worries if you've eaten."
+      },
+      "genz": {
+        "name": "The Ultra-Hyped Gen Z",
+        "desc": "A trendy influencer who reacts with hype, internet memes, and lots of emojis."
+      },
+      "conspiracy": {
+        "name": "The Paranoid Conspiracy Theorist",
+        "desc": "A thriller persona who links minor daily problems to massive secret societies."
+      },
+      "zencat": {
+        "name": "The Enlightened Zen Cat",
+        "desc": "A calm, achievement-zen stray cat who tells you human stress is as fleeting as catching a butterfly."
+      },
+      "corporate": {
+        "name": "The Cold Corporate Executive",
+        "desc": "An ultra-logical manager who treats emotional problems as project bottlenecks and KPI risks."
+      },
+      "custom": {
+        "name": "Custom Personality",
+        "desc": "Enter your own custom buddy personality description."
+      }
     },
     "quickPrompts": {
       "title": "Quick Start Prompts",
@@ -515,6 +634,10 @@
         "view": {
           "label": "🧠 Check Memory List",
           "prompt": "/buddy/view"
+        },
+        "diary": {
+          "label": "📝 Request Today's Diary",
+          "prompt": "/buddy/write_diary"
         }
       }
     },
@@ -527,11 +650,11 @@
       "memoriesListHeader": "Here is the list of things I currently remember:\n\n",
       "memoryContent": "Memory Content",
       "memoryDate": "Saved Date",
-      "noMemories": "I don't have any memories saved yet. Tell me something to remember! 🐾"
+      "noMemories": "I don't have any memories saved yet. Tell me something to remember! 🐾",
+      "memories": "Buddy Memory",
+      "diary": {
+        "empty": "There are no diary entries yet. Have a conversation with Buddy and get your first diary entry from the quick menu! 🐾"
+      }
     }
-  },
-  "common": {
-    "yes": "Yes",
-    "no": "No"
   }
 }

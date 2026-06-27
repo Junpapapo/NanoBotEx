@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Plus, Trash2, CheckSquare } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Plus, Trash2, CheckSquare, ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import { useChromeStorage } from "../hooks/useChromeStorage";
 
 interface Note {
@@ -14,11 +14,172 @@ interface TodoItem {
   text: string;
   completed: boolean;
   createdAt: number;
+  dueDate?: string; // "YYYY-MM-DD" 형식
+}
+
+// ── 날짜 유틸리티 ──
+function toDateStr(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function getTodayStr(): string {
+  return toDateStr(new Date());
+}
+
+function getDaysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+function getFirstDayOfWeek(year: number, month: number): number {
+  return new Date(year, month, 1).getDay(); // 0=Sun
+}
+
+// ── 미니 캘린더 컴포넌트 ──
+interface MiniCalendarProps {
+  selectedDate: string | null;
+  onSelectDate: (date: string | null) => void;
+  todoDates: Set<string>;   // 할 일이 있는 날짜 집합
+  doneDates: Set<string>;   // 모두 완료된 날짜 집합
+  theme: any;
+  locale: string;
+}
+
+function MiniCalendar({ selectedDate, onSelectDate, todoDates, doneDates, theme, locale }: MiniCalendarProps) {
+  const today = new Date();
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
+
+  const todayStr = getTodayStr();
+  const daysInMonth = getDaysInMonth(viewYear, viewMonth);
+  const firstDay = getFirstDayOfWeek(viewYear, viewMonth);
+
+  const monthLabel = new Date(viewYear, viewMonth, 1).toLocaleDateString(
+    locale === "ja" ? "ja-JP" : locale === "en" ? "en-US" : "ko-KR",
+    { year: "numeric", month: "long" }
+  );
+
+  const weekDays = locale === "ja"
+    ? ["日", "月", "火", "水", "木", "金", "土"]
+    : locale === "en"
+    ? ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+    : ["일", "월", "화", "수", "목", "금", "토"];
+
+  const handlePrevMonth = () => {
+    if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11); }
+    else setViewMonth(m => m - 1);
+  };
+
+  const handleNextMonth = () => {
+    if (viewMonth === 11) { setViewYear(y => y + 1); setViewMonth(0); }
+    else setViewMonth(m => m + 1);
+  };
+
+  const cells: (number | null)[] = [
+    ...Array(firstDay).fill(null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+
+  return (
+    <div className={`px-3 pt-2.5 pb-2 border-b ${theme.borderMuted} select-none`}>
+      {/* 헤더 */}
+      <div className="flex items-center justify-between mb-1.5">
+        <button
+          type="button"
+          onClick={handlePrevMonth}
+          className={`p-0.5 rounded hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer`}
+        >
+          <ChevronLeft size={13} />
+        </button>
+        <span className={`text-[10px] font-black ${theme.textMain}`}>{monthLabel}</span>
+        <button
+          type="button"
+          onClick={handleNextMonth}
+          className={`p-0.5 rounded hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer`}
+        >
+          <ChevronRight size={13} />
+        </button>
+      </div>
+
+      {/* 요일 헤더 */}
+      <div className="grid grid-cols-7 mb-0.5">
+        {weekDays.map((d, i) => (
+          <div
+            key={d}
+            className={`text-center text-[8.5px] font-bold pb-0.5 ${
+              i === 0 ? "text-rose-400" : i === 6 ? "text-blue-400" : theme.textSub
+            }`}
+          >
+            {d}
+          </div>
+        ))}
+      </div>
+
+      {/* 날짜 그리드 */}
+      <div className="grid grid-cols-7 gap-y-0.5">
+        {cells.map((day, idx) => {
+          if (day === null) return <div key={`empty-${idx}`} />;
+
+          const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          const isToday = dateStr === todayStr;
+          const isSelected = dateStr === selectedDate;
+          const hasTodo = todoDates.has(dateStr);
+          const isDone = doneDates.has(dateStr);
+          const dayOfWeek = (firstDay + day - 1) % 7;
+
+          return (
+            <button
+              key={dateStr}
+              type="button"
+              onClick={() => onSelectDate(isSelected ? null : dateStr)}
+              className={`relative flex flex-col items-center justify-center py-0.5 rounded-md text-[9.5px] font-bold transition cursor-pointer ${
+                isSelected
+                  ? `${theme.primary} text-white`
+                  : isToday
+                  ? `${theme.bgMuted} ${theme.text} ring-1 ${theme.border}`
+                  : dayOfWeek === 0
+                  ? `text-rose-400 hover:${theme.bgHover}`
+                  : dayOfWeek === 6
+                  ? `text-blue-400 hover:${theme.bgHover}`
+                  : `${theme.textMain} hover:${theme.bgHover}`
+              }`}
+            >
+              {day}
+              {hasTodo && (
+                <span className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${
+                  isSelected ? "bg-white/70" : isDone ? "bg-emerald-400" : "bg-purple-400"
+                }`} />
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 필터 표시 배너 */}
+      {selectedDate && (
+        <div className={`mt-1.5 flex items-center justify-between px-1 py-0.5 rounded-md ${theme.bgMuted} ${theme.text}`}>
+          <div className="flex items-center gap-1">
+            <CalendarDays size={9} />
+            <span className="text-[9px] font-black">{selectedDate}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => onSelectDate(null)}
+            className={`text-[8px] font-bold ${theme.textSub} hover:${theme.textMain} cursor-pointer transition`}
+          >
+            전체 ✕
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme: any }) {
   const [activeTab, setActiveTab] = useState<"memo" | "todo">("memo");
-  
+
   // 메모 상태
   const [notes, setNotes] = useChromeStorage<Note[]>("nanobot-tool-notes", [
     {
@@ -34,7 +195,38 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
   const [todos, setTodos] = useChromeStorage<TodoItem[]>("nanobot-tool-todos", []);
   const [newTodoText, setNewTodoText] = useState("");
 
+  // 캘린더 선택 날짜 (null = 필터 없음)
+  const [selectedDate, setSelectedDate] = useState<string | null>(getTodayStr());
+
   const activeNote = notes.find(n => n.id === activeNoteId) || notes[0] || null;
+
+  // 할 일이 있는 날짜, 모두 완료된 날짜 계산
+  const todoDates = useMemo(() => {
+    const s = new Set<string>();
+    todos.forEach(t => { if (t.dueDate) s.add(t.dueDate); });
+    return s;
+  }, [todos]);
+
+  const doneDates = useMemo(() => {
+    const byDate: Record<string, { total: number; done: number }> = {};
+    todos.forEach(t => {
+      if (!t.dueDate) return;
+      if (!byDate[t.dueDate]) byDate[t.dueDate] = { total: 0, done: 0 };
+      byDate[t.dueDate].total++;
+      if (t.completed) byDate[t.dueDate].done++;
+    });
+    const s = new Set<string>();
+    Object.entries(byDate).forEach(([date, { total, done }]) => {
+      if (total > 0 && total === done) s.add(date);
+    });
+    return s;
+  }, [todos]);
+
+  // 날짜 필터링된 할 일 목록
+  const filteredTodos = useMemo(() => {
+    if (!selectedDate) return todos;
+    return todos.filter(t => t.dueDate === selectedDate);
+  }, [todos, selectedDate]);
 
   // 메모 조작
   const handleAddNote = () => {
@@ -74,7 +266,8 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
       id: "todo-" + Math.random().toString(36).substring(7),
       text: newTodoText.trim(),
       completed: false,
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      dueDate: selectedDate || undefined,
     };
     setTodos([newTodo, ...todos]);
     setNewTodoText("");
@@ -90,39 +283,56 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
 
   return (
     <div className="flex flex-col h-full bg-transparent text-inherit select-none">
-      {/* 상단 헤더 & 탭 제어 */}
-      <div className={`flex flex-col border-b ${theme.borderMuted}`}>
-        <div className="flex items-center justify-between p-4 pb-2">
-          <span className={`text-sm font-bold flex items-center gap-1.5 ${theme.textMain}`}>
-            📝 {t("tools.memo.title", "도구 메모 및 할 일")}
-          </span>
-        </div>
-        
-        {/* 탭 인터페이스 */}
-        <div className="flex px-4 pb-1 gap-4 select-none font-bold text-xs">
-          <button
-            type="button"
-            onClick={() => setActiveTab("memo")}
-            className={`pb-1.5 border-b-2 cursor-pointer transition-all ${
-              activeTab === "memo"
-                ? `${theme.text} ${theme.border}`
-                : "text-slate-500 border-transparent hover:text-slate-300"
-            }`}
-          >
-            {t("tools.memo.memoTab", "메모장")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("todo")}
-            className={`pb-1.5 border-b-2 cursor-pointer transition-all ${
-              activeTab === "todo"
-                ? `${theme.text} ${theme.border}`
-                : "text-slate-500 border-transparent hover:text-slate-300"
-            }`}
-          >
-            {t("tools.memo.todoTab", "할 일 목록")}
-          </button>
-        </div>
+      {/* 상단 헤더 */}
+      <div className={`flex items-center justify-between p-4 pb-2 border-b ${theme.borderMuted}`}>
+        <span className={`text-sm font-bold flex items-center gap-1.5 ${theme.textMain}`}>
+          📝 {t("tools.memo.title", "도구 메모 및 할 일")}
+        </span>
+      </div>
+
+      {/* 미니 캘린더 — 탭 위에 삽입 */}
+      <MiniCalendar
+        selectedDate={selectedDate}
+        onSelectDate={(date) => {
+          setSelectedDate(date);
+          // 날짜 클릭 시 할 일 탭으로 자동 전환
+          if (date !== null) setActiveTab("todo");
+        }}
+        todoDates={todoDates}
+        doneDates={doneDates}
+        theme={theme}
+        locale={locale}
+      />
+
+      {/* 탭 인터페이스 */}
+      <div className={`flex px-4 py-1.5 gap-4 select-none font-bold text-xs border-b ${theme.borderMuted}`}>
+        <button
+          type="button"
+          onClick={() => setActiveTab("memo")}
+          className={`pb-1 border-b-2 cursor-pointer transition-all ${
+            activeTab === "memo"
+              ? `${theme.text} ${theme.border}`
+              : "text-slate-500 border-transparent hover:text-slate-300"
+          }`}
+        >
+          {t("tools.memo.memoTab", "메모장")}
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("todo")}
+          className={`pb-1 border-b-2 cursor-pointer transition-all ${
+            activeTab === "todo"
+              ? `${theme.text} ${theme.border}`
+              : "text-slate-500 border-transparent hover:text-slate-300"
+          }`}
+        >
+          {t("tools.memo.todoTab", "할 일 목록")}
+          {selectedDate && filteredTodos.length > 0 && (
+            <span className="ml-1 text-[8px] font-black text-purple-400">
+              ({filteredTodos.length})
+            </span>
+          )}
+        </button>
       </div>
 
       {/* 탭 본문 영역 */}
@@ -145,8 +355,8 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
                   key={n.id}
                   onClick={() => setActiveNoteId(n.id)}
                   className={`w-full text-left p-3 border-b ${theme.borderMuted} transition text-xs truncate cursor-pointer ${
-                    activeNoteId === n.id 
-                      ? `${theme.bgMuted} ${theme.text} font-semibold` 
+                    activeNoteId === n.id
+                      ? `${theme.bgMuted} ${theme.text} font-semibold`
                       : `hover:${theme.bgHover} ${theme.textSub}`
                   }`}
                 >
@@ -161,7 +371,7 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
                 <>
                   <div className="flex justify-between items-center gap-2">
                     <input
-                       type="text"
+                      type="text"
                       value={activeNote.title}
                       onChange={e => handleUpdateTitle(e.target.value)}
                       className={`flex-1 bg-transparent border-b ${theme.borderMuted} text-xs font-bold pb-1 focus:outline-none ${theme.focusBorder} ${theme.textMain}`}
@@ -199,7 +409,11 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
                 type="text"
                 value={newTodoText}
                 onChange={e => setNewTodoText(e.target.value)}
-                placeholder={t("tools.memo.newTodoPlaceholder", "새로운 할 일 등록...")}
+                placeholder={
+                  selectedDate
+                    ? `${selectedDate} ${t("tools.memo.newTodoPlaceholder", "새로운 할 일 등록...")}`
+                    : t("tools.memo.newTodoPlaceholder", "새로운 할 일 등록...")
+                }
                 className={`flex-1 bg-transparent border-b ${theme.borderMuted} text-xs pb-1 focus:outline-none ${theme.focusBorder} ${theme.textMain}`}
               />
               <button
@@ -212,12 +426,14 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
 
             {/* 할 일 목록 나열 */}
             <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2">
-              {todos.length === 0 ? (
+              {filteredTodos.length === 0 ? (
                 <div className={`h-full flex items-center justify-center text-center text-xs ${theme.textSub} leading-relaxed whitespace-pre-line`}>
-                  {t("tools.memo.emptyTodo", "등록된 할 일이 없습니다.\n오늘의 미션을 추가해 보세요!")}
+                  {selectedDate
+                    ? t("tools.memo.emptyTodoDate", "이 날짜에 등록된 할 일이 없어요.\n위 입력창으로 추가해 보세요!")
+                    : t("tools.memo.emptyTodo", "등록된 할 일이 없습니다.\n오늘의 미션을 추가해 보세요!")}
                 </div>
               ) : (
-                todos.map(todo => (
+                filteredTodos.map(todo => (
                   <div
                     key={todo.id}
                     className={`flex items-center justify-between p-2 rounded-lg border ${theme.borderMuted} ${theme.bgInput} transition`}
@@ -232,9 +448,14 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
                       ) : (
                         <div className={`w-3.5 h-3.5 border ${theme.borderMuted} rounded shrink-0`} />
                       )}
-                      <span className={`text-xs ${todo.completed ? `line-through ${theme.textSub}` : theme.textMain} break-all font-medium`}>
-                        {todo.text}
-                      </span>
+                      <div className="flex flex-col gap-0.5 min-w-0">
+                        <span className={`text-xs ${todo.completed ? `line-through ${theme.textSub}` : theme.textMain} break-all font-medium`}>
+                          {todo.text}
+                        </span>
+                        {todo.dueDate && !selectedDate && (
+                          <span className="text-[8.5px] text-purple-400 font-bold">{todo.dueDate}</span>
+                        )}
+                      </div>
                     </button>
                     <button
                       type="button"

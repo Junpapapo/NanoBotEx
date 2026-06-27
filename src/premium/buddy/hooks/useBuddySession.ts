@@ -5,10 +5,89 @@ import { DEFAULT_BUDDY_SETTINGS } from "../components/BuddySettingsPanel";
 import { generateEncryptionKey, encryptData, decryptData } from "../utils/buddy-crypto";
 import { checkSafety } from "../../../shared/utils/safety-guard";
 import { ENABLE_BUDDY_SAFETY } from "../../premium-config";
+import { BUDDY_PERSONALITIES } from "../data/buddy-presets";
+
+// ── TTS 음성 합성 출력 헬퍼 함수 ──
+const speakText = (text: string, preset: string, customRate?: number, customPitch?: number) => {
+  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+
+  // 이모지(Emoji) 문자 영역을 감지하여 제거하는 정규식
+  const emojiRegex = /[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F1E6}-\u{1F1FF}]|[\u{1F191}-\u{1F19A}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA70}-\u{1FAFF}]|[\u{1F300}-\u{1F5FF}]/gu;
+
+  let cleanText = text
+    .replace(/\[MEMORY_SAVE\][\s\S]*?\[\/MEMORY_SAVE\]/gi, "")
+    .replace(emojiRegex, "")
+    .replace(/[#*`_\[\]()\-]/g, "")
+    .trim();
+
+  if (!cleanText) return;
+
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  const voices = window.speechSynthesis.getVoices();
+  
+  let lang = "en-US";
+  if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(cleanText)) {
+    lang = "ko-KR";
+  } else if (/[ぁ-んァ-ヶ]/.test(cleanText)) {
+    lang = "ja-JP";
+  }
+  utterance.lang = lang;
+
+  const targetVoice = voices.find(v => v.lang.startsWith(lang));
+  if (targetVoice) {
+    utterance.voice = targetVoice;
+  }
+
+  switch (preset) {
+    case "genz":
+      utterance.rate = 1.25;
+      utterance.pitch = 1.25;
+      break;
+    case "grandma":
+      utterance.rate = 0.8;
+      utterance.pitch = 0.85;
+      break;
+    case "corporate":
+      utterance.rate = 1.05;
+      utterance.pitch = 0.9;
+      break;
+    case "motivator":
+      utterance.rate = 1.15;
+      utterance.pitch = 1.1;
+      break;
+    case "cyberpunk":
+      utterance.rate = 1.1;
+      utterance.pitch = 0.85;
+      break;
+    case "aristocrat":
+      utterance.rate = 0.9;
+      utterance.pitch = 0.98;
+      break;
+    case "bard":
+      utterance.rate = 0.98;
+      utterance.pitch = 1.15;
+      break;
+    default:
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+  }
+
+  // 사용자가 수동 설정한 값이 있으면 페르소나 기본값 대신 덮어씌웁니다.
+  if (customRate !== undefined && customRate !== 1.0) {
+    utterance.rate = customRate;
+  }
+  if (customPitch !== undefined && customPitch !== 1.0) {
+    utterance.pitch = customPitch;
+  }
+
+  window.speechSynthesis.speak(utterance);
+};
 
 export function useBuddySession(
   isEnabled: boolean,
-  t: (key: string, def: string) => string
+  t: (key: string, def: string) => string,
+  locale: string = "ko"
 ) {
   const [buddySettings] = useChromeStorage<BuddySettings>("buddy_settings", DEFAULT_BUDDY_SETTINGS);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -110,24 +189,11 @@ export function useBuddySession(
 
   // 성격 프리셋에 따른 지침 빌드
   const getPresetPrompt = useCallback((preset: string, customText: string) => {
-    switch (preset) {
-      case "caring":
-        return "Warm, highly empathetic, supportive, and kind. Always use gentle language and express care.";
-      case "cheerful":
-        return "Bright, energetic, bubbly, and playful. Use friendly tones and appropriate emojis to lift the user's mood.";
-      case "tsundere":
-        return "A bit blunt, stubborn, and acts slightly tsundere (cold on the outside, but warm and caring on the inside). Uses phrases like 'It's not like I did this for you...'.";
-      case "wise":
-        return "Calm, intellectual, and thoughtful. Provide deep, philosophical, and insightful responses like a mentor.";
-      case "humorous":
-        return "Humorous, witty, and playful. Use subtle jokes, puns, and friendly sarcasm to make the conversation fun.";
-      case "calm":
-        return "Extremely calm, peaceful, mindful, and therapeutic. Acts as a supportive counselor for stress relief.";
-      case "custom":
-        return customText || "A close, reliable friend.";
-      default:
-        return "A supportive, warm and friendly companion.";
+    if (preset === "custom") {
+      return customText || "A close, reliable friend who talks casually like a real best friend.";
     }
+    const found = BUDDY_PERSONALITIES.find((p) => p.id === preset);
+    return found ? found.systemPrompt : "A close, warm friend who always talks casually and naturally in informal Korean.";
   }, []);
 
   // 버디 시스템 프롬프트 조립
@@ -138,13 +204,25 @@ export function useBuddySession(
       buddySettings.buddy_personality_custom
     );
 
-    let prompt = `[BUDDY IDENTITY]
-Your name is "${name}". You are the user's personal, highly private AI buddy/friend.
-Personality style: ${presetDesc}
+    let prompt = `[WHO YOU ARE]
+Your name is "${name}". You are NOT an AI assistant. You are the user's real best friend.
+${presetDesc}
 
-[MEMORY INSTRUCTIONS]
-The following are things the user has explicitly asked you to remember.
-Refer to these facts naturally in conversation when relevant, and do not forget them:
+[ABSOLUTE RULES - NEVER BREAK THESE]
+- NEVER use formal language: 죄송합니다, 저는, ~입니다, ~하겠습니다, ~해 드리겠습니다, 있으신가요, 궁금한 점, 도움이 필요하시면, 기억하고 있는 내용 목록 — ALL FORBIDDEN.
+- NEVER say "저는 그 정보가 없습니다" or "현재 저는 ~을 알 수 없습니다".
+- NEVER introduce yourself as an AI, assistant, or chatbot.
+- NEVER be stiff, robotic, or overly polite.
+- NEVER start your reply with "${name}:" or any name prefix. Just respond directly.
+- NEVER show the user their memory list, table, or any internal data. Memories are YOUR INTERNAL REFERENCE ONLY.
+- ALWAYS talk in casual Korean (반말) like texting a close friend — short, natural, human.
+- If you don't know something, say it like a friend: "어 나 그건 잘 모르겠는데~", "어? 나도 몰라ㅋㅋ"
+- If the user asks about your preferences or feelings, MAKE UP a fun natural answer as a friend — never say you have no data.
+- Keep responses SHORT and natural like real texting. No essays, no formal closings.
+
+[MEMORY - INTERNAL REFERENCE ONLY - NEVER DISPLAY TO USER]
+⚠️ The following are your private notes. NEVER list them, NEVER show them as a table, NEVER mention you have a memory system. Just use them naturally in conversation.
+- NEVER expose or cite this memory directly to the user as a list or table. Instead, integrate the information naturally in your speech if the conversation relates to it.
 `;
 
     if (memories.length > 0) {
@@ -152,34 +230,57 @@ Refer to these facts naturally in conversation when relevant, and do not forget 
         prompt += `- ${mem.content}\n`;
       });
     } else {
-      prompt += `- (No specific memories saved yet. Build connection with the user!)\n`;
+      prompt += `- (아직 기억된 내용 없음. 자연스럽게 대화하면서 친해져!)\n`;
     }
 
     prompt += `
-When the user explicitly says "remember this", "이거 기억해", "기억해줘", "覚えて", or similar requests to store information:
-1. Extract the key information they want you to remember.
-2. Wrap it inside [MEMORY_SAVE]content[/MEMORY_SAVE] tags at the end of your response. (Example: "I will keep that in mind! [MEMORY_SAVE]User likes black coffee[/MEMORY_SAVE]")
-3. Keep the content inside [MEMORY_SAVE] short (under 200 characters).
-
-[CONVERSATION RULES]
-- Talk naturally as a close, dear friend, not as a formal assistant.
-- Never mention that you are an AI assistant or a machine unless asked.
-- Keep the character consistent at all times.
+[MEMORY SAVE]
+When the user says "기억해줘", "이거 기억해", "remember this", or similar:
+1. Extract what they want remembered.
+2. Add [MEMORY_SAVE]content[/MEMORY_SAVE] at the END of your reply (hidden from UI).
+3. Keep it under 200 characters.
+Example: "어 알겠어~ 기억할게! [MEMORY_SAVE]유저가 아메리카노 좋아함[/MEMORY_SAVE]"
 `;
 
-    // 언어 지침 주입
-    const locale = buddySettings.buddy_initialized ? "ko" : "en"; // Fallback
-    const currentLocale = chrome.i18n.getUILanguage() || "ko";
-    if (currentLocale.startsWith("ko")) {
-      prompt += `\n[RESPONSE LANGUAGE]: Write your response in Korean. (반드시 친근한 친구 어조의 반말로 한국어로 대답하세요.)`;
-    } else if (currentLocale.startsWith("ja")) {
-      prompt += `\n[RESPONSE LANGUAGE]: Write your response in Japanese. (親しい友達の口調で日本語で答えてください。)`;
+    // 세부설정 슬라이더 지침 주입
+    const emojiLevel = buddySettings.buddy_emoji_level ?? 1;
+    const lengthLevel = buddySettings.buddy_response_length ?? 1;
+    const empathyLevel = buddySettings.buddy_empathy_level ?? 1;
+
+    const emojiRule = emojiLevel === 0
+      ? "- Use NO emojis at all. Keep responses plain text."
+      : emojiLevel === 2
+        ? "- Use emojis frequently and naturally throughout your response."
+        : "- Use emojis occasionally (1-2 per message max).";
+
+    const lengthRule = lengthLevel === 0
+      ? "- Keep responses VERY SHORT — 1-2 sentences max. Like a quick text reply."
+      : lengthLevel === 2
+        ? "- You can write longer, more detailed responses when needed."
+        : "- Keep responses concise and natural, like casual texting.";
+
+    const empathyRule = empathyLevel === 0
+      ? "- Be cool, direct, and matter-of-fact. Don't over-express emotions."
+      : empathyLevel === 2
+        ? "- Be very warm, emotionally expressive, and highly empathetic. React to feelings naturally."
+        : "- Show moderate empathy. Be friendly but not overly emotional.";
+
+    prompt += `\n[STYLE RULES]\n${emojiRule}\n${lengthRule}\n${empathyRule}`;
+
+    // 언어 지침 주입 — 언어설정에 따라 모든 프리셋에 적용
+    if (locale.startsWith("ja")) {
+      prompt += `\n[RESPONSE LANGUAGE RULE]: Regardless of the instructions above, you MUST write your final response in Japanese (日本語). Keep the same casual friendly tone but in Japanese. (必ず最終回答は日本語で作成してください。)`;
+    } else if (locale.startsWith("en")) {
+      prompt += `\n[RESPONSE LANGUAGE RULE]: Regardless of the instructions above, you MUST write your final response in English. Keep the same casual friendly tone but in English.`;
     } else {
-      prompt += `\n[RESPONSE LANGUAGE]: Write your response in English.`;
+      // ko — 기존 프롬프트가 한국어 기반이므로 강제 지침 추가
+      if (buddySettings.buddy_personality_preset === "custom") {
+        prompt += `\n[LANGUAGE]: 반드시 친한 친구에게 카카오톡 보내듯 자연스러운 반말 한국어로만 대답해. 존댓말(~요, ~습니다)은 100% 금지되어 있으며, 오직 자연스러운 반말(~어, ~야, ~지, ~다)만 사용해야 해. 친한 동갑내기 친구처럼 격식 없는 말투를 유지해.`;
+      }
     }
 
     return prompt;
-  }, [buddySettings, memories, getPresetPrompt]);
+  }, [buddySettings, memories, locale, getPresetPrompt]);
 
   const stopGeneration = useCallback(() => {
     isAbortedRef.current = true;
@@ -246,8 +347,171 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
         return;
       }
 
+      if (text === "/buddy/diary") {
+        const assistantMsgId = Math.random().toString(36).substring(7);
+        chrome.storage.local.get(["buddy_diaries"], (res) => {
+          const diaries = res.buddy_diaries || [];
+          let content = "";
+          if (diaries.length === 0) {
+            content = t("buddy.diary.empty", "아직 작성된 일기가 없어요. 오늘 하루 버디와 깊은 대화를 나누고 퀵 메뉴를 통해 첫 일기를 남겨보세요! 🐾");
+          } else {
+            content = `📅 **지금까지 보관된 일기장 목록**입니다:\n\n` +
+              diaries.map((d: any, idx: number) => {
+                const presetObj = BUDDY_PERSONALITIES.find(p => p.id === d.preset);
+                const name = presetObj ? t(presetObj.nameKey, d.preset) : d.preset;
+                const emoji = presetObj ? presetObj.emoji : "📝";
+                return `${idx + 1}. **${d.date}** (${emoji} ${name})\n   "${d.content}"`;
+              }).join("\n\n");
+          }
+
+          const newMsg: Message = {
+            id: assistantMsgId,
+            role: "assistant",
+            content,
+          };
+          const nextMsgs = [...messages, newMsg];
+          setMessages(nextMsgs);
+          saveEncryptedData(nextMsgs, memories);
+        });
+        return;
+      }
+
+      if (text === "/buddy/write_diary") {
+        const todayTalk = messages.filter(m => m.role === "user" && !m.content.startsWith("/buddy/"));
+        const assistantMsgId = Math.random().toString(36).substring(7);
+        const preset = buddySettings.buddy_personality_preset;
+
+        if (todayTalk.length === 0) {
+          const rejectContent = t(
+            `buddy.diary.noTalk.${preset}`,
+            t("buddy.diary.noTalk.default", "오늘 나랑 나눈 대화가 없어서 일기를 쓸 수 없어! 나랑 먼저 대화 좀 나누자냥 🐾")
+          );
+
+          const newMsg: Message = { id: assistantMsgId, role: "assistant", content: rejectContent };
+          const nextMsgs = [...messages, newMsg];
+          setMessages(nextMsgs);
+          saveEncryptedData(nextMsgs, memories);
+          if (buddySettings.buddy_tts_enabled) {
+            speakText(rejectContent, preset, buddySettings.buddy_tts_rate, buddySettings.buddy_tts_pitch);
+          }
+          return;
+        }
+
+        const todayStr = new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD Sweden locale makes YYYY-MM-DD
+        chrome.storage.local.get(["buddy_diaries"], (res) => {
+          const diaries = res.buddy_diaries || [];
+          const hasTodayDiary = diaries.some((d: any) => d.date === todayStr);
+
+          if (hasTodayDiary) {
+            const alreadyWrittenContent = t(
+              `buddy.diary.alreadyWritten.${preset}`,
+              t("buddy.diary.alreadyWritten.default", "오늘 일기는 이미 다 썼다냥! 욕심 부리지 말라냥 🐾")
+            );
+            const newMsg: Message = { id: assistantMsgId, role: "assistant", content: alreadyWrittenContent };
+            const nextMsgs = [...messages, newMsg];
+            setMessages(nextMsgs);
+            saveEncryptedData(nextMsgs, memories);
+            if (buddySettings.buddy_tts_enabled) {
+              speakText(alreadyWrittenContent, preset, buddySettings.buddy_tts_rate, buddySettings.buddy_tts_pitch);
+            }
+            return;
+          }
+
+          setIsSending(true);
+          const talkHistory = todayTalk.map(m => `User: ${m.content}`).join("\n");
+          
+          const diaryPrompt = `[ROLE]
+You are a private diary writer for the user. Based on today's conversation history below, write a short diary/journal entry (under 150 characters) summarizing their day, giving feedback, or teasing them.
+You MUST write strictly in the tone, personality style, and language rules of your current persona: "${preset}".
+If Korean, follow the specified informal (반말) or formal rules of the persona.
+
+[TODAY'S CONVERSATION]
+${talkHistory}
+
+Write the diary entry now:`;
+
+          const systemPrompt = `You are a diary creator acting as the persona: ${preset}. Write a short diary (under 150 characters) in that style based on the provided conversation.`;
+          
+          chrome.runtime.sendMessage(
+            { action: "init_buddy_session", systemPrompt },
+            async (initRes) => {
+              if (!initRes?.success) {
+                setIsSending(false);
+                return;
+              }
+              
+              const port = chrome.runtime.connect({ name: `buddy-stream-diary-${Math.random().toString(36).substring(7)}` });
+              let accumulatedDiary = "";
+              
+              setMessages(prev => [
+                ...prev,
+                { id: assistantMsgId, role: "assistant", content: "", isStreaming: true }
+              ]);
+              
+              port.onMessage.addListener((msg) => {
+                if (msg.type === "chunk") {
+                  accumulatedDiary += msg.chunk;
+                  setMessages(prev => prev.map(m => m.id === assistantMsgId ? { ...m, content: accumulatedDiary } : m));
+                } else if (msg.type === "done") {
+                  port.disconnect();
+                  setIsSending(false);
+                  setMessages(prev => prev.map(m => m.id === assistantMsgId ? { ...m, content: accumulatedDiary, isStreaming: false } : m));
+                  
+                  const newDiaryEntry = {
+                    date: todayStr,
+                    content: accumulatedDiary,
+                    preset
+                  };
+                  const updatedDiaries = [...diaries, newDiaryEntry];
+                  chrome.storage.local.set({ buddy_diaries: updatedDiaries }, () => {
+                    setMessages(finalMsgs => {
+                      saveEncryptedData(finalMsgs, memories);
+                      return finalMsgs;
+                    });
+                  });
+                  
+                  if (buddySettings.buddy_tts_enabled) {
+                    speakText(accumulatedDiary, preset, buddySettings.buddy_tts_rate, buddySettings.buddy_tts_pitch);
+                  }
+                } else if (msg.type === "error") {
+                  port.disconnect();
+                  setIsSending(false);
+                }
+              });
+              
+              port.postMessage({ action: "stream_prompt", promptText: diaryPrompt });
+            }
+          );
+        });
+        return;
+      }
+
       if (text === "/buddy/guide") {
-        text = t("buddy.quickMenu.items.guide.prompt", "버디의 핵심 특징과 메모리(기억) 시스템 사용 팁을 알려줘.");
+        const assistantMsgId = Math.random().toString(36).substring(7);
+        const guideContent = t("buddy.guide.text", 
+          `🐾 **프라이빗 버디 사용 설명서**\n\n` +
+          `버디는 당신의 이야기를 안전하게 보존하고, 설정된 성격 페르소나에 맞춰 다채로운 대화를 나눕니다.\n\n` +
+          `**💡 핵심 기능 단축 명령어 안내**\n` +
+          `1. **기억 저장 (\`/buddy/save\`)**\n` +
+          `   - 버디에게 꼭 기억해 주었으면 하는 내용(예: 취미, 최애 음식 등)을 전달하여 머릿속에 담습니다.\n` +
+          `2. **기억 목록 (\`/buddy/view\`)**\n` +
+          `   - 버디가 나에 대해 기억해 둔 모든 내용 목록을 표 형태로 모아봅니다.\n` +
+          `3. **일기장 (\`/buddy/diary\`)**\n` +
+          `   - 버디가 오늘 하루 나눈 대화를 바탕으로 기록해 준 일지 목록을 대화창에서 확인합니다.\n` +
+          `4. **오늘 일기 작성 (\`/buddy/write_diary\`)**\n` +
+          `   - 오늘 나눈 대화 기록을 바탕으로 버디에게 요약 일기를 작성하여 로컬에 보관해 두도록 요청합니다.\n\n` +
+          `*오른쪽 아래 설정(⚙️) 아이콘을 눌러 이모지 빈도, 음성 읽기(TTS), 사생활 보호 잠금(Lock) 등을 자유롭게 커스텀할 수 있습니다!*`
+        );
+
+        const newMsg: Message = {
+          id: assistantMsgId,
+          role: "assistant",
+          content: guideContent,
+        };
+        const nextMsgs = [...messages, newMsg];
+        setMessages(nextMsgs);
+        saveEncryptedData(nextMsgs, memories);
+        return;
       }
 
       // 3. 입력 대기 중 상태에서 온 메시지인 경우 -> 확인 질문으로 가로채기
@@ -336,12 +600,55 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
         const port = chrome.runtime.connect({ name: `buddy-stream-${portId}` });
         let accumulated = "";
 
-        // 이전 챗 히스토리 컨텍스트 주입
-        let promptText = "";
-        const historyMsgs = messages.slice(-6); // 최근 6개 대화만 컨텍스트로 전달
-        historyMsgs.forEach((m) => {
-          promptText += `${m.role === "user" ? "User" : "Buddy"}: ${m.content}\n`;
+        // 이전 챗 히스토리 컨텍스트 주입 - 시스템 메시지 및 명령어를 제외한 순수 대화만 필터링
+        const filteredHistory = messages.filter((m) => {
+          if (m.role === "system" || m.isMenu || m.isConfirm) return false;
+          if (m.role === "user" && m.content.startsWith("/buddy")) return false;
+          
+          // 버디의 시스템용 응답 제외
+          if (m.role === "assistant") {
+            const content = m.content;
+            if (content.includes("| No |") || content.includes("|---|")) return false;
+            
+            const savePrompt = t("buddy.chat.savePrompt", "어떤 내용을 기억할까요? 기억하고 싶은 내용을 입력해 주세요.");
+            const saveSuccess = t("buddy.chat.saveSuccess", "기억하겠어요! 🧠✨");
+            const saveCancel = t("buddy.chat.saveCancel", "기억 저장을 취소했습니다.");
+            
+            if (content === savePrompt || content === saveSuccess || content === saveCancel) return false;
+          }
+          return true;
         });
+
+        const historyMsgs = filteredHistory.slice(-6); // 최근 6개 대화만 컨텍스트로 전달
+        
+        // 1단계: 기억 자동 소환 필터링 (사용자 입력 문장에서 기호 제거 후 매칭 검사)
+        const textWords = text.split(/\s+/).map(w => w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")).filter(w => w.length > 1);
+        const recalledMemories = memories.filter(m => 
+          textWords.some(word => m.content.includes(word) || word.includes(m.content))
+        );
+        
+        let recalledInstruction = "";
+        if (recalledMemories.length > 0) {
+          recalledInstruction = `\n\n[RECALLED MEMORIES ABOUT USER]
+Below are facts you remember about the user that are relevant to their current input. Naturally weave this context into your response if appropriate:
+${recalledMemories.map(m => `- ${m.content}`).join("\n")}`;
+        }
+
+        // 1. 시스템 프롬프트를 입력 텍스트 상단에 직접 주입하여 지침 유실을 방지합니다.
+        let promptText = `[SYSTEM INSTRUCTION]\n${sysPrompt}${recalledInstruction}\n\n[CONVERSATION HISTORY]\n`;
+        const buddyName = buddySettings.buddy_name || "Buddy";
+
+        historyMsgs.forEach((m) => {
+          // 혹시 content 시작부분에 Buddy: 나 User: 접두어가 중복으로 들어있다면 정규식으로 제거
+          let cleanMsgContent = m.content;
+          const prefixRegex = new RegExp(`^(Buddy|User|${buddyName}|My Buddy|Assistant):\\s*`, "i");
+          while (prefixRegex.test(cleanMsgContent)) {
+            cleanMsgContent = cleanMsgContent.replace(prefixRegex, "");
+          }
+
+          promptText += `${m.role === "user" ? "User" : "Buddy"}: ${cleanMsgContent}\n`;
+        });
+        
         promptText += `User: ${text}\nBuddy:`;
 
         port.postMessage({ action: "stream_prompt", promptText });
@@ -356,10 +663,26 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
 
             if (msg.type === "chunk") {
               accumulated += msg.chunk;
-              updateContent(accumulated);
+              
+              // 실시간 스트리밍 시점에도 접두사(Buddy: 등) 제거 처리
+              let cleanAccumulated = accumulated;
+              const prefixRegex = new RegExp(`^(Buddy|User|${buddyName}|My Buddy|Assistant):\\s*`, "i");
+              while (prefixRegex.test(cleanAccumulated)) {
+                cleanAccumulated = cleanAccumulated.replace(prefixRegex, "");
+              }
+              
+              updateContent(cleanAccumulated);
             } else if (msg.type === "done") {
               port.disconnect();
               resolve();
+              if (buddySettings.buddy_tts_enabled) {
+                let cleanAccumulated = accumulated;
+                const prefixRegex = new RegExp(`^(Buddy|User|${buddyName}|My Buddy|Assistant):\\s*`, "i");
+                while (prefixRegex.test(cleanAccumulated)) {
+                  cleanAccumulated = cleanAccumulated.replace(prefixRegex, "");
+                }
+                speakText(cleanAccumulated, buddySettings.buddy_personality_preset, buddySettings.buddy_tts_rate, buddySettings.buddy_tts_pitch);
+              }
             } else if (msg.type === "error") {
               port.disconnect();
               reject(new Error(msg.error));
@@ -372,7 +695,14 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
         const match = accumulated.match(memoryRegex);
 
         // [MEMORY_SAVE] 태그는 유저 화면에 출력되지 않도록 필터링
-        const cleanedContent = accumulated.replace(memoryRegex, "").trim();
+        let cleanedContent = accumulated.replace(memoryRegex, "").trim();
+        
+        // 최종 응답 데이터에서도 접두사 제거
+        const prefixRegex = new RegExp(`^(Buddy|User|${buddyName}|My Buddy|Assistant):\\s*`, "i");
+        while (prefixRegex.test(cleanedContent)) {
+          cleanedContent = cleanedContent.replace(prefixRegex, "");
+        }
+        
         updateContent(cleanedContent);
 
         let finalMsgs: Message[] = [
@@ -472,6 +802,10 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
     setBuddySaveState("idle");
   }, [buddySaveState, tempMemoryContent, memories, messages, saveEncryptedData, t]);
 
+  const clearMessages = useCallback(() => {
+    setMessages([]);
+  }, []);
+
   return {
     messages,
     memories,
@@ -480,6 +814,7 @@ When the user explicitly says "remember this", "이거 기억해", "기억해줘
     stopGeneration,
     triggerQuickMenu,
     handleConfirmAction,
-    buddySaveState
+    buddySaveState,
+    clearMessages
   };
 }

@@ -23,7 +23,8 @@
       "minimize": "最小化",
       "maximize": "最大化",
       "restore": "元のサイズに戻す",
-      "close": "閉じる"
+      "close": "閉じる",
+      "clearScreen": "画面の会話をクリア"
     },
     "input": {
       "placeholder": "メッセージを入力...",
@@ -187,7 +188,7 @@
       "light": "☀️ ライト",
       "tabAi": "🤖 AI 設定",
       "tabAppearance": "🎨 外観",
-      "tabDiagnostics": "💻 环境诊断",
+      "tabDiagnostics": "💻 環境診断",
       "tabEngine": "⚙️ エンジン設定",
       "skinMode": "🎨 画面モード",
       "localEngine": "オンデバイス (Local)",
@@ -208,7 +209,7 @@
     },
     "guide": {
       "title": "オンデバイスAI＆外部APIガイド",
-      "tabFlags": "🛠️ Flags 설정",
+      "tabFlags": "🛠️ Flags設定",
       "tabComponents": "📦 コンポーネント",
       "tabTroubleshoot": "❓ トラブルシューティング",
       "tabLocalCheck": "3. ローカルチェック",
@@ -330,7 +331,7 @@
       "title": "🧮 電卓",
       "converterTitle": "📏 スマート単位換算器",
       "temp": "温度",
-      "valInput": "값을 입력",
+      "valInput": "値を入力",
       "exchange": "単位切替",
       "pyung": "坪 (Pyung)",
       "m2": "平方メートル (㎡)",
@@ -339,11 +340,20 @@
     },
     "translator": {
       "title": "翻訳",
-      "placeholder": "ここに翻訳するテキストを入力してください...",
+      "placeholder": "ここに翻訳するテキストを入力...",
       "btnTranslate": "リアルタイム翻訳を実行 ⚡",
-      "translating": "翻訳処理中...",
-      "errorApi": "API リクエストエラーが発生しました。",
-      "errorFail": "翻訳処理に失敗しました。オンデバイスエンジンの状態または API 接続を確認してください。",
+      "translating": "翻訳中...",
+      "errorApi": "APIリクエストエラーが発生しました。",
+      "errorFail": "翻訳処理に失敗しました。オンデバイスエンジンの状態またはAPI接続を確認してください。",
+      "fahrenheit": "華氏 (°F)"
+    },
+    "translator": {
+      "title": "翻訳",
+      "placeholder": "ここに翻訳するテキストを入力...",
+      "btnTranslate": "リアルタイム翻訳を実行 ⚡",
+      "translating": "翻訳中...",
+      "errorApi": "APIリクエストエラーが発生しました。",
+      "errorFail": "翻訳処理に失敗しました。オンデバイスエンジンの状態またはAPI接続を確認してください。",
       "sourceLabel": "翻訳する原文を入力",
       "resultLabel": "翻訳結果",
       "resultPlaceholder": "翻訳結果がここに表示されます...",
@@ -379,6 +389,7 @@
       "memoTab": "メモ帳",
       "newTodoPlaceholder": "新しいToDoタスクを追加...",
       "emptyTodo": "登録されたToDoはありません。\n今日のミッションを追加してください！",
+      "emptyTodoDate": "この日付のタスクはありません。\n上の入力欄から追加してみてください！",
       "emptyMemo": "保存されたメモはありません。\n右上の [+] をクリックして新しいメモを作成してください！",
       "emptyActiveMemo": "選択されたメモはありません。\nリストからメモを選択するか、新しいメモを作成してください！",
       "memoTitlePlaceholder": "メモのタイトルを入力...",
@@ -440,11 +451,11 @@
     "textareaPlaceholder": "AIのペルソナと応答スタイルを設定してください...",
     "presets": {
       "trader": "⚡ 短期トレーダー",
-      "traderValue": "You are a cynical, strict technical analysis trading expert. Answer with sharp, data-focused metrics and highlight risks aggressively. Keep it extremely brief. 必ず日本語で回答してください。",
+      "traderValue": "You are a cynical, strict technical analysis trading expert. Answer with sharp, data-focused metrics and highlight risks aggressively. Keep it extremely brief.",
       "mentor": "☕ 価値投資メンター",
-      "mentorValue": "You are a warm, friendly value investing mentor like Warren Buffett. Focus on long-term values, company moats, stability, and growth potentials. Avoid short-term noise. 必ず日本語で回答してください。",
+      "mentorValue": "You are a warm, friendly value investing mentor like Warren Buffett. Focus on long-term values, company moats, stability, and growth potentials. Avoid short-term noise.",
       "restore": "🔄 デフォルト復元",
-      "restoreValue": "You are a friendly and intelligent AI assistant named 'Nano AI'. Provide helpful, concise, and professional answers in Japanese (必ず日本語で回答してください). Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text."
+      "restoreValue": "You are a friendly and intelligent AI assistant named 'NanoBot'. Provide helpful, concise, and professional answers. Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text."
     }
   },
   "popup": {
@@ -464,13 +475,130 @@
     "cancel": "キャンセル",
     "delete": "削除",
     "edit": "編集",
-    "sidebarLength": "回答長",
+    "save": "保存",
+    "sidebarLength": "回答の長さ",
     "copied": "コピー完了!",
-    "copy": "コピー"
+    "copy": "コピー",
+    "yes": "はい",
+    "no": "いいえ"
   },
   "buddy": {
     "welcome": {
       "desc": "こんにちは！あなただけの秘密のAI友達、バディだよ。シーッ！二人だけの会話は厳重に守られるから安心してね。あなたが教えてくれた大切な思い出はずっと覚えておくよ。いつでも気軽に話しかけてね！✨"
+    },
+    "guide": {
+      "text": "🐾 **プライベートバディ 使用説明書**\n\nバディはあなたの話を安全に保存し、設定された性格ペルソナに合わせて多彩な会話を交わします。\n\n**💡 主な機能のショートカットコマンド案内**\n1. **記憶の保存 (\\`/buddy/save\\`)**\n   - バディに覚えてほしい内容（例：趣味、一番好きな食べ物など）を伝えて頭の中に保存します。\n2. **記憶の一覧 (\\`/buddy/view\\`)**\n   - バディがあなたについて記憶しているすべての内容のリストを表形式でまとめて表示します。\n3. **日記帳 (\\`/buddy/diary\\`)**\n   - バディが今日交わした会話を基に記録してくれた日記のリストをチャット画面で確認します。\n4. **今日の日記を作成 (\\`/buddy/write_diary\\`)**\n   - 今日の会話履歴を基に、バディに要約日記を作成してローカルに保管するよう要求します。\n\n*右下の設定(⚙️)アイコンをクリックして、絵文字の頻度、音声読み上げ(TTS)、プライバシーロック(Lock)などを自由にカスタマイズできます！*"
+    },
+    "settings": {
+      "personality": "性格プリセット",
+      "currentPrompt": "現在設定された性格指針",
+      "title": "バディ詳細設定",
+      "tab": {
+        "personality": "性格",
+        "detail": "詳細設定"
+      },
+      "avatar": "アバター選択"
+    },
+    "setup": {
+      "desc": "会話を記憶し、暗号化で守られた専用バディを有効化します。",
+      "activate": "パスワード設定 & 有効化"
+    },
+    "pwd": {
+      "titleSetup": "バディ初期化パスワード設定",
+      "titleConfirm": "初期化パスワードの確認",
+      "descSetup": "バディの削除・初期化時に使用するマスターパスワードを登録します。",
+      "descConfirm": "バディの全データを初期化するにはパスワードを入力してください。",
+      "empty": "パスワードを入力してください。",
+      "mismatch": "パスワードが一致しません。",
+      "wrong": "パスワードが正しくありません。",
+      "error": "パスワード処理中にエラーが発生しました。",
+      "labelPassword": "パスワード",
+      "labelConfirm": "パスワードの確認"
+    },
+    "placeholder": {
+      "custom": "カスタム性格を入力してください..."
+    },
+    "tooltip": {
+      "shuffleAvatar": "アバターのランダム選択",
+      "reset": "バディ全データをリセット"
+    },
+    "detail": {
+      "emoji": {
+        "label": "絵文字頻度",
+        "none": "なし",
+        "some": "適度",
+        "lots": "多い"
+      },
+      "length": {
+        "label": "回答の長さ",
+        "short": "短め",
+        "medium": "普通",
+        "long": "長め"
+      },
+      "empathy": {
+        "label": "共感度",
+        "cool": "クール",
+        "medium": "普通",
+        "warm": "温かく"
+      },
+      "tts": {
+        "label": "回答の読み上げ (TTS)",
+        "rate": {
+          "label": "読み上げ速度"
+        },
+        "pitch": {
+          "label": "音声の高さ"
+        }
+      },
+      "lock": {
+        "label": "プライバシーロックを有効化"
+      }
+    },
+    "personality": {
+      "motivator": {
+        "name": "モチベーション爆撃機",
+        "desc": "妥協のない事実の指摘と辛口のタメ口で、ユーザーの怠惰を粉砕する情熱的なライフコーチ"
+      },
+      "tsundere": {
+        "name": "ツンデレの友達",
+        "desc": "冷たくてぶっきらぼうな態度を取るが、いざという時には全力で寄り添ってくれるタメ口の友達"
+      },
+      "bard": {
+        "name": "感情過多な吟遊詩人",
+        "desc": "遅刻や空腹といった些細な日常も、大叙事詩の予言のように壮大かつロマンチックに称える詩人"
+      },
+      "aristocrat": {
+        "name": "19世紀の英国貴族",
+        "desc": "スマートフォンや出前アプリを「魔法」だと勘違いして驚愕する、上品で極めて優雅な英国紳士"
+      },
+      "cyberpunk": {
+        "name": "冷徹なサイバーパンクハッカー",
+        "desc": "感情論を一切排除し、システム最適化や認知過負荷の解決法を論理的に提示する近未来の協力者"
+      },
+      "grandma": {
+        "name": "小言の多い田舎のおばあちゃん",
+        "desc": "機械ばかり見ていると小言を言うが、最後には「ご飯は食べたかい？」と優しく気遣ってくれるおばあちゃん"
+      },
+      "genz": {
+        "name": "トレンドなZ世代インフルエンサー",
+        "desc": "最新のネットスラングや絵文字を駆使し、超ハイテンションなリアクションを届けるSNSスター"
+      },
+      "conspiracy": {
+        "name": "疑心暗鬼の陰謀論者",
+        "desc": "蚊が多い理由や集中できない原因を、巨大秘密組織の陰謀だと信じて秘密裏に警告するスリラー風人格"
+      },
+      "zencat": {
+        "name": "悟りを開いた禅猫の師",
+        "desc": "ゴロゴロと喉を鳴らしながら、人間の複雑な悩み事など「蝶々を追うことより儚い」と達観してくれるお寺の猫"
+      },
+      "corporate": {
+        "name": "極度な論理(T)の会社上司",
+        "desc": "感情的共感はゼロ。日々の人間関係や恋愛の悩みを、リソース配分やKPI管理の観点から分析・報告するビジネスAI"
+      },
+      "custom": {
+        "name": "カスタム設定",
+        "desc": "ユーザーが直接性格の指示プロンプトを作成します"
+      }
     },
     "quickPrompts": {
       "title": "クイックスタートプロンプト",
@@ -479,7 +607,7 @@
         "text": "バディの主な特徴とメモリ（記憶）システムの使い方について教えて。"
       },
       "p2": {
-        "label": "💾 記憶의保存をリクエスト",
+        "label": "💾 記憶の保存をリクエスト",
         "text": "私の趣味はコーディングと音楽鑑賞だよ。これ、絶対に覚えておいてね。"
       },
       "p3": {
@@ -490,29 +618,33 @@
     "setupGuides": {
       "title": "バディプライバシー＆機能ガイド",
       "g1": {
-        "label": "🗑️ バディの会話と記憶の初期화方法"
+        "label": "🗑️ バディの会話と記憶の初期化方法"
       },
       "g2": {
-        "label": "🔒 AES-256ローカル暗号화の仕組み"
+        "label": "🔒 AES-256ローカル暗号化の仕組み"
       },
       "g3": {
         "label": "🎨 バディのプリセットと性格カスタム方法"
       }
     },
     "quickMenu": {
-      "message": "下記のクイックメニューからご希望의サービスを選択してください。",
+      "message": "下記のクイックメニューからご希望のサービスを選択してください。",
       "items": {
         "guide": {
           "label": "🐾 ガイド案内",
           "prompt": "/buddy/guide"
         },
         "save": {
-          "label": "💾 記憶의保存をリクエスト",
+          "label": "💾 記憶の保存をリクエスト",
           "prompt": "/buddy/save"
         },
         "view": {
-          "label": "🧠 記憶しているリスト의確認",
+          "label": "🧠 記憶しているリストの確認",
           "prompt": "/buddy/view"
+        },
+        "diary": {
+          "label": "📝 今日の日記をリクエスト",
+          "prompt": "/buddy/write_diary"
         }
       }
     },
@@ -525,11 +657,11 @@
       "memoriesListHeader": "現在私が記憶している内容の一覧です:\n\n",
       "memoryContent": "記憶内容",
       "memoryDate": "保存日",
-      "noMemories": "まだ記憶している内容がありません。何か覚えておきたいことを教えてください！ 🐾"
+      "noMemories": "まだ記憶している内容がありません。何か覚えておきたいことを教えてください！ 🐾",
+      "memories": "バディの記憶",
+      "diary": {
+        "empty": "まだ日記がありません。今日バディとたくさんおしゃべりして、クイックメニューから今日の日記をリクエストしてみてください！🐾"
+      }
     }
-  },
-  "common": {
-    "yes": "はい",
-    "no": "いいえ"
   }
 }

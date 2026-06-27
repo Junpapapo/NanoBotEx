@@ -367,6 +367,10 @@ export function useChatbotSession(
     }
   }, [currentSessionId, deleteSession]);
 
+  const clearMessages = useCallback(() => {
+    setMessages([]);
+  }, []);
+
   return {
     messages,
     isSending,
@@ -380,6 +384,7 @@ export function useChatbotSession(
     loadSession,
     deleteSession: handleDeleteSession,
     createNewSession,
-    clearAllSessions
+    clearAllSessions,
+    clearMessages
   };
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Minus, Maximize2, Minimize2, X, PanelRight } from "lucide-react";
+import { Minus, Maximize2, Minimize2, X, PanelRight, RotateCcw } from "lucide-react";
 import { UserSettings } from "../chatbot-types";
 import { getThemePalette } from "../chatbot-constants";
 
@@ -27,6 +27,7 @@ interface ChatHeaderProps {
   isSending: boolean;
   showRightMenu: boolean;
   onToggleRightMenu: () => void;
+  onClearScreen?: () => void;
   layoutMode: "sidepanel" | "widget";
   t: any;
 }
@@ -42,6 +43,7 @@ export function ChatHeader({
   isSending,
   showRightMenu,
   onToggleRightMenu,
+  onClearScreen,
   layoutMode,
   t
 }: ChatHeaderProps) {
@@ -103,6 +105,16 @@ export function ChatHeader({
       </div>
 
       <div className="flex items-center gap-[2px] mt-[3px]">
+        {onClearScreen && (
+          <button
+            type="button"
+            onClick={onClearScreen}
+            className={`w-7 h-7 rounded-lg ${theme.bgHover} flex items-center justify-center text-slate-500 hover:${theme.textMain} transition-all cursor-pointer`}
+            title={t("chatbot.tooltips.clearScreen", "화면 대화 지우기")}
+          >
+            <RotateCcw size={13} />
+          </button>
+        )}
         <button
           type="button"
           onClick={onToggleRightMenu}

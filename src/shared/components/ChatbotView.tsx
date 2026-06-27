@@ -25,8 +25,9 @@ import { ALL_AVATARS } from "./tools/settings-panel/avatar-list";
 import { AnimatePresence } from "framer-motion";
 import { X, Maximize2, Minimize2 } from "lucide-react";
 import { ENABLE_PREMIUM } from "../../premium/premium-config";
-import { useBuddySession, BuddyChatView, DEFAULT_BUDDY_SETTINGS } from "../../premium/buddy";
+import { useBuddySession, BuddyChatView, DEFAULT_BUDDY_SETTINGS, BuddySettingsView } from "../../premium/buddy";
 import { BuddySettings } from "../chatbot-types";
+import { BuddyDiaryPanel } from "../../premium/buddy/components/BuddyDiaryPanel";
 
 interface ChatbotViewProps {
   settings: UserSettings;
@@ -67,7 +68,8 @@ export function ChatbotView({
     currentSessionId,
     loadSession,
     deleteSession,
-    clearContext
+    clearContext,
+    clearMessages: clearBotMessages
   } = useChatbotSession(true, settings, activeSkill, skills, t);
 
   const [activePanel, setActivePanel] = useState<PanelType>("none");
@@ -86,8 +88,9 @@ export function ChatbotView({
     stopGeneration: stopBuddyGeneration,
     triggerQuickMenu: triggerBuddyQuickMenu,
     handleConfirmAction: handleBuddyConfirmAction,
-    buddySaveState
-  } = useBuddySession(activeMode === "buddy", t);
+    buddySaveState,
+    clearMessages: clearBuddyMessages
+  } = useBuddySession(activeMode === "buddy", t, locale);
 
   const [isPromptsBarOpen, setIsPromptsBarOpen] = useChromeStorage<boolean>("nano_show_prompts_bar", true);
   const [isBookmarksBarOpen, setIsBookmarksBarOpen] = useChromeStorage<boolean>("nano_show_bookmarks_bar", true);
@@ -178,6 +181,14 @@ export function ChatbotView({
   const [panelWidth, setPanelWidth] = useState<number>(300);
   const [isResizing, setIsResizing] = useState<boolean>(false);
 
+  const handleClearScreen = () => {
+    if (activeMode === "buddy") {
+      clearBuddyMessages();
+    } else {
+      clearBotMessages();
+    }
+  };
+
   const handleModeChange = (mode: "bot" | "buddy") => {
     setActiveMode(mode);
   };
@@ -226,7 +237,11 @@ export function ChatbotView({
   };
 
   const handleQuickQuestion = (text: string) => {
-    sendMessage(text);
+    if (activeMode === "buddy") {
+      sendBuddyMessage(text);
+    } else {
+      sendMessage(text);
+    }
   };
 
   const handleSetCopiedPrompt = (prompt: string) => {
@@ -368,6 +383,17 @@ export function ChatbotView({
               t={t} 
             />
           )}
+          {activePanel === "buddy-settings" && (
+            <BuddySettingsView theme={theme} t={t} />
+          )}
+          {activePanel === "buddy-diary" && (
+            <BuddyDiaryPanel
+              theme={theme}
+              t={t}
+              onClose={() => setActivePanel("none")}
+              onTriggerQuickQuestion={handleQuickQuestion}
+            />
+          )}
 
           {activePanel !== "none" && (
             <div className="absolute top-4.5 right-4 z-[30] flex items-center gap-1.5">
@@ -428,6 +454,7 @@ export function ChatbotView({
           }
           showRightMenu={isRightMenuOpen}
           onToggleRightMenu={() => setIsRightMenuOpen(!isRightMenuOpen)}
+          onClearScreen={handleClearScreen}
           layoutMode={layoutMode}
           t={t}
         />
@@ -530,6 +557,7 @@ export function ChatbotView({
           onModeChange={handleModeChange}
           buddySettings={buddySettings}
           onTriggerQuickMenu={triggerBuddyQuickMenu}
+          onTriggerQuickQuestion={handleQuickQuestion}
         />
       )}
 

@@ -33,7 +33,7 @@ const DEFAULT_PRESETS = [
     id: "preset-3",
     label: "🔄 Restore Default",
     value:
-      "You are a friendly and intelligent AI assistant named 'Nano AI'. Provide helpful, concise, and professional answers in English. Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text.",
+      "You are a friendly and intelligent AI assistant named 'NanoBot'. Provide helpful, concise, and professional answers. Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text.",
   },
 ];
 
@@ -63,12 +63,13 @@ export function PersonaPicker({
             const migrated = parsed.map((p: CustomPreset) => {
               const def = DEFAULT_PRESETS.find((d) => d.id === p.id);
               if (def) {
-                const isOldKorean =
+                const isOldVersion =
                   p.label === "⚡ 단기 트레이더" ||
                   p.label === "☕ 가치 투자 멘토" ||
                   p.label === "🔄 기본 복원" ||
-                  p.value.includes("한국어");
-                if (isOldKorean) {
+                  p.value.includes("한국어") ||
+                  (p.id === "preset-3" && p.value.includes("in English"));
+                if (isOldVersion) {
                   return def;
                 }
               }

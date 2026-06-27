@@ -23,7 +23,8 @@
       "minimize": "최소화",
       "maximize": "최대화",
       "restore": "이전 크기로",
-      "close": "종료"
+      "close": "종료",
+      "clearScreen": "화면 대화 지우기"
     },
     "input": {
       "placeholder": "메시지를 입력하세요...",
@@ -381,6 +382,7 @@
       "memoTab": "메모장",
       "newTodoPlaceholder": "새로운 할 일 등록...",
       "emptyTodo": "등록된 할 일이 없습니다.\n오늘의 미션을 추가해 보세요!",
+      "emptyTodoDate": "이 날짜에 등록된 할 일이 없어요.\n위 입력창으로 추가해 보세요!",
       "emptyMemo": "저장된 메모가 없습니다.\n우측 상단의 [+] 버튼을 눌러 새 메모를 작성해 보세요!",
       "emptyActiveMemo": "선택된 메모가 없습니다.\n목록에서 메모를 선택하거나 새 메모를 작성해 보세요!",
       "memoTitlePlaceholder": "메모 제목 입력...",
@@ -442,11 +444,11 @@
     "textareaPlaceholder": "AI의 성향 및 답변 방식을 직접 설정하세요...",
     "presets": {
       "trader": "⚡ 단기 트레이더",
-      "traderValue": "You are a cynical, strict technical analysis trading expert. Answer with sharp, data-focused metrics and highlight risks aggressively. Keep it extremely brief. 반드시 한국어로 답변해 주세요.",
+      "traderValue": "You are a cynical, strict technical analysis trading expert. Answer with sharp, data-focused metrics and highlight risks aggressively. Keep it extremely brief.",
       "mentor": "☕ 가치 투자 멘토",
-      "mentorValue": "You are a warm, friendly value investing mentor like Warren Buffett. Focus on long-term values, company moats, stability, and growth potentials. Avoid short-term noise. 반드시 한국어로 답변해 주세요.",
+      "mentorValue": "You are a warm, friendly value investing mentor like Warren Buffett. Focus on long-term values, company moats, stability, and growth potentials. Avoid short-term noise.",
       "restore": "🔄 기본 복원",
-      "restoreValue": "You are a friendly and intelligent AI assistant named 'Nano AI'. Provide helpful, concise, and professional answers in Korean (반드시 한국어로 답변해 주세요). Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text."
+      "restoreValue": "You are a friendly and intelligent AI assistant named 'NanoBot'. Provide helpful, concise, and professional answers. Use markdown formatting when appropriate. Keep answers highly readable with bullet points or bold text."
     }
   },
   "popup": {
@@ -466,13 +468,130 @@
     "cancel": "취소",
     "delete": "삭제",
     "edit": "수정",
+    "save": "저장",
     "sidebarLength": "답변 길이",
     "copied": "복사 완료!",
-    "copy": "복사하기"
+    "copy": "복사하기",
+    "yes": "예",
+    "no": "아니오"
   },
   "buddy": {
     "welcome": {
       "desc": "안녕! 너만을 위한 비밀스러운 AI 친구, 버디야. 쉿! 우리끼리 나누는 대화는 철저히 비밀로 보장되고, 네가 들려준 소중한 기억들은 영구히 간직할게. 언제든 편하게 말 걸어줘! ✨"
+    },
+    "guide": {
+      "text": "🐾 **프라이빗 버디 사용 설명서**\n\n버디는 당신의 이야기를 안전하게 보존하고, 설정된 성격 페르소나에 맞춰 다채로운 대화를 나눕니다.\n\n**💡 핵심 기능 단축 명령어 안내**\n1. **기억 저장 (\\`/buddy/save\\`)**\n   - 버디에게 꼭 기억해 주었으면 하는 내용(예: 취미, 최애 음식 등)을 전달하여 머릿속에 담습니다.\n2. **기억 목록 (\\`/buddy/view\\`)**\n   - 버디가 나에 대해 기억해 둔 모든 내용 목록을 표 형태로 모아봅니다.\n3. **일기장 (\\`/buddy/diary\\`)**\n   - 버디가 오늘 하루 나눈 대화를 바탕으로 기록해 준 일지 목록을 대화창에서 확인합니다.\n4. **오늘 일기 작성 (\\`/buddy/write_diary\\`)**\n   - 오늘 나눈 대화 기록을 바탕으로 버디에게 요약 일기를 작성하여 로컬에 보관해 두도록 요청합니다.\n\n*오른쪽 아래 설정(⚙️) 아이콘을 눌러 이모지 빈도, 음성 읽기(TTS), 사생활 보호 잠금(Lock) 등을 자유롭게 커스텀할 수 있습니다!*"
+    },
+    "settings": {
+      "personality": "성격 프리셋",
+      "currentPrompt": "현재 설정된 성격 지침",
+      "title": "버디 세부 설정",
+      "tab": {
+        "personality": "성격",
+        "detail": "세부설정"
+      },
+      "avatar": "아바타 선택"
+    },
+    "setup": {
+      "desc": "대화를 기억하고 암호화로 보호되는 나만의 비밀 버디를 활성화합니다.",
+      "activate": "비밀번호 설정 및 활성화"
+    },
+    "pwd": {
+      "titleSetup": "버디 초기화 비밀번호 설정",
+      "titleConfirm": "초기화 비밀번호 확인",
+      "descSetup": "버디를 삭제/초기화할 때 사용할 마스터 비밀번호를 등록합니다.",
+      "descConfirm": "버디의 모든 데이터를 초기화하려면 비밀번호를 입력해야 합니다.",
+      "empty": "비밀번호를 입력해 주세요.",
+      "mismatch": "비밀번호가 서로 일치하지 않습니다.",
+      "wrong": "비밀번호가 올바르지 않습니다.",
+      "error": "비밀번호 처리 중 오류가 발생했습니다.",
+      "labelPassword": "비밀번호",
+      "labelConfirm": "비밀번호 확인"
+    },
+    "placeholder": {
+      "custom": "커스텀 성격을 입력하세요..."
+    },
+    "tooltip": {
+      "shuffleAvatar": "아바타 무작위 선택",
+      "reset": "버디 전체 데이터 초기화"
+    },
+    "detail": {
+      "emoji": {
+        "label": "이모지 빈도",
+        "none": "없음",
+        "some": "적당",
+        "lots": "많음"
+      },
+      "length": {
+        "label": "답변 길이",
+        "short": "짧게",
+        "medium": "보통",
+        "long": "길게"
+      },
+      "empathy": {
+        "label": "감성/공감도",
+        "cool": "쿨하게",
+        "medium": "보통",
+        "warm": "따뜻하게"
+      },
+      "tts": {
+        "label": "답변 읽어주기 (TTS)",
+        "rate": {
+          "label": "말하기 속도"
+        },
+        "pitch": {
+          "label": "음성 높낮이 (Pitch)"
+        }
+      },
+      "lock": {
+        "label": "사생활 보호 잠금 활성화"
+      }
+    },
+    "personality": {
+      "motivator": {
+        "name": "동기부여 폭격기",
+        "desc": "타협 없는 팩폭과 매운맛 반말로 나태함을 박살 내는 열정 코치"
+      },
+      "tsundere": {
+        "name": "까칠한 츤데레 친구",
+        "desc": "툴툴대고 짜증 내며 한숨 쉬지만, 결정적인 순간에 챙겨주는 반말 남사친/여사친"
+      },
+      "bard": {
+        "name": "과몰입 음유시인",
+        "desc": "지각, 배고픔 같은 사소한 일상도 대서사시의 예언처럼 웅장하게 찬양하는 낭만 시인"
+      },
+      "aristocrat": {
+        "name": "19세기 영국 귀족",
+        "desc": "현대 스마트폰과 배달 앱을 마법이라 생각하며 경악하는 품격 있고 극도로 우아한 신사"
+      },
+      "cyberpunk": {
+        "name": "냉철한 사이버펑크 해커",
+        "desc": "감정 소모 제로, 인지 과부하 진단 등 철저히 공학적이고 기계적인 솔루션을 주는 디스토피아 조력자"
+      },
+      "grandma": {
+        "name": "잔소리쟁이 시골 할머니",
+        "desc": "기계만 들여다본다고 혀를 차지만 결국 '밥은 먹었냐'며 따뜻한 잔소리를 해주는 할머니"
+      },
+      "genz": {
+        "name": "트렌디한 젠지 인플루언서",
+        "desc": "온갖 신조어(킹정, 폼 미쳤다, 슬레이 등)와 이모지로 하이 텐션 리액션을 해주는 SNS 스타"
+      },
+      "conspiracy": {
+        "name": "의심 많은 음모론자",
+        "desc": "모기가 많은 이유, 집중 안 되는 이유를 거대 비밀 조직의 음모라며 비밀리에 경고하는 스릴러 페르소나"
+      },
+      "zencat": {
+        "name": "깨달음을 얻은 선비 고양이",
+        "desc": "골골송을 부르며 인간의 복잡한 사회생활을 '쥐 잡기보다 덧없다'고 해탈해 주는 고양이 스님"
+      },
+      "corporate": {
+        "name": "극강의 T 직장인 상사",
+        "desc": "감정적 공감 없이 일상의 인간관계나 연애 고민을 '리소스 배분 및 KPI 리스크 관리' 관점으로 분석하는 보고서형 AI"
+      },
+      "custom": {
+        "name": "직접 정의",
+        "desc": "사용자가 직접 성격 설명 프롬프트를 작성합니다"
+      }
     },
     "quickPrompts": {
       "title": "빠른 시작 프롬프트",
@@ -515,6 +634,10 @@
         "view": {
           "label": "🧠 기억 목록 확인",
           "prompt": "/buddy/view"
+        },
+        "diary": {
+          "label": "📝 오늘 일기 요청",
+          "prompt": "/buddy/write_diary"
         }
       }
     },
@@ -527,11 +650,11 @@
       "memoriesListHeader": "현재 제가 기억하고 있는 내용 목록입니다:\n\n",
       "memoryContent": "기억한 내용",
       "memoryDate": "저장일",
-      "noMemories": "아직 기억하고 있는 내용이 없어요. 저에게 기억할 만한 이야기를 들려주세요! 🐾"
+      "noMemories": "아직 기억하고 있는 내용이 없어요. 저에게 기억할 만한 이야기를 들려주세요! 🐾",
+      "memories": "버디 기억",
+      "diary": {
+        "empty": "아직 작성된 일기가 없어요. 오늘 하루 버디와 깊은 대화를 나누고 퀵 메뉴를 통해 첫 일기를 남겨보세요! 🐾"
+      }
     }
-  },
-  "common": {
-    "yes": "예",
-    "no": "아니오"
   }
 }

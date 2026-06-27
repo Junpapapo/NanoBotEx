@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from "react";
-import { Message, UserSettings, QuickMenuItem } from "../chatbot-types";
+import { Message, UserSettings, QuickMenuItem, BuddySettings } from "../chatbot-types";
 import { ChatMessageItem } from "./ChatMessageItem";
 import { Terminal } from "lucide-react";
 import { getThemePalette } from "../chatbot-constants";
 import { AIAvatar } from "./AIAvatar";
+import { BUDDY_PERSONALITIES } from "../../premium/buddy/data/buddy-presets";
 
 interface ChatMessageListProps {
   messages: Message[];
@@ -16,6 +17,7 @@ interface ChatMessageListProps {
   isBuddy?: boolean;
   quickMenuItems?: QuickMenuItem[];
   onConfirmAction?: (confirmed: boolean) => void;
+  buddySettings?: BuddySettings;
 }
 
 export function ChatMessageList({
@@ -28,7 +30,8 @@ export function ChatMessageList({
   t,
   isBuddy = false,
   quickMenuItems,
-  onConfirmAction
+  onConfirmAction,
+  buddySettings
 }: ChatMessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
@@ -72,12 +75,43 @@ export function ChatMessageList({
           <h3 className={`text-sm font-black ${theme.textMain} mb-2`}>
             {t("chatbot.welcome.title", "Hi, I'm")} {settings.nano_ai_avatar_name || (isBuddy ? "My Buddy" : "Nano AI")}.
           </h3>
-          <p className={`text-[11px] ${theme.textSub} leading-relaxed max-w-[280px] mb-6`}>
+          <p className={`text-[11px] ${theme.textSub} leading-relaxed max-w-[280px] mb-3`}>
             {isBuddy 
               ? t("buddy.welcome.desc", "안녕! 너만을 위한 비밀스러운 AI 친구, 버디야. 쉿! 우리끼리 나누는 대화는 철저히 비밀로 보장되고, 네가 들려준 소중한 기억들은 영구히 간직할게. 언제든 편하게 말 걸어줘! ✨")
               : t("chatbot.welcome.desc", "Chrome의 온디바이스 AI(Gemini Nano) 또는 외부 API 연동을 활용해 동작하는 범용 챗봇입니다.")
             }
           </p>
+
+          {isBuddy && buddySettings && (() => {
+            const preset = buddySettings.buddy_personality_preset || "motivator";
+            let name = "";
+            let desc = "";
+            let emoji = "";
+
+            if (preset === "custom") {
+              name = t("buddy.personality.custom.name", "직접 정의");
+              desc = buddySettings.buddy_personality_custom || t("buddy.personality.custom.desc", "사용자가 직접 성격 설명 프롬프트를 작성합니다");
+              emoji = "✏️";
+            } else {
+              const found = BUDDY_PERSONALITIES.find(p => p.id === preset);
+              if (found) {
+                name = t(found.nameKey, found.id);
+                desc = t(found.descKey, "");
+                emoji = found.emoji;
+              }
+            }
+
+            return (
+              <div className="mb-6 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-indigo-500/5 to-purple-500/10 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.2)] max-w-[280px] text-center flex flex-col gap-1 select-none animate-pulse">
+                <span className="text-[10px] font-black uppercase tracking-wider text-purple-400 flex items-center justify-center gap-1.5">
+                  {emoji} {name}
+                </span>
+                <span className={`text-[9.5px] ${theme.textMain} leading-relaxed font-bold`}>
+                  "{desc}"
+                </span>
+              </div>
+            );
+          })()}
 
           {!isBuddy && (
             <div className="w-full max-w-[320px] flex flex-col gap-2">

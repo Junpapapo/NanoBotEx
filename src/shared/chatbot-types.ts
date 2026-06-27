@@ -110,13 +110,17 @@ export interface ChatbotContextType {
 
 /** 버디 성격 프리셋 */
 export type BuddyPersonalityPreset =
-  | "caring"       // caring (다정한 친구)
-  | "cheerful"     // cheerful (활발한 동생)
-  | "tsundere"     // tsundere (츤데레)
-  | "wise"         // wise (지적인 멘토)
-  | "humorous"     // humorous (유머러스한 개그맨)
-  | "calm"         // calm (차분한 상담사)
-  | "custom";      // custom (사용자 직접 입력)
+  | "motivator"    // 동기부여 폭격기 (The Fire-Spitting Motivator)
+  | "tsundere"     // 까칠한 츤데레 친구 (The Snarky Tsundere)
+  | "bard"         // 과몰입 음유시인 (The Overly Dramatic Bard)
+  | "aristocrat"   // 19세기 영국 귀족 (The Victorian Time-Traveler)
+  | "cyberpunk"    // 냉철한 사이버펑크 해커 (The Cyberpunk Netrunner)
+  | "grandma"      // 잔소리쟁이 시골 할머니 (The Grumpy Warm Grandparent)
+  | "genz"         // 트렌디한 젠지 인플루언서 (The Ultra-Hyped Gen Z)
+  | "conspiracy"   // 의심 많은 음모론자 (The Paranoid Conspiracy Theorist)
+  | "zencat"       // 깨달음을 얻은 선비 고양이 (The Enlightened Zen Cat)
+  | "corporate"    // 극강의 T 직장인 상사 (The Cold Corporate Executive)
+  | "custom";      // 사용자 직접 입력
 
 /** 버디 메모리 항목 (사용자가 "기억해"라고 요청한 것) */
 export interface BuddyMemory {
@@ -134,6 +138,15 @@ export interface BuddySettings {
   buddy_personality_custom: string;
   buddy_password_hash: string;     // 초기화용 비밀번호 SHA-256 해시
   buddy_initialized: boolean;     // 최초 비밀번호 설정 완료 여부
+  // 세부설정 슬라이더 (0=낮음, 1=보통, 2=높음)
+  buddy_emoji_level: number;       // 이모지 사용 빈도
+  buddy_response_length: number;   // 답변 길이
+  buddy_empathy_level: number;     // 감성/공감 정도
+  buddy_tts_enabled?: boolean;     // 음성 답변 재생 여부
+  buddy_lock_enabled?: boolean;    // 사생활 보호 잠금 모드 활성화 여부
+  buddy_tts_rate?: number;         // TTS 재생 속도 (0.5 ~ 2.0, 기본: 1.0)
+  buddy_tts_pitch?: number;        // TTS 음성 높낮이 (0.5 ~ 2.0, 기본: 1.0)
+  buddy_recovery_hash?: string;    // 마스터 복구 키 해시값
 }
 
 /** 버디 대화 데이터 (암호화된 상태로 저장) */

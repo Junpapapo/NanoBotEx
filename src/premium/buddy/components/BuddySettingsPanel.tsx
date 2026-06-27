@@ -4,15 +4,21 @@ import { BuddySettings, BuddyPersonalityPreset } from "../../../shared/chatbot-t
 import { BUDDY_AVATAR_LIST } from "./buddy-avatar-list";
 import { BuddyPasswordModal } from "./BuddyPasswordModal";
 import { ChevronLeft, ChevronRight, Trash2, ShieldCheck, Shuffle } from "lucide-react";
+import { BUDDY_PERSONALITIES } from "../data/buddy-presets";
 
 export const DEFAULT_BUDDY_SETTINGS: BuddySettings = {
-  buddy_avatar: "/buddies/buddy-01.webp",
+  buddy_avatar: "/buddies/buddy-preset-01.webp",
   buddy_name: "My Buddy",
-  buddy_personality_preset: "caring",
+  buddy_personality_preset: "motivator",
   buddy_personality_custom: "",
   buddy_password_hash: "",
   buddy_initialized: false,
+  buddy_emoji_level: 1,
+  buddy_response_length: 1,
+  buddy_empathy_level: 1,
 };
+
+
 
 interface BuddySettingsPanelProps {
   theme: any;
@@ -43,20 +49,40 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
     }));
   };
 
+  const updateFields = (fields: Partial<BuddySettings>) => {
+    setBuddySettings((prev) => ({
+      ...prev,
+      ...fields,
+    }));
+  };
+
   // 아바타 변경 핸들러
-  const currentAvatarIndex = BUDDY_AVATAR_LIST.findIndex(
+  const currentPreset = BUDDY_PERSONALITIES.find(p => p.id === buddySettings.buddy_personality_preset);
+  const avatarList = [...BUDDY_AVATAR_LIST];
+  if (currentPreset) {
+    if (!avatarList.some(av => av.path === currentPreset.defaultAvatar)) {
+      const rawName = t(currentPreset.nameKey, currentPreset.id);
+      const name = rawName.split(" ")[0] || "Preset";
+      avatarList.unshift({
+        path: currentPreset.defaultAvatar,
+        name
+      });
+    }
+  }
+
+  const currentAvatarIndex = avatarList.findIndex(
     (av) => av.path === buddySettings.buddy_avatar
   );
   const avatarIndex = currentAvatarIndex !== -1 ? currentAvatarIndex : 0;
 
   const handlePrevAvatar = () => {
-    const nextIdx = (avatarIndex - 1 + BUDDY_AVATAR_LIST.length) % BUDDY_AVATAR_LIST.length;
-    updateField("buddy_avatar", BUDDY_AVATAR_LIST[nextIdx].path);
+    const nextIdx = (avatarIndex - 1 + avatarList.length) % avatarList.length;
+    updateField("buddy_avatar", avatarList[nextIdx].path);
   };
 
   const handleNextAvatar = () => {
-    const nextIdx = (avatarIndex + 1) % BUDDY_AVATAR_LIST.length;
-    updateField("buddy_avatar", BUDDY_AVATAR_LIST[nextIdx].path);
+    const nextIdx = (avatarIndex + 1) % avatarList.length;
+    updateField("buddy_avatar", avatarList[nextIdx].path);
   };
 
   const handleShuffleBuddyAvatar = () => {
@@ -65,10 +91,11 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
   };
 
   // 비밀번호 완료 콜백 (최초 설정)
-  const handleSetupPassword = (hash: string) => {
+  const handleSetupPassword = (hash: string, recoveryHash?: string) => {
     setBuddySettings((prev) => ({
       ...prev,
       buddy_password_hash: hash,
+      buddy_recovery_hash: recoveryHash || "",
       buddy_initialized: true,
     }));
     setIsPwdModalOpen(false);
@@ -80,10 +107,10 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
     // 버디 설정 초기화
     setBuddySettings(DEFAULT_BUDDY_SETTINGS);
 
-    // 암호화된 채팅 데이터 및 암호화 키도 스토리지에서 완전 삭제
+    // 암호화된 채팅 데이터, 암호화 키, 일기장 데이터도 스토리지에서 완전 삭제
     if (typeof chrome !== "undefined" && chrome.storage?.local) {
-      chrome.storage.local.remove(["buddy_chat_data", "buddy_encryption_key"], () => {
-        console.log("Buddy chat data and key cleared.");
+      chrome.storage.local.remove(["buddy_chat_data", "buddy_encryption_key", "buddy_diaries"], () => {
+        console.log("Buddy chat data, key and diaries cleared.");
       });
     }
   };
@@ -203,18 +230,27 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
 
         <select
           value={buddySettings.buddy_personality_preset}
-          onChange={(e) =>
-            updateField("buddy_personality_preset", e.target.value as BuddyPersonalityPreset)
-          }
+          onChange={(e) => {
+            const val = e.target.value as BuddyPersonalityPreset;
+            const updates: Partial<BuddySettings> = { buddy_personality_preset: val };
+            if (val !== "custom") {
+              const found = BUDDY_PERSONALITIES.find(p => p.id === val);
+              if (found) {
+                updates.buddy_avatar = found.defaultAvatar;
+                updates.buddy_tts_rate = found.defaultTtsRate ?? 1.0;
+                updates.buddy_tts_pitch = found.defaultTtsPitch ?? 1.0;
+              }
+            }
+            updateFields(updates);
+          }}
           className="w-full text-[9px] font-extrabold bg-slate-950 border border-white/[0.08] text-slate-200 rounded-lg px-2 py-1 outline-none cursor-pointer"
         >
-          <option value="caring">🤗 Caring Friend</option>
-          <option value="cheerful">😄 Cheerful Buddy</option>
-          <option value="tsundere">😤 Tsundere</option>
-          <option value="wise">🧠 Wise Mentor</option>
-          <option value="humorous">😂 Comedy King</option>
-          <option value="calm">🧘 Calm Counselor</option>
-          <option value="custom">✏️ Custom Personality</option>
+          {BUDDY_PERSONALITIES.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.emoji} {t(p.nameKey, p.id)}
+            </option>
+          ))}
+          <option value="custom">✏️ {t("buddy.personality.custom.name", "Custom Personality")}</option>
         </select>
 
         {buddySettings.buddy_personality_preset === "custom" && (
@@ -225,6 +261,15 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
             placeholder={t("buddy.placeholder.custom", "커스텀 성격을 입력하세요...")}
           />
         )}
+
+        {buddySettings.buddy_personality_preset !== "custom" && (() => {
+          const found = BUDDY_PERSONALITIES.find((p) => p.id === buddySettings.buddy_personality_preset);
+          return found ? (
+            <p className="text-[9px] leading-relaxed text-slate-400 px-0.5 mt-1 select-none">
+              {t(found.descKey, "")}
+            </p>
+          ) : null;
+        })()}
       </div>
 
       {/* 비밀번호 확인용 모달 */}

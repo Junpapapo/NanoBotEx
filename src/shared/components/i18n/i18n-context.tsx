@@ -37,6 +37,7 @@ export function I18nProvider({
 
   useEffect(() => {
     if (isSettingsLoaded === false) return;
+    if (!settings) return;
 
     const savedLocale = settings.nano_locale;
     if (savedLocale && savedLocale.trim() !== "") {
@@ -48,7 +49,7 @@ export function I18nProvider({
       setLocaleState(detectedLocale);
       updateSettings({ nano_locale: detectedLocale });
     }
-  }, [settings.nano_locale, isSettingsLoaded]);
+  }, [settings?.nano_locale, isSettingsLoaded]);
 
   const setLocale = (newLocale: string) => {
     setLocaleState(newLocale);

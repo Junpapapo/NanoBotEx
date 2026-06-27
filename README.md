@@ -10,6 +10,12 @@ A lightweight utility that brings a customized AI assistant directly onto your b
 - **On-Device LLM (Gemini Nano)**: Runs local inference inside your browser. No external API calling required when configured correctly.
 - **External LLM Bypass**: Optional connection to standard OpenAI-compatible API endpoints for more complex queries.
 - **Floating Widget & Sidepanel UI**: Run the chatbot as a floating widget on any web page (via Shadow DOM to prevent CSS leaks) or inside the browser's sidepanel.
+- **Buddy (Private Persona Chat & Diary)**:
+  - **Secure Local Storage**: Conversations and diaries are encrypted and password-protected to safeguard private data.
+  - **10 Unique Personalities**: Select from 10 curated personality presets (Motivator, Tsundere, Bard, Aristocrat, Cyberpunk, Grandma, Gen Z, Conspiracy Theorist, Zen Cat, Corporate Executive).
+  - **Dynamic Avatar Matching**: Choosing a personality preset places its specific dedicated avatar (`buddy-preset-01` to `10.webp`) at the front of the avatar list and auto-selects it.
+  - **Custom TTS Parameters**: Presets are pre-configured with customized speech rate and pitch settings to optimize Text-to-Speech alignment.
+  - **Calendar-Based Diary**: Write a daily log of conversations and visualize your emotional statistics based on the chatbot personalities you interacted with.
 - **Memos & Global Bookmarks**: 
   - Save quick notes and tasks directly in the panel.
   - Organized with 8 major global shortcuts (GitHub, Hugging Face, Google, ChatGPT, Stack Overflow, YouTube, Reddit, Wikipedia) with automatic legacy migration.

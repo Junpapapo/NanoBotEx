@@ -21,5 +21,12 @@ export const BUDDY_QUICK_MENU_ITEMS: QuickMenuItem[] = [
     defaultLabel: "🧠 기억 목록 확인",
     promptKey: "buddy.quickMenu.items.view.prompt",
     defaultPrompt: "/buddy/view"
+  },
+  {
+    id: "diary",
+    labelKey: "buddy.quickMenu.items.diary.label",
+    defaultLabel: "📝 오늘 일기 요청",
+    promptKey: "buddy.quickMenu.items.diary.prompt",
+    defaultPrompt: "/buddy/write_diary"
   }
 ];
