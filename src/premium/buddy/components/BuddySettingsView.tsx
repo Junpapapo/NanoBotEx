@@ -149,13 +149,13 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                 type="text"
                 value={buddySettings.buddy_name || ""}
                 onChange={(e) => updateField("buddy_name", e.target.value)}
-                className="w-0 flex-1 text-[10px] text-center bg-slate-950 border border-white/[0.08] text-white rounded-lg py-1.5 px-2 focus:outline-none font-bold"
+                className={`w-0 flex-1 text-[10px] text-center ${theme.bgInput} border ${theme.borderMuted} ${theme.textMain} rounded-lg py-1.5 px-2 focus:outline-none font-bold`}
                 placeholder="Buddy Name"
               />
               <button
                 type="button"
                 onClick={handleShuffleAvatar}
-                className={`p-1.5 rounded-lg ${theme.textSub} hover:${theme.textMain} transition cursor-pointer border border-white/[0.08] bg-slate-950 flex items-center justify-center shrink-0 h-[29px] w-[29px]`}
+                className={`p-1.5 rounded-lg ${theme.textSub} hover:${theme.textMain} transition cursor-pointer border ${theme.borderMuted} ${theme.bgInput} flex items-center justify-center shrink-0 h-[29px] w-[29px]`}
                 title={t("buddy.tooltip.shuffleAvatar", "아바타 무작위 선택")}
               >
                 <Shuffle size={12} />
@@ -172,7 +172,7 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                 <button
                   type="button"
                   onClick={() => handleScroll("left")}
-                  className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 bg-slate-950/95 hover:bg-slate-900 border border-white/[0.08] text-slate-400 hover:text-white rounded flex items-center justify-center transition opacity-0 group-hover/slider:opacity-100 shadow-md cursor-pointer"
+                  className={`absolute left-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 ${theme.bgInput} hover:${theme.bgHover} border ${theme.borderMuted} ${theme.textMain} rounded flex items-center justify-center transition opacity-0 group-hover/slider:opacity-100 shadow-md cursor-pointer`}
                 >
                   <ChevronLeft size={13} />
                 </button>
@@ -180,7 +180,7 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                 {/* 그리드 */}
                 <div
                   ref={scrollRef}
-                  className="grid grid-rows-2 grid-flow-col gap-2 bg-slate-950/40 border border-white/[0.04] p-2.5 rounded-xl overflow-x-auto scroll-smooth"
+                  className={`grid grid-rows-2 grid-flow-col gap-2 ${theme.bgInput} border ${theme.borderMuted} p-2.5 rounded-xl overflow-x-auto scroll-smooth`}
                   style={{ maxHeight: "140px", scrollbarWidth: "none" }}
                 >
                   {validAvatars.map((av) => {
@@ -193,10 +193,10 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                         className="flex flex-col items-center gap-1 p-1 rounded-lg transition outline-none shrink-0 cursor-pointer"
                       >
                         <div
-                          className={`relative w-10 h-10 rounded-xl flex items-center justify-center bg-slate-900 border overflow-hidden transition ${
+                          className={`relative w-10 h-10 rounded-xl flex items-center justify-center ${theme.bgInput} border overflow-hidden transition ${
                             isSelected
                               ? "border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.45)] scale-105"
-                              : "border-white/[0.08] hover:border-white/[0.2] hover:scale-105"
+                              : `${theme.borderMuted} hover:border-purple-400 hover:scale-105`
                           }`}
                         >
                           <img
@@ -212,7 +212,7 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                           )}
                         </div>
                         <span className={`text-[8px] font-bold truncate max-w-[42px] ${
-                          isSelected ? "text-purple-400" : "text-slate-500"
+                          isSelected ? "text-purple-400" : theme.textSub
                         }`}>
                           {av.name}
                         </span>
@@ -225,7 +225,7 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                 <button
                   type="button"
                   onClick={() => handleScroll("right")}
-                  className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 bg-slate-950/95 hover:bg-slate-900 border border-white/[0.08] text-slate-400 hover:text-white rounded flex items-center justify-center transition opacity-0 group-hover/slider:opacity-100 shadow-md cursor-pointer"
+                  className={`absolute right-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 ${theme.bgInput} hover:${theme.bgHover} border ${theme.borderMuted} ${theme.textMain} rounded flex items-center justify-center transition opacity-0 group-hover/slider:opacity-100 shadow-md cursor-pointer`}
                 >
                   <ChevronRight size={13} />
                 </button>
@@ -252,7 +252,7 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                   }
                   updateFields(updates);
                 }}
-                className="w-full text-[10px] font-extrabold bg-slate-950 border border-white/[0.08] text-slate-200 rounded-lg px-2 py-1.5 outline-none cursor-pointer"
+                className={`w-full text-[10px] font-extrabold ${theme.bgInput} border ${theme.borderMuted} ${theme.textMain} rounded-lg px-2 py-1.5 outline-none cursor-pointer`}
               >
                 {BUDDY_PERSONALITIES.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -273,7 +273,7 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
               })()}
 
               {/* 현재 성격 지침 영역 */}
-              <div className="flex flex-col w-full bg-slate-950/40 border border-white/[0.04] rounded-lg p-2 gap-1 text-slate-400 select-none mt-2">
+              <div className={`flex flex-col w-full ${theme.bgInput} border ${theme.borderMuted} rounded-lg p-2 gap-1 ${theme.textSub} select-none mt-2`}>
                 <span className="text-[8px] font-black uppercase text-purple-400">
                   {t("buddy.settings.currentPrompt", "현재 설정된 성격 지침")}
                 </span>
@@ -291,7 +291,7 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
               <textarea
                 value={buddySettings.buddy_personality_custom || ""}
                 onChange={(e) => updateField("buddy_personality_custom", e.target.value)}
-                className="w-full text-[9.5px] bg-slate-950 border border-white/[0.08] text-white rounded-lg p-2 focus:outline-none font-medium resize-none h-[72px] custom-scrollbar"
+                className={`w-full text-[9.5px] ${theme.bgInput} border ${theme.borderMuted} ${theme.textMain} rounded-lg p-2 focus:outline-none font-medium resize-none h-[72px] custom-scrollbar`}
                 placeholder={t("buddy.placeholder.custom", "커스텀 성격을 입력하세요...")}
               />
             )}
@@ -366,7 +366,7 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                         step={0.05}
                         value={buddySettings.buddy_tts_rate ?? 1.0}
                         onChange={(e) => updateField("buddy_tts_rate", parseFloat(e.target.value))}
-                        className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500 [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-500"
+                        className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500 [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-500"
                         style={{ outline: "none" }}
                       />
                     </div>
@@ -384,7 +384,7 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                         step={0.05}
                         value={buddySettings.buddy_tts_pitch ?? 1.0}
                         onChange={(e) => updateField("buddy_tts_pitch", parseFloat(e.target.value))}
-                        className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500 [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-500"
+                        className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500 [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-500"
                         style={{ outline: "none" }}
                       />
                     </div>

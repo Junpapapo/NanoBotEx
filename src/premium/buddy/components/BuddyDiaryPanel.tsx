@@ -103,10 +103,10 @@ export function BuddyDiaryPanel({
   const breakdown = getEmotionBreakdown();
 
   return (
-    <div className="flex flex-col h-full bg-slate-950/40 text-inherit p-4 overflow-y-auto custom-scrollbar space-y-4">
+    <div className={`flex flex-col h-full ${theme.bgSub || "bg-slate-950/40"} ${theme.textMain} p-4 overflow-y-auto custom-scrollbar space-y-4`}>
       {/* 헤더 */}
-      <div className="flex justify-between items-center select-none border-b border-white/[0.08] pb-3 pr-16">
-        <span className="text-sm font-bold flex items-center gap-1.5 text-white">
+      <div className={`flex justify-between items-center select-none border-b ${theme.borderMuted} pb-3 pr-16`}>
+        <span className={`text-sm font-bold flex items-center gap-1.5 ${theme.textMain}`}>
           <BookOpen size={15} className="text-purple-400" />
           Buddy's Diary
         </span>
@@ -114,14 +114,14 @@ export function BuddyDiaryPanel({
 
       {/* 1. 감정 분포 차트 영역 */}
       {diaries.length > 0 ? (
-        <div className="bg-slate-900/60 border border-white/[0.06] p-3 rounded-xl select-none space-y-2">
+        <div className={`${theme.bgInput} border ${theme.borderMuted} p-3 rounded-xl select-none space-y-2`}>
           <div className="flex justify-between items-center">
-            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Emotion Stats</span>
+            <span className={`text-[9px] font-bold ${theme.textSub} uppercase tracking-wider`}>Emotion Stats</span>
             <span className="text-[8.5px] font-black text-purple-400">{diaries.length} Diaries</span>
           </div>
           
           {/* 가로형 스택 차트 바 */}
-          <div className="w-full h-2.5 rounded-full bg-slate-950 flex overflow-hidden border border-white/[0.04]">
+          <div className={`w-full h-2.5 rounded-full ${theme.bgInput} flex overflow-hidden border ${theme.borderMuted}`}>
             {breakdown.map((item) => (
               <div
                 key={item.id}
@@ -135,7 +135,7 @@ export function BuddyDiaryPanel({
           {/* 범례 리스트 */}
           <div className="grid grid-cols-2 gap-x-2 gap-y-1 pt-1">
             {breakdown.slice(0, 4).map((item) => (
-              <div key={item.id} className="flex items-center gap-1 text-[8.5px] font-bold text-slate-400">
+              <div key={item.id} className={`flex items-center gap-1 text-[8.5px] font-bold ${theme.textSub}`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${item.color} shrink-0`} />
                 <span className="truncate">{item.emoji} {item.name}</span>
                 <span className="text-purple-400 font-extrabold ml-auto">{item.percent}%</span>
@@ -144,30 +144,30 @@ export function BuddyDiaryPanel({
           </div>
         </div>
       ) : (
-        <div className="bg-slate-900/40 border border-dashed border-white/[0.08] p-4 rounded-xl text-center py-6 select-none">
-          <Calendar size={20} className="text-slate-600 mx-auto mb-2" />
-          <p className="text-[9px] text-slate-500 font-bold leading-normal">
+        <div className={`${theme.bgInput} border border-dashed ${theme.borderMuted} p-4 rounded-xl text-center py-6 select-none`}>
+          <Calendar size={20} className={`${theme.textSub} opacity-60 mx-auto mb-2`} />
+          <p className={`text-[9px] ${theme.textSub} font-bold leading-normal`}>
             No diary entries found.<br />Talk to Buddy and request a diary entry!
           </p>
         </div>
       )}
 
       {/* 2. 미니 캘린더 */}
-      <div className="bg-slate-900/60 border border-white/[0.06] p-3 rounded-xl select-none space-y-2">
+      <div className={`${theme.bgInput} border ${theme.borderMuted} p-3 rounded-xl select-none space-y-2`}>
         <div className="flex justify-between items-center">
-          <span className="text-[9.5px] font-black text-slate-200">
+          <span className={`text-[9.5px] font-black ${theme.textMain}`}>
             {year}. {(month + 1).toString().padStart(2, "0")}
           </span>
           <div className="flex gap-1">
             <button
               onClick={handlePrevMonth}
-              className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
+              className={`p-1 rounded hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer`}
             >
               <ChevronLeft size={13} />
             </button>
             <button
               onClick={handleNextMonth}
-              className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
+              className={`p-1 rounded hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer`}
             >
               <ChevronRight size={13} />
             </button>
@@ -175,7 +175,7 @@ export function BuddyDiaryPanel({
         </div>
 
         {/* 요일 행 */}
-        <div className="grid grid-cols-7 gap-1 text-center text-[8px] font-bold text-slate-500 border-b border-white/[0.04] pb-1">
+        <div className={`grid grid-cols-7 gap-1 text-center text-[8px] font-bold ${theme.textSub} border-b ${theme.borderMuted} pb-1`}>
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
             <div key={day}>{day}</div>
           ))}
@@ -205,10 +205,10 @@ export function BuddyDiaryPanel({
                 onClick={() => setSelectedDateStr(dateStr)}
                 className={`aspect-square rounded-lg flex flex-col items-center justify-center relative cursor-pointer transition-all border text-[9px] ${
                   isSelected
-                    ? "bg-purple-600/30 border-purple-500 text-white font-extrabold"
+                    ? "bg-purple-600/30 border-purple-500 text-purple-400 font-extrabold"
                     : isToday
-                      ? "bg-slate-900 border-indigo-500/50 text-indigo-400 font-extrabold"
-                      : "bg-slate-950/50 border-white/[0.04] text-slate-300 hover:bg-slate-800"
+                      ? `bg-purple-500/10 border-purple-500/50 ${theme.textMain} font-extrabold`
+                      : `${theme.bgInput} ${theme.borderMuted} ${theme.textSub} hover:${theme.bgHover} hover:${theme.textMain}`
                 }`}
               >
                 <span>{day}</span>
@@ -223,35 +223,37 @@ export function BuddyDiaryPanel({
 
       {/* 3. 선택된 일기 상세 카드 */}
       <div className="space-y-2">
-        <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block select-none">
+        <label className={`text-[9px] font-bold ${theme.textSub} uppercase tracking-wider block select-none`}>
           Selected Entry ({selectedDateStr})
         </label>
         {selectedDiary ? (
-          <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-white/[0.08] p-3 rounded-xl shadow-xl space-y-2 text-left relative overflow-hidden">
+          <div className={`bg-gradient-to-br ${theme.bgInput} border ${theme.borderMuted} p-3 rounded-xl shadow-md space-y-2 text-left relative overflow-hidden`}>
             <div className="absolute top-0 right-0 p-3 opacity-[0.03] select-none pointer-events-none">
-              <BookOpen size={60} className="text-white" />
+              <BookOpen size={60} className={theme.textMain} />
             </div>
             
-            <div className="flex items-center gap-1.5 border-b border-white/[0.05] pb-1.5">
+            <div className={`flex items-center gap-1.5 border-b ${theme.borderMuted} pb-1.5`}>
               <span className="text-[12px] leading-none">
                 {BUDDY_PERSONALITIES.find(p => p.id === selectedDiary.preset)?.emoji || "📝"}
               </span>
-              <span className="text-[9.5px] font-black text-slate-200">
+              <span className={`text-[9.5px] font-black ${theme.textMain}`}>
                 {BUDDY_PERSONALITIES.find(p => p.id === selectedDiary.preset)
                   ? t(BUDDY_PERSONALITIES.find(p => p.id === selectedDiary.preset)!.nameKey, selectedDiary.preset)
                   : selectedDiary.preset}
               </span>
-              <span className="text-[8.5px] font-bold text-slate-500 ml-auto">{selectedDiary.date}</span>
+              <span className={`text-[8.5px] font-bold ${theme.textSub} ml-auto`}>
+                {selectedDiary.date}
+              </span>
             </div>
 
-            <p className="text-[9.5px] text-slate-300 leading-relaxed whitespace-pre-wrap font-medium">
+            <p className={`text-[9.5px] ${theme.textMain} leading-relaxed whitespace-pre-wrap font-medium`}>
               {selectedDiary.content}
             </p>
           </div>
         ) : (
-          <div className="bg-slate-900/30 border border-white/[0.04] p-4 rounded-xl text-center py-6 select-none">
-            <MessageSquare size={16} className="text-slate-700 mx-auto mb-1.5" />
-            <p className="text-[9px] text-slate-500 font-bold">
+          <div className={`${theme.bgInput} border ${theme.borderMuted} p-4 rounded-xl text-center py-6 select-none`}>
+            <MessageSquare size={16} className={`${theme.textSub} opacity-50 mx-auto mb-1.5`} />
+            <p className={`text-[9px] ${theme.textSub} font-bold`}>
               No diary entry written for this day.
             </p>
           </div>

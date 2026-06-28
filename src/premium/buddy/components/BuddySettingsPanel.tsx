@@ -191,7 +191,7 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
           <ChevronLeft size={14} />
         </button>
         <div
-          className="relative w-[48px] h-[48px] rounded-lg flex items-center justify-center bg-slate-950 border border-white/[0.08] overflow-hidden"
+          className={`relative w-[48px] h-[48px] rounded-lg flex items-center justify-center ${theme.bgInput} border ${theme.borderMuted} overflow-hidden`}
         >
           <img
             src={buddySettings.buddy_avatar}
@@ -215,13 +215,13 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
             type="text"
             value={buddySettings.buddy_name || ""}
             onChange={(e) => updateField("buddy_name", e.target.value)}
-            className="w-0 flex-1 text-[9.5px] text-center bg-slate-950 border border-white/[0.08] text-white rounded-lg py-1.5 px-2 focus:outline-none theme.focusBorder font-bold"
+            className={`w-0 flex-1 text-[9.5px] text-center ${theme.bgInput} border ${theme.borderMuted} ${theme.textMain} rounded-lg py-1.5 px-2 focus:outline-none ${theme.focusBorder} font-bold`}
             placeholder="Buddy Name"
           />
           <button
             type="button"
             onClick={handleShuffleBuddyAvatar}
-            className={`p-1.5 rounded-lg hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer border border-white/[0.08] bg-slate-950 text-slate-400 hover:text-white flex items-center justify-center shrink-0 h-[29px] w-[29px]`}
+            className={`p-1.5 rounded-lg hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer border ${theme.borderMuted} ${theme.bgInput} flex items-center justify-center shrink-0 h-[29px] w-[29px]`}
             title={t("buddy.tooltip.shuffleAvatar", "버디 아바타 무작위 선택")}
           >
             <Shuffle size={12} />
@@ -243,7 +243,7 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
             }
             updateFields(updates);
           }}
-          className="w-full text-[9px] font-extrabold bg-slate-950 border border-white/[0.08] text-slate-200 rounded-lg px-2 py-1 outline-none cursor-pointer"
+          className={`w-full text-[9px] font-extrabold ${theme.bgInput} border ${theme.borderMuted} ${theme.textMain} rounded-lg px-2 py-1 outline-none cursor-pointer`}
         >
           {BUDDY_PERSONALITIES.map((p) => (
             <option key={p.id} value={p.id}>
@@ -257,7 +257,7 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
           <textarea
             value={buddySettings.buddy_personality_custom || ""}
             onChange={(e) => updateField("buddy_personality_custom", e.target.value)}
-            className="w-full text-[9px] bg-slate-950 border border-white/[0.08] text-white rounded-lg p-1.5 focus:outline-none theme.focusBorder font-medium resize-none h-[42px] custom-scrollbar"
+            className={`w-full text-[9px] ${theme.bgInput} border ${theme.borderMuted} ${theme.textMain} rounded-lg p-1.5 focus:outline-none ${theme.focusBorder} font-medium resize-none h-[42px] custom-scrollbar`}
             placeholder={t("buddy.placeholder.custom", "커스텀 성격을 입력하세요...")}
           />
         )}
