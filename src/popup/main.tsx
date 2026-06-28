@@ -76,11 +76,11 @@ function PopupContent({
 
   const handleOpenHelp = () => {
     const locale = settings.nano_locale || "ko";
-    let targetUrl = "https://junpapapo.github.io/NanoBotEx/help.html"; // 기본 영어
+    let targetUrl = "https://junpapapo.github.io/NanoBotEx/public/help.html"; // 기본 영어
     if (locale === "ko") {
-      targetUrl = "https://junpapapo.github.io/NanoBotEx/help.ko.html";
+      targetUrl = "https://junpapapo.github.io/NanoBotEx/public/help.ko.html";
     } else if (locale === "ja") {
-      targetUrl = "https://junpapapo.github.io/NanoBotEx/help.ja.html";
+      targetUrl = "https://junpapapo.github.io/NanoBotEx/public/help.ja.html";
     }
     if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.create) {
       chrome.tabs.create({ url: targetUrl });
