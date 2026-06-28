@@ -334,6 +334,77 @@
       border: 1px solid rgba(168, 85, 247, 0.3);
       box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
     }
+
+    /* Grid layout for Buddy list */
+    .buddy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .buddy-card {
+      background: rgba(13, 20, 38, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem;
+      backdrop-filter: blur(6px);
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .buddy-card:hover {
+      background: rgba(13, 20, 38, 0.85);
+      border-color: var(--border-glow);
+      box-shadow: 0 0 18px rgba(0, 242, 255, 0.15);
+      transform: translateY(-3px);
+    }
+
+    .buddy-avatar-wrapper {
+      width: 100%;
+      height: 140px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 0.8rem;
+      border: 1px solid rgba(0, 242, 255, 0.15);
+      background: #05070e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .buddy-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .buddy-card:hover .buddy-avatar-img {
+      transform: scale(1.08);
+    }
+
+    .buddy-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .buddy-emoji {
+      font-size: 1.2rem;
+    }
+
+    .buddy-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      flex-grow: 1;
+    }
   </style>
 </head>
 <body>
@@ -365,8 +436,8 @@
         <ul class="nav-list">
           <li class="nav-item"><a href="#intro" class="nav-link active">紹介とインストール方法</a></li>
           <li class="nav-item"><a href="#getting-started" class="nav-link">はじめに</a></li>
-          <li class="nav-item"><a href="#ai-features" class="nav-link">オンデバイスAI機能</a></li>
-          <li class="nav-item"><a href="#buddy-feature" class="nav-link">AIバディ(Buddy)カスタム</a></li>
+          <li class="nav-item"><a href="#ai-features" class="nav-link">온디바이스AI機能</a></li>
+          <li class="nav-item"><a href="#buddy-feature" class="nav-link">AIバ디(Buddy)カスタム</a></li>
           <li class="nav-item"><a href="#settings" class="nav-link">設定とテーマカラー</a></li>
           <li class="nav-item"><a href="#privacy" class="nav-link">セキュリティと保護</a></li>
           <li class="nav-item nav-item-qna">
@@ -432,7 +503,7 @@
           </div>
           <div class="card">
             <div class="card-title">Web文脈の共有</div>
-            <div class="card-desc">現在閲覧しているWebページの内容を要約させたり、質問したりすることができ、研究・開発・学習の生産性を最大化します。</div>
+            <div class="card-desc">当前閲覧しているWebページの内容を要約させたり、質問したりすることができ、研究・開発・学習の生産性を最大化します。</div>
           </div>
           <div class="card">
             <div class="card-title">アバターのランダム変更</div>
@@ -443,15 +514,100 @@
 
       <section id="buddy-feature">
         <h2 class="section-title">AIバディ(Buddy)カスタム <span class="badge badge-premium">Premium</span></h2>
-        <p>Premiumバージョンでは、好みの性格や役割を与えたオリジナルの個別AIバディを作成し、ワンクリックで有効化できます。</p>
+        <p>好みの性格や役割を与えたオリジナルの個別AIバディを作成し、ワンクリックで有効化できます。</p>
+        
+        <!-- [NEW] Buddy feature beta & premium notice (Japanese) -->
+        <div class="alert alert-info" style="margin-top: 1rem; border-color: rgba(139, 92, 246, 0.3); background-color: rgba(139, 92, 246, 0.05);">
+          <div>
+            <strong>🧪 ベータ版テストのお知らせ:</strong> AIバディ機能は現在<strong>オープンベータ(Beta)</strong>期間中であり、すべてのユーザーが無料でお試しいただけます。正式リリース時には、通常の無料機能と区別された個別の<strong>プレミアム(Premium)</strong>プランへと移行されるか、専用のメリットが適用される場合があります。
+          </div>
+        </div>
+
         <div class="feature-grid">
           <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
             <div class="card-title">ペルソナ・性格の注入</div>
             <div class="card-desc">「翻訳のプロ」「開発メンター」「要約ライター」など、指示プロンプトを入力して独自の性格を持つバディを作成します。</div>
           </div>
           <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
-            <div class="card-title">マルチバディ管理</div>
+            <div class="card-title">マルチバ디管理</div>
             <div class="card-desc">目的別に複数のAIキャラクターを個別に設定して保存し、対話するバディを簡単に切り替えることができます。</div>
+          </div>
+        </div>
+
+        <!-- [NEW] Buddy presets with images (Japanese) -->
+        <h3 style="color: #fff; margin-top: 2.5rem; margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; font-size: 1.25rem;">🤖 10種類のキャラクターバディ・プリセット</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">NanoBotは、以下の多彩でユニークなAIバディの性格設定をあらかじめ標準搭載しています：</p>
+        
+        <div class="buddy-grid">
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-01.webp" class="buddy-avatar-img" alt="Motivator">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">🔥</span> モチベーター</div>
+            <div class="buddy-desc">妥協や言い訳を許さず、直ちに行動を起こすように促すスパルタ式の熱血コーチ。</div>
+          </div>
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-02.webp" class="buddy-avatar-img" alt="Tsundere">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">😤</span> ツンデレフレンド</div>
+            <div class="buddy-desc">表向きはツンツンして面倒くさそうに振る舞うが、内心はあなたを一番心配して助けてくれる相棒。</div>
+          </div>
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-03.webp" class="buddy-avatar-img" alt="Bard">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">🎻</span> さすらいの詩人</div>
+            <div class="buddy-desc">日常の些細な仕事や悩みを、壮大なファンタジークエストや美しい詩の調べに昇華する吟遊詩人。</div>
+          </div>
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-04.webp" class="buddy-avatar-img" alt="Aristocrat">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">🎩</span> 英国の貴族</div>
+            <div class="buddy-desc">19世紀のロンドンからタイムスリップし、現代のスマートフォンや言葉を「魔術」と見なしつつ優雅に語る貴族。</div>
+          </div>
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-05.webp" class="buddy-avatar-img" alt="Netrunner">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">💻</span> ネットランナー</div>
+            <div class="buddy-desc">人間の怠慢をシステムエラーと診断し、無駄なプロセスを強制終了する冷徹なハッカー。</div>
+          </div>
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-06.webp" class="buddy-avatar-img" alt="Grandma">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">👵</span> 田舎の祖母</div>
+            <div class="buddy-desc">口うるさく小言を言いつつも、温かいご飯を食べてよく寝れば万事解決すると励ましてくれる祖母。</div>
+          </div>
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-07.webp" class="buddy-avatar-img" alt="Influencer">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">✨</span> インフルエンサー</div>
+            <div class="buddy-desc">流行のSNS用語や絵文字を駆使し、常にハイテンションであなたを応援して盛り上げる現代っ子。</div>
+          </div>
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-08.webp" class="buddy-avatar-img" alt="Conspiracy">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">👁️</span> 陰謀論者</div>
+            <div class="buddy-desc">夜間の蚊の発生さえ、個人の生態データを収集するために「彼ら」が放った小型ドローンと疑うパラノイア。</div>
+          </div>
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-09.webp" class="buddy-avatar-img" alt="ZenCat">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">🐱</span> 悟りを開いた猫</div>
+            <div class="buddy-desc">人生はチュール一口分のように短いのだから、気落ちせず暖かい日向で昼寝でもしろと説くのんびり猫。</div>
+          </div>
+          <div class="buddy-card">
+            <div class="buddy-avatar-wrapper">
+              <img src="buddies/buddy-preset-10.webp" class="buddy-avatar-img" alt="Corporate">
+            </div>
+            <div class="buddy-header"><span class="buddy-emoji">👔</span> 極「T」の社内上司</div>
+            <div class="buddy-desc">感情を完全に排し、リソース配分やマイルストーン、ROI（費用対効果）の面から極めて合理的な回答を与える上司。</div>
           </div>
         </div>
       </section>
@@ -460,7 +616,7 @@
         <h2 class="section-title">設定とテーマカラーのカスタム</h2>
         <ul>
           <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>多言語対応:</strong> 英語、韓国語、日本語をサポート。ポップアップおよびサイドパネルが完全にローカライズされます。</li>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>スキンモードの切り替え:</strong> 目に優しいSleek Dark Modeと明るいLight Modeをワンクリックで瞬時に切り替え可能。</li>
+          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>スキンモードの切り替え:</strong> 目に優しいSleek Dark Modeと明るいLight Mode를 ワンクリックで瞬時に切り替え可能。</li>
           <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>テーマカラーの設定:</strong> Indigo、Violetなどのグラデーションカラーチップから、お好みのテーマカラーをお選びいただけます。</li>
         </ul>
       </section>
@@ -469,7 +625,7 @@
         <h2 class="section-title" style="color: #10b981;">セキュリティと保護</h2>
         <div class="card" style="border-left: 4px solid #10b981;">
           <div class="card-title">100%ローカル保存</div>
-          <div class="card-desc">会話履歴やプロンプト設定、その他のデータはすべてお使い의 デバイス（IndexedDB/LocalStorage）に保存され、外部サーバーに送信されることはありません。</div>
+          <div class="card-desc">会話履歴やプロンプト設定、その他のデータはすべてお使いのデバイス（IndexedDB/LocalStorage）に保存され、外部サーバーに送信されることはありません。</div>
         </div>
         <div class="card" style="border-left: 4px solid #10b981; border: 1px dashed rgba(16, 185, 129, 0.4); margin-top: 1rem;">
           <div class="card-title">デュアルパス・ガードレール</div>
