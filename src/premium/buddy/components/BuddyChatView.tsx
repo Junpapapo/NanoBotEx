@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Message, BuddySettings } from "../../../shared/chatbot-types";
+import { Message, BuddySettings, UserSettings } from "../../../shared/chatbot-types";
 import { ChatMessageList } from "../../../shared/components/ChatMessageList";
 import { ChatInput } from "../../../shared/components/ChatInput";
 import { Key, Brain, ShieldCheck, Lock, Unlock } from "lucide-react";
@@ -14,6 +14,7 @@ interface BuddyChatViewProps {
   sendMessage: (text: string) => Promise<void>;
   stopGeneration: () => void;
   buddySettings: BuddySettings;
+  settings: UserSettings;
   theme: any;
   t: (key: string, def: string) => string;
   onOpenGuideSection?: (section: string) => void;
@@ -28,6 +29,7 @@ export function BuddyChatView({
   sendMessage,
   stopGeneration,
   buddySettings,
+  settings,
   theme,
   t,
   onOpenGuideSection,
@@ -254,11 +256,10 @@ export function BuddyChatView({
             buddySettings={buddySettings}
             settings={
               {
+                ...settings,
                 nano_ai_avatar: buddySettings.buddy_avatar,
                 nano_ai_avatar_name: buddySettings.buddy_name,
-                nano_chat_font: "sans",
-                nano_chat_font_size: "medium",
-              } as any
+              }
             }
             isSupported={true}
             effectiveAIAvatar={buddySettings.buddy_avatar}
@@ -275,12 +276,7 @@ export function BuddyChatView({
             onSendMessage={sendMessage}
             isSending={isSending || buddySaveState === "confirming_save"}
             onStop={stopGeneration}
-            settings={
-              {
-                nano_chat_font: "sans",
-                nano_chat_font_size: "medium",
-              } as any
-            }
+            settings={settings}
             t={t}
             externalText=""
             onClearExternalText={() => {}}

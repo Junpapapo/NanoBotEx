@@ -467,6 +467,7 @@ export function ChatbotView({
               sendMessage={sendBuddyMessage}
               stopGeneration={stopBuddyGeneration}
               buddySettings={buddySettings}
+              settings={settings}
               theme={theme}
               t={t}
               onOpenGuideSection={(section) => {
