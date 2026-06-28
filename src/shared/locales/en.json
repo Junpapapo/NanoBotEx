@@ -479,6 +479,11 @@
     "welcome": {
       "desc": "Hi there! I'm your private AI Buddy. Shh, our conversations are strictly between us, and I'll keep your precious memories safe forever. Feel free to talk to me anytime! ✨"
     },
+    "lock": {
+      "title": "Privacy Lock Mode",
+      "desc": "Please enter your unlock password to protect your private conversation with Buddy.",
+      "unlock": "Unlock"
+    },
     "guide": {
       "text": "🐾 **Private Buddy User Guide**\n\nBuddy securely preserves your stories and engages in diverse conversations tailored to your chosen personality preset.\n\n**💡 Key Feature Command Guide**\n1. **Save Memory (\\`/buddy/save\\`)**\n   - Tell Buddy what you want it to remember (e.g., hobbies, favorite foods) to store in its memory.\n2. **View Memories (\\`/buddy/view\\`)**\n   - Display a list of all memories Buddy has saved about you in a table format.\n3. **Diary (\\`/buddy/diary\\`)**\n   - View a list of daily diaries compiled by Buddy based on your conversations in the chat window.\n4. **Write Today's Diary (\\`/buddy/write_diary\\`)**\n   - Request Buddy to generate and save a daily diary based on today's conversation history.\n\n*Click the Settings (⚙️) icon at the bottom right to customize emoji levels, TTS voice feedback, privacy locks, and more!*"
     },
@@ -513,7 +518,8 @@
     },
     "tooltip": {
       "shuffleAvatar": "Shuffle Avatar",
-      "reset": "Reset All Buddy Data"
+      "reset": "Reset All Buddy Data",
+      "lock": "Lock conversation immediately"
     },
     "detail": {
       "emoji": {

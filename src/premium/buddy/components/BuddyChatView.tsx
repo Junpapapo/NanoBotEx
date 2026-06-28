@@ -123,8 +123,8 @@ export function BuddyChatView({
         <div className="flex items-center gap-2">
           <div className="relative group flex items-center cursor-help">
             <div className="flex items-center gap-1 text-purple-400 font-black transition-opacity hover:opacity-85">
-              <ShieldCheck size={12} />
-              <Key size={12} className="text-amber-400" />
+              <ShieldCheck size={15} />
+              <Key size={15} className="text-amber-400" />
             </div>
             {/* 커스텀 툴팁 */}
             <div className="absolute left-0 top-6 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-150 origin-top-left flex items-center bg-slate-950/95 border border-white/[0.08] text-white text-[9.5px] py-1.5 px-2.5 rounded-lg whitespace-nowrap shadow-2xl z-[60]">
@@ -137,10 +137,10 @@ export function BuddyChatView({
             <button
               type="button"
               onClick={() => setIsLocked(true)}
-              className="p-1 rounded hover:bg-slate-700/50 text-slate-400 hover:text-white transition cursor-pointer flex items-center justify-center h-5 w-5"
+              className="p-0.5 rounded hover:bg-slate-700/50 text-slate-400 hover:text-white transition cursor-pointer flex items-center justify-center h-5 w-5"
               title={t("buddy.tooltip.lock", "즉시 대화창 잠금")}
             >
-              <Lock size={11} className="text-red-400 hover:text-red-300" />
+              <Lock size={14} className="text-red-400 hover:text-red-300" />
             </button>
           )}
         </div>

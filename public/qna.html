@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NanoBot AI Q&A - Frequently Asked Questions</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@800;900&family=Share+Tech+Mono&display=swap');
+
+    :root {
+      --primary: #00f2ff;
+      --primary-purple: #8b5cf6;
+      --primary-hover: #00d2e6;
+      --bg: #070913;
+      --surface: rgba(13, 20, 38, 0.6);
+      --surface-solid: #0d1426;
+      --text: #e2e8f0;
+      --text-muted: #7f92b0;
+      --border: rgba(0, 242, 255, 0.15);
+      --border-glow: rgba(0, 242, 255, 0.35);
+      --radius: 16px;
+      --shadow: 0 4px 20px -2px rgba(0, 242, 255, 0.08);
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.05) 0px, transparent 50%);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 4rem;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      text-shadow: 0 0 5px rgba(0, 242, 255, 0.2);
+    }
+
+    a:hover {
+      color: #fff;
+      text-shadow: 0 0 10px var(--primary);
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7, 9, 19, 0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      transition: background-color 0.3s;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #fff;
+      letter-spacing: 0.05em;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-btn {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary);
+      text-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
+      text-decoration: none;
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-left: 1px solid var(--border);
+      padding-left: 1.5rem;
+      font-family: var(--font-mono);
+    }
+
+    .lang-link {
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .lang-link:hover, .lang-link.active {
+      color: var(--primary);
+      text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 4rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .title-area {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .title-area h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+    }
+
+    .title-area p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Q&A Accordion Style */
+    .qna-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    details {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    details[open] {
+      border-color: var(--border-glow);
+      box-shadow: 0 0 25px rgba(0, 242, 255, 0.1);
+      background: rgba(13, 20, 38, 0.7);
+    }
+
+    summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.6rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      user-select: none;
+      color: #fff;
+      transition: background-color 0.2s;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary:hover {
+      background-color: rgba(0, 242, 255, 0.03);
+    }
+
+    .q-badge {
+      color: var(--primary);
+      font-family: var(--font-mono);
+      font-size: 1.3rem;
+      font-weight: 900;
+      margin-right: 0.8rem;
+      flex-shrink: 0;
+      text-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+    }
+
+    .q-text {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .arrow-icon {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: var(--text-muted);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.3s, stroke 0.2s;
+    }
+
+    details[open] summary .arrow-icon {
+      transform: rotate(180deg);
+      stroke: var(--primary);
+    }
+
+    .answer-content {
+      padding: 0 1.6rem 1.6rem 1.6rem;
+      border-top: 1px solid var(--border);
+      background-color: rgba(7, 9, 19, 0.4);
+      color: var(--text);
+      font-size: 0.98rem;
+    }
+
+    .answer-content p {
+      margin-top: 1rem;
+    }
+
+    .answer-content ul, .answer-content ol {
+      margin-top: 0.75rem;
+      padding-left: 1.5rem;
+    }
+
+    .answer-content li {
+      margin-top: 0.5rem;
+    }
+
+    .step-box {
+      background-color: rgba(7, 9, 19, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+      margin-top: 1rem;
+      font-family: inherit;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      background-color: var(--primary);
+      color: #070913;
+      vertical-align: middle;
+      margin-left: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-premium {
+      background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+      color: white;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+    }
+
+    /* Cybernetic Comments Box */
+    .cyber-bot-box {
+      margin-top: 1.2rem;
+      background: rgba(139, 92, 246, 0.06);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      font-size: 0.85rem;
+      color: #bfaeff;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+
+    .cyber-bot-box strong {
+      color: var(--primary);
+      font-family: var(--font-mono);
+      text-shadow: 0 0 8px rgba(0, 242, 255, 0.3);
+    }
+
+    /* Support section & Footer */
+    .support-card {
+      text-align: center;
+      padding: 2.5rem;
+      background-color: var(--surface-solid);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+      margin-top: 5rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .support-card h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .support-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 5rem;
+      background: rgba(7, 9, 19, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-logo">
+      <img src="icons/icon128.png" width="28" height="28" alt="Logo">
+      <span style="position: relative; display: inline-flex; align-items: center; gap: 0.25rem;">
+        <span>NanoBot Q&A</span>
+        <span style="font-size: 9px; background: linear-gradient(to right, #9333ea, #4f46e5); color: white; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0.15rem 0.35rem; border-radius: 4px; font-weight: 800; margin-left: 0.15rem; line-height: 1; display: inline-flex; align-items: center; gap: 0.15rem; margin-top: -6px; box-shadow: 0 1px 2px 0 rgba(99, 102, 241, 0.2); user-select: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="#fde047" stroke="#fde047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 1px; color: #fde047;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          AI
+        </span>
+      </span>
+    </div>
+    <div class="header-nav">
+      <a href="help.html" class="nav-btn">← Back to Help Guide</a>
+      <div class="lang-switcher">
+        <a href="qna.html" class="lang-link active">English</a>
+        <a href="qna.ja.html" class="lang-link">日本語</a>
+        <a href="qna.ko.html" class="lang-link">한국어</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="title-area">
+      <h1>Frequently Asked Questions & Q&A</h1>
+      <p>Answers and guides to get the most out of your NanoBot AI Assistant.</p>
+    </div>
+
+    <div class="qna-list">
+      
+      <!-- Q1: Gemini Nano setting -->
+      <details open>
+        <summary>
+          <span class="q-text">
+            <span class="q-badge">Q</span>
+            How do I configure Chrome to enable Gemini Nano's built-in AI?
+          </span>
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="answer-content">
+          <p>Enabling Chrome's built-in AI (Gemini Nano) API requires the following configuration setup:</p>
+          <div class="step-box">
+            <strong>🔧 Built-in AI Activation Steps:</strong>
+            <ol style="margin-left: 1.25rem; margin-top: 0.5rem; space-y: 0.25rem;">
+              <li>Type <code>chrome://flags</code> in the Chrome address bar and hit enter.</li>
+              <li>Search for <strong>prompt</strong>, locate <code>Prompt API for Gemini Nano</code>, and switch its value to <strong>Enabled</strong>.</li>
+              <li>Search for <strong>optimization</strong>, locate <code>Enables optimization guide on-device model</code>, and switch its value to <strong>Enabled BypassPerfRequirement</strong> or <strong>Enabled</strong>.</li>
+              <li>Click the [Relaunch] button at the bottom right to restart the Chrome browser.</li>
+              <li>Finally, navigate to <code>chrome://components</code>, find <strong>Optimization Guide On Device Model</strong>, and click [Check for update]. Wait for the AI model download to complete (100%).</li>
+            </ol>
+          </div>
+          <div class="cyber-bot-box">
+            <span><strong>🤖 NanoBot:</strong> "Think of it as a small brain transplant for your Chrome browser! Just follow the steps, and I'll wake up in no time."</span>
+          </div>
+        </div>
+      </details>
+
+      <!-- Q2: Privacy server transmission -->
+      <details>
+        <summary>
+          <span class="q-text">
+            <span class="q-badge">Q</span>
+            Does NanoBot transmit my conversation logs or usage data to external servers?
+          </span>
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="answer-content">
+          <p><strong>No, NanoBot operates strictly on-device, prioritizing your privacy.</strong></p>
+          <p>We do not capture, log, or send your chat records, chatbot names, or customized prompt guidelines to cloud backends. Everything is isolated locally in your browser's private database (IndexedDB / LocalStorage).</p>
+          <div class="cyber-bot-box">
+            <span><strong>🤖 NanoBot:</strong> "Your secrets are locked in my local sandbox. Even if the internet goes down, I'll still be standing offline by your side!"</span>
+          </div>
+        </div>
+      </details>
+
+      <!-- Q3: Buddy Premium -->
+      <details>
+        <summary>
+          <span class="q-text">
+            <span class="q-badge">Q</span>
+            What is the Premium AI Buddy feature? <span class="badge badge-premium">Premium</span>
+          </span>
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="answer-content">
+          <p><strong>AI Buddies are specialized chatbot companions with custom personas and custom directives.</strong></p>
+          <p>Beyond the generic chat assistant, you can create and store multiple distinct Buddies — such as a "Code Review Specialist," a "Language Translation Expert," or a "Copywriting Assistant." Simply select and switch your companion from the list to invoke targeted expertise instantly.</p>
+          <div class="cyber-bot-box">
+            <span><strong>🤖 NanoBot:</strong> "summon different versions of me for your specific coding or writing tasks! Just don't let us talk to each other..."</span>
+          </div>
+        </div>
+      </details>
+
+      <!-- Q4: Avatar Customization -->
+      <details>
+        <summary>
+          <span class="q-text">
+            <span class="q-badge">Q</span>
+            How do I change the assistant avatar or name?
+          </span>
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="answer-content">
+          <p>Open the NanoBot popup window, and find the configuration card on the left.</p>
+          <ul>
+            <li>Use the left and right arrows to cycle through the custom avatar illustrations.</li>
+            <li>Type in your desired chatbot name in the text field (defaults to 'Name') to update it in real-time.</li>
+            <li>Click the Shuffle button to randomly pick a unique card from the avatar selection pool.</li>
+          </ul>
+          <div class="cyber-bot-box">
+            <span><strong>🤖 NanoBot:</strong> "Feel free to change my face or name. Just call me anything but late for lunch!"</span>
+          </div>
+        </div>
+      </details>
+
+      <!-- Q5: Local test -->
+      <details>
+        <summary>
+          <span class="q-text">
+            <span class="q-badge">Q</span>
+            How can I verify if my local AI engine is successfully connected and running?
+          </span>
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="answer-content">
+          <p>Click the <strong>[AI ON]</strong> badge in the top-right header of the popup window. NanoBot will diagnose the connection to Chrome's underlying model instantly:</p>
+          <ul>
+            <li><strong>TEST OK:</strong> The local model is loaded and ready to process inputs.</li>
+            <li><strong>TEST FAIL:</strong> The background flag configs or model components might be missing or still downloading. Double-check the environment settings guide above.</li>
+          </ul>
+          <div class="cyber-bot-box">
+            <span><strong>🤖 NanoBot:</strong> "Think of it as clicking my tickle button. If it turns green, my brain is firing on all cylinders!"</span>
+          </div>
+        </div>
+      </details>
+
+    </div>
+
+    <!-- Support card with themed Coffee Text -->
+    <div class="support-card">
+      <h2>Refuel the NanoBot Core</h2>
+      <p>If NanoBot keeps you productive, consider fueling my chipset with a cup of premium lubricant (coffee)!</p>
+      <a href="https://www.buymeacoffee.com/junpa" target="_blank" style="display: inline-block;">
+        <img src="https://img.buymeacoffee.com/button-api/?text=Inject Coffee&emoji=&slug=junpa&button_colour=6366f1&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00" alt="Buy Me A Coffee" style="height: 44px;">
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 NanoBot AI - <a href="https://nexusforce.cloud/" target="_blank" style="color: inherit; text-decoration: underline;">NexusForce</a>. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

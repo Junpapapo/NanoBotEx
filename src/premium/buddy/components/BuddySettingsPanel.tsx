@@ -167,7 +167,7 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
       {/* 타이틀 및 초기화 🗑 아이콘 */}
       <div className="flex justify-between items-center w-full select-none">
         <span className="text-[9px] font-black text-purple-400 uppercase tracking-wider">
-          Buddy Settings
+          Buddy
         </span>
         <button
           onClick={() => {

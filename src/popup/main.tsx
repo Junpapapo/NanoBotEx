@@ -21,6 +21,7 @@ import {
   Bug,
   ExternalLink,
   ShieldCheck,
+  HelpCircle,
 } from "lucide-react";
 import {
   I18nProvider,
@@ -72,6 +73,21 @@ function PopupContent({
   >("idle");
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [showShieldModal, setShowShieldModal] = useState<boolean>(false);
+
+  const handleOpenHelp = () => {
+    const locale = settings.nano_locale || "ko";
+    let targetUrl = "https://junpapapo.github.io/NanoBotEx/help.html"; // 기본 영어
+    if (locale === "ko") {
+      targetUrl = "https://junpapapo.github.io/NanoBotEx/help.ko.html";
+    } else if (locale === "ja") {
+      targetUrl = "https://junpapapo.github.io/NanoBotEx/help.ja.html";
+    }
+    if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.create) {
+      chrome.tabs.create({ url: targetUrl });
+    } else {
+      window.open(targetUrl, "_blank");
+    }
+  };
 
   const theme = getThemePalette(
     settings.nano_theme_color || "indigo",
@@ -301,6 +317,16 @@ function PopupContent({
             <ShieldCheck size={13} />
           </button>
 
+          {/* 도움말 안내 아이콘 */}
+          <button
+            type="button"
+            onClick={handleOpenHelp}
+            className={`p-1 rounded hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer flex items-center justify-center`}
+            title="Help & Q&A"
+          >
+            <HelpCircle size={13} />
+          </button>
+
           {/* 설정 메뉴 아이콘 및 드롭다운 */}
           <div className="relative">
             <button
@@ -364,7 +390,7 @@ function PopupContent({
             <span
               className={`text-[9px] font-black ${theme.textSub} uppercase tracking-wider block`}
             >
-              NAME
+              NANO
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-[8.5px] text-slate-500 font-extrabold">

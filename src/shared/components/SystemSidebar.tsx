@@ -386,23 +386,23 @@ export function SystemSidebar({
                   <button
                     type="button"
                     onClick={() => setActivePanel(activePanel === "buddy-diary" ? "none" : "buddy-diary")}
-                    className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer shadow-sm border ${btnMutedClass}`}
+                    className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all cursor-pointer shadow-sm border ${btnMutedClass}`}
                     title="버디 일기장"
                   >
-                    <BookOpen size={11} />
+                    <BookOpen size={10} />
                   </button>
                   {/* 오른쪽: 버디 세부설정 아이콘 */}
                   <button
                     type="button"
                     onClick={() => handleTabToggle("buddy-settings")}
-                    className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer shadow-sm border ${
+                    className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all cursor-pointer shadow-sm border ${
                       activePanel === "buddy-settings"
                         ? "bg-purple-500/20 text-purple-400 border-purple-500/35"
                         : btnMutedClass
                     }`}
                     title="버디 세부 설정"
                   >
-                    <SlidersHorizontal size={11} />
+                    <SlidersHorizontal size={10} />
                   </button>
                 </div>
               )}

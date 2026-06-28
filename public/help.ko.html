@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NanoBot AI 도움말 - 똑똑한 온디바이스 AI 비서</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@800;900&family=Share+Tech+Mono&display=swap');
+
+    :root {
+      --primary: #00f2ff;
+      --primary-purple: #8b5cf6;
+      --primary-hover: #00d2e6;
+      --bg: #070913;
+      --surface: rgba(13, 20, 38, 0.6);
+      --surface-solid: #0d1426;
+      --text: #e2e8f0;
+      --text-muted: #7f92b0;
+      --border: rgba(0, 242, 255, 0.15);
+      --border-glow: rgba(0, 242, 255, 0.35);
+      --radius: 14px;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.05) 0px, transparent 50%);
+      color: var(--text);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      text-shadow: 0 0 5px rgba(0, 242, 255, 0.2);
+    }
+
+    a:hover {
+      color: #fff;
+      text-shadow: 0 0 10px var(--primary);
+    }
+
+    /* Layout */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7, 9, 19, 0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #fff;
+      letter-spacing: 0.05em;
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    .lang-link {
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .lang-link:hover, .lang-link.active {
+      color: var(--primary);
+      text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .qna-btn {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: rgba(0, 242, 255, 0.08);
+      border: 1px solid rgba(0, 242, 255, 0.2);
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 10px rgba(0, 242, 255, 0.05);
+    }
+
+    .qna-btn:hover {
+      background-color: var(--primary);
+      color: #070913;
+      box-shadow: 0 0 15px var(--primary);
+      text-shadow: none;
+    }
+
+    .nav-item-qna {
+      margin-top: 1.5rem;
+      border-top: 1px dashed var(--border);
+      padding-top: 1rem;
+    }
+
+    .nav-link-qna {
+      color: var(--primary) !important;
+      font-weight: 700 !important;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-link-qna:hover {
+      background-color: rgba(0, 242, 255, 0.08) !important;
+      box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+      padding: 2.5rem 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: sticky;
+      top: 6.5rem;
+      height: calc(100vh - 8rem);
+      overflow-y: auto;
+    }
+
+    .nav-list {
+      list-style: none;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 0.6rem 1.1rem;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-left: 2px solid transparent;
+      transition: all 0.25s ease;
+    }
+
+    .nav-link:hover {
+      background: rgba(13, 20, 38, 0.4);
+      color: var(--primary);
+      border-left: 2px solid var(--primary);
+    }
+
+    .nav-link.active {
+      background: rgba(99, 102, 241, 0.08);
+      color: #fff;
+      border-left: 2px solid var(--primary-purple);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.08);
+    }
+
+    /* Content */
+    .content section {
+      margin-bottom: 5rem;
+      scroll-margin-top: 7rem;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', var(--font-sans);
+      font-size: 1.9rem;
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #fff;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-glow);
+      box-shadow: 0 0 20px rgba(0, 242, 255, 0.12);
+      background: rgba(13, 20, 38, 0.8);
+    }
+
+    .card-title {
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: #fff;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .shortcut {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      background-color: rgba(13, 20, 38, 0.9);
+      border: 1px solid rgba(0, 242, 255, 0.2);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      margin: 0 0.2rem;
+      color: var(--primary);
+    }
+
+    /* Cybermatic Alert Box */
+    .alert {
+      padding: 1.2rem 1.6rem;
+      border-radius: var(--radius);
+      margin: 1.8rem 0;
+      display: flex;
+      gap: 1.1rem;
+      font-size: 0.9rem;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alert::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+
+    .alert-info {
+      background-color: rgba(99, 102, 241, 0.05);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      color: var(--text);
+    }
+
+    .alert-info::before {
+      background-color: var(--primary-purple);
+      box-shadow: 0 0 10px var(--primary-purple);
+    }
+
+    .alert-warning {
+      background-color: rgba(245, 158, 11, 0.04);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: var(--text);
+    }
+
+    .alert-warning::before {
+      background-color: #f59e0b;
+      box-shadow: 0 0 10px #f59e0b;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      background: rgba(7, 9, 19, 0.6);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      background-color: var(--primary);
+      color: #070913;
+      vertical-align: middle;
+      margin-left: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-premium {
+      background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+      color: white;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-logo">
+      <img src="icons/icon128.png" width="28" height="28" alt="Logo">
+      <span style="position: relative; display: inline-flex; align-items: center; gap: 0.25rem;">
+        <span>NanoBot</span>
+        <span style="font-size: 9px; background: linear-gradient(to right, #9333ea, #4f46e5); color: white; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0.15rem 0.35rem; border-radius: 4px; font-weight: 800; margin-left: 0.15rem; line-height: 1; display: inline-flex; align-items: center; gap: 0.15rem; margin-top: -6px; box-shadow: 0 1px 2px 0 rgba(99, 102, 241, 0.2); user-select: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="#fde047" stroke="#fde047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 1px; color: #fde047;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          AI
+        </span>
+      </span>
+    </div>
+    <div class="header-nav">
+      <a href="qna.ko.html" class="qna-btn">FAQ & Q&A</a>
+      <div class="lang-switcher">
+        <a href="help.html" class="lang-link">English</a>
+        <a href="help.ja.html" class="lang-link">日本語</a>
+        <a href="help.ko.html" class="lang-link active">한국어</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside class="sidebar">
+      <nav>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#intro" class="nav-link active">소개 및 설치 안내</a></li>
+          <li class="nav-item"><a href="#getting-started" class="nav-link">시작하기</a></li>
+          <li class="nav-item"><a href="#ai-features" class="nav-link">온디바이스 AI 기능</a></li>
+          <li class="nav-item"><a href="#buddy-feature" class="nav-link">AI 버디(Buddy) 커스텀</a></li>
+          <li class="nav-item"><a href="#settings" class="nav-link">설정 및 테마 컬러</a></li>
+          <li class="nav-item"><a href="#privacy" class="nav-link">보안 및 프라이버시</a></li>
+          <li class="nav-item nav-item-qna">
+            <a href="qna.ko.html" class="nav-link nav-link-qna">
+              <span>FAQ & Q&A</span>
+              <span class="badge">QNA</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section id="intro">
+        <h1 class="section-title">소개 및 설치 안내</h1>
+        
+        <!-- [NEW] 개발 중인 기능 관련 경고 문구 -->
+        <div class="alert alert-warning">
+          <div>
+            <strong>⚠️ Note:</strong> 이 도움말 페이지에는 현재 개발 중인 기능이 포함되어 있을 수 있습니다. 공식 크롬 웹스토어 버전과 개발 버전 간에 기능적인 차이 및 업데이트 주기의 간극이 있을 수 있으니 주의해 주시기 바랍니다.
+          </div>
+        </div>
+
+        <div class="alert alert-info">
+          <div>
+            <strong>💡 필수 요구사항:</strong> NanoBot AI는 크롬의 내장 AI 모델(Gemini Nano)을 탑재하고 있습니다. 이를 구동하려면 Chrome 버전 128 이상 및 사전 설정이 필요합니다. 설정은 <strong>FAQ & Q&A 페이지</strong>에서 안내합니다.
+          </div>
+        </div>
+
+        <p>NanoBot AI는 브라우저 내부에서 온디바이스로 직접 동작하는 혁신적인 인공지능 개인 비서입니다. 클라우드 전송 없이 온전히 내 컴퓨터 내부의 AI 연산으로 웹서핑 중 질문하고 대화하며, 스마트한 어시스턴트 역할을 완벽하게 수행합니다.</p>
+        
+        <div class="alert alert-info" style="margin-top: 1.5rem;">
+          <div>
+            <strong>💡 팁:</strong> 설치 후 크롬 툴바 우측 상단의 확장 프로그램(퍼즐 모양) 버튼을 클릭한 뒤 NanoBot의 <strong>핀(Pin)</strong> 아이콘을 켜두시면 어디서나 편리하게 호출할 수 있습니다.
+          </div>
+        </div>
+      </section>
+
+      <section id="getting-started">
+        <h2 class="section-title">시작하기</h2>
+        <div class="feature-grid">
+          <div class="card">
+            <div class="card-title">원클릭 사이드패널 오픈</div>
+            <div class="card-desc">툴바의 NanoBot 아이콘을 클릭한 뒤 [사이드패널 열기] 버튼을 누르면 넓고 시원한 사이드 바 인터페이스에서 AI와 실시간으로 긴 대화를 나눌 수 있습니다.</div>
+          </div>
+          <div class="card">
+            <div class="card-title">실시간 AI 엔진 수동 테스트</div>
+            <div class="card-desc">팝업창 오른쪽 상단의 [AI ON] 배지를 클릭하면 내 크롬 브라우저의 Gemini Nano AI 연산 엔진이 정상 작동하는지 1초 안에 진단하고 검증합니다.</div>
+          </div>
+          <div class="card">
+            <div class="card-title">커스텀 아바타 설정</div>
+            <div class="card-desc">좌측 캐러셀 컨트롤러를 이용해 나만의 인공지능 비서 아바타를 고르거나 봇의 이름을 자유롭게 변경하여 개인화된 경험을 만듭니다.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="ai-features">
+        <h2 class="section-title">온디바이스 AI 기능 <span class="badge">Core</span></h2>
+        <div class="feature-grid">
+          <div class="card">
+            <div class="card-title">100% 로컬 AI 챗봇</div>
+            <div class="card-desc">서버 전송 대기시간이 최소화된 로컬 실시간 AI가 동작합니다. 인터넷 연결이 끊겨도 오프라인 대화가 지속됩니다.</div>
+          </div>
+          <div class="card">
+            <div class="card-title">웹 브라우징 컨텍스트 공유</div>
+            <div class="card-desc">현재 보고 있는 웹페이지의 텍스트나 내용을 요약하고 질문할 수 있어 연구, 개발 및 학습의 생산성을 극대화합니다.</div>
+          </div>
+          <div class="card">
+            <div class="card-title">아바타 무작위 셔플</div>
+            <div class="card-desc">셔플 아이콘을 누르면 나노봇의 아바타가 다양하고 유니크한 캐릭터로 랜덤 변경되어 대화의 재미를 더해줍니다.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="buddy-feature">
+        <h2 class="section-title">AI 버디(Buddy) 커스터마이징 <span class="badge badge-premium">Premium</span></h2>
+        <p>Premium 버전을 이용하시면 기본 아바타 외에 나만의 독립적인 성격과 지식을 주입한 맞춤형 동반자 AI 버디를 생성하고 활성화할 수 있습니다.</p>
+        <div class="feature-grid">
+          <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
+            <div class="card-title">페르소나 및 성격 주입</div>
+            <div class="card-desc">번역 전문가, 개발 멘토, 라이팅 코치 등 내가 원하는 성격의 프롬프트 지침을 세밀하게 작성하여 버디에게 성격을 부여합니다.</div>
+          </div>
+          <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
+            <div class="card-title">멀티 버디 관리</div>
+            <div class="card-desc">다양한 목적의 버디들을 각각 개별적으로 설정하고 보관하며, 목적에 맞는 대화 상대 버디를 원클릭으로 손쉽게 스위칭합니다.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="settings">
+        <h2 class="section-title">설정 및 테마 컬러 커스텀</h2>
+        <ul>
+          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>다국어 현지화 지원:</strong> 한국어, 영어, 일본어를 완벽하게 교차 지원하며 팝업 및 사이드패널 전체 다국어 번역이 제공됩니다.</li>
+          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>테마 모드 전환:</strong> 눈의 피로를 덜어주는 Sleek Dark Mode와 화사한 Light Mode를 클릭 한 번으로 매끄럽게 교체합니다.</li>
+          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>테마 컬러 칩 셀렉션:</strong> Indigo, Violet 등 세련된 그라데이션 컬러 칩 옵션으로 나노봇 테마 컬러를 감각적으로 지정할 수 있습니다.</li>
+        </ul>
+      </section>
+
+      <section id="privacy">
+        <h2 class="section-title" style="color: #10b981;">보안 및 프라이버시</h2>
+        <div class="card" style="border-left: 4px solid #10b981;">
+          <div class="card-title">100% 온디바이스 동작 보장</div>
+          <div class="card-desc">사용자의 소중한 대화 기록, 질문 사항, 설정 정보는 외부 클라우드 서버에 절대로 백업되거나 송신되지 않고, 전적으로 사용자 브라우저 로컬 저장소에만 격리 보관됩니다.</div>
+        </div>
+        <div class="card" style="border-left: 4px solid #10b981; border: 1px dashed rgba(16, 185, 129, 0.4); margin-top: 1rem;">
+          <div class="card-title">이중 패스 안전 가드레일 (Dual-Pass Guardrails)</div>
+          <div class="card-desc">메인 로컬 AI 모델로 입력이 전송되기 전, 로컬 필터링 가드레일이 유해성 콘텐츠(폭력, 음란물, 불법 정보) 및 프롬프트 탈옥 공격을 실시간으로 감지하고 즉각 격리/방어합니다.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <section id="support" style="text-align: center; padding: 2.5rem; background-color: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); margin-top: 4rem; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); backdrop-filter: blur(8px);">
+    <h2 style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff;">Support the Project</h2>
+    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">If NanoBot helps you stay productive, consider buying me a coffee!</p>
+    <a href="https://www.buymeacoffee.com/junpa" target="_blank" style="display: inline-block;">
+      <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=junpa&button_colour=6366f1&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00" alt="Buy Me A Coffee" style="height: 44px;">
+    </a>
+  </section>
+
+  <footer>
+    <p>© 2026 NanoBot AI - <a href="https://nexusforce.cloud/" target="_blank" style="color: inherit; text-decoration: underline;">NexusForce</a>. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        if (pageYOffset >= section.offsetTop - 150) {
+          current = section.getAttribute('id');
+        }
+      });
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

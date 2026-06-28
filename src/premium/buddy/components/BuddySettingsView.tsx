@@ -106,10 +106,15 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
             className="w-8 h-8 rounded-lg object-cover border border-purple-500/40"
           />
           <div>
-            <p className="text-[11px] font-black text-purple-400 leading-tight">
-              {buddySettings.buddy_name || "My Buddy"}
-            </p>
-            <p className={`text-[9px] ${theme.textSub}`}>
+            <div className="flex items-center gap-1.5">
+              <p className="text-[11px] font-black text-purple-400 leading-tight">
+                {buddySettings.buddy_name || "My Buddy"}
+              </p>
+              <span className="text-[7.5px] px-1 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-extrabold tracking-wider leading-none select-none shrink-0">
+                PREMIUM
+              </span>
+            </div>
+            <p className={`text-[9px] ${theme.textSub} mt-0.5`}>
               {t("buddy.settings.title", "버디 세부 설정")}
             </p>
           </div>
