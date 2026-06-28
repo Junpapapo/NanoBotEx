@@ -14,7 +14,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   nano_ai_bypass: false,
   nano_ai_persona: DEFAULT_PERSONA,
   nano_ai_temperature: 0.7,
-  nano_ai_context_level: "detailed",
+  nano_ai_context_level: "standard",
   api_mode: "local",
   api_key: "",
   api_url: "https://api.openai.com/v1",
