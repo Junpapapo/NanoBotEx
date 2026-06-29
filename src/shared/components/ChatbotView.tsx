@@ -272,7 +272,7 @@ export function ChatbotView({
         },
         async (results) => {
           if (chrome.runtime.lastError) {
-            console.error("executeScript error:", chrome.runtime.lastError);
+            console.warn("executeScript warning:", chrome.runtime.lastError.message);
             alert(`Cannot read the web page content.\n(Reason: ${chrome.runtime.lastError.message || "Security restrictions or page blocked"})`);
             return;
           }
