@@ -31,12 +31,19 @@ export function AlarmDialog({
       const truncatedTitle = defaultTitle.trim().slice(0, 30) + (defaultTitle.length > 30 ? "..." : "");
       setTitle(truncatedTitle || "알람 알림");
       
-      // 내일 날짜와 오전 9시 기본값 지정
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowStr = tomorrow.toISOString().split("T")[0];
-      setDate(tomorrowStr);
-      setTime("09:00");
+      // 로컬 타임존 기반 현재 날짜/시간을 디폴트로 지정
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      const dateStr = `${year}-${month}-${day}`;
+      
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      const timeStr = `${hours}:${minutes}`;
+
+      setDate(dateStr);
+      setTime(timeStr);
       setErrorMsg("");
     }
   }, [isOpen, defaultTitle]);

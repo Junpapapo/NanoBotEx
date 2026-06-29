@@ -51,10 +51,19 @@ export function AlarmPanel({
   };
 
   const handleOpenAddForm = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    setNewDate(tomorrow.toISOString().split("T")[0]);
-    setNewTime("09:00");
+    // 로컬 타임존 기반 현재 날짜/시간을 디폴트로 지정
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const dateStr = `${year}-${month}-${day}`;
+    
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const timeStr = `${hours}:${minutes}`;
+
+    setNewDate(dateStr);
+    setNewTime(timeStr);
     setErrorMsg("");
     setShowAddForm(true);
   };
