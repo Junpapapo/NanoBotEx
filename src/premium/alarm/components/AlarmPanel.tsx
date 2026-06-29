@@ -10,6 +10,7 @@ interface AlarmPanelProps {
   onAddManualAlarm: (title: string, timeISO: string) => void;
   theme: any;
   t: any;
+  locale: string;
 }
 
 export function AlarmPanel({
@@ -18,7 +19,8 @@ export function AlarmPanel({
   onDelete,
   onAddManualAlarm,
   theme,
-  t
+  t,
+  locale
 }: AlarmPanelProps) {
   const [newTitle, setNewTitle] = useState("");
   const [newDate, setNewDate] = useState("");
@@ -91,6 +93,78 @@ export function AlarmPanel({
           <span className="font-bold text-white text-sm">{t("premium.alarm.title", "알람 알리미")}</span>
           <span className="text-[10px] text-slate-400 font-normal">({activeAlarms.length})</span>
         </div>
+      </div>
+
+      {/* 새 알람 추가 버튼 및 폼 영역 (예정된 알람 위에 배치) */}
+      <div className="mb-4 shrink-0">
+        {!showAddForm ? (
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="w-full py-2 rounded-lg border border-dashed border-indigo-500/35 bg-indigo-500/5 text-indigo-400 hover:bg-indigo-600 hover:text-white font-bold flex items-center justify-center gap-1.5 transition cursor-pointer text-xs"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {t("premium.alarm.addBtn", "새 알람 추가")}
+          </button>
+        ) : (
+          <motion.form
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            onSubmit={handleAddSubmit}
+            className="p-3 bg-white/[0.03] border border-white/[0.06] rounded-lg space-y-3"
+          >
+            <div>
+              <input
+                type="text"
+                placeholder={t("premium.alarm.addForm.placeholder", "알람 메모 입력...")}
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                className="w-full px-2.5 py-1.5 bg-slate-900 border border-white/10 rounded-md text-white placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="date"
+                lang={locale}
+                value={newDate}
+                onChange={(e) => setNewDate(e.target.value)}
+                onClick={(e) => {
+                  try {
+                    e.currentTarget.showPicker();
+                  } catch (err) {}
+                }}
+                className="w-full px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[11px] focus:outline-none cursor-pointer"
+              />
+              <input
+                type="time"
+                lang={locale}
+                value={newTime}
+                onChange={(e) => setNewTime(e.target.value)}
+                onClick={(e) => {
+                  try {
+                    e.currentTarget.showPicker();
+                  } catch (err) {}
+                }}
+                className="w-full px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[11px] focus:outline-none cursor-pointer"
+              />
+            </div>
+            {errorMsg && <p className="text-[10px] text-rose-400">{errorMsg}</p>}
+            <div className="flex justify-end gap-1.5 pt-1">
+              <button
+                type="button"
+                onClick={() => setShowAddForm(false)}
+                className="px-2.5 py-1 rounded bg-white/5 text-slate-300 hover:bg-white/10 text-[10px] transition cursor-pointer"
+              >
+                {t("premium.alarm.addForm.cancel", "취소")}
+              </button>
+              <button
+                type="submit"
+                className="px-2.5 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-500 text-[10px] transition cursor-pointer"
+              >
+                {t("premium.alarm.addForm.add", "추가")}
+              </button>
+            </div>
+          </motion.form>
+        )}
       </div>
 
       {/* 리스트 영역 */}
@@ -188,66 +262,6 @@ export function AlarmPanel({
               ))}
             </div>
           </div>
-        )}
-      </div>
-
-      {/* 하단 새 알람 추가 버튼 및 폼 영역 */}
-      <div className="mt-4 pt-3 border-t border-white/[0.08] shrink-0">
-        {!showAddForm ? (
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="w-full py-2 rounded-lg border border-dashed border-indigo-500/35 bg-indigo-500/5 text-indigo-400 hover:bg-indigo-600 hover:text-white font-bold flex items-center justify-center gap-1.5 transition cursor-pointer text-xs"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            {t("premium.alarm.addBtn", "새 알람 추가")}
-          </button>
-        ) : (
-          <motion.form
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            onSubmit={handleAddSubmit}
-            className="p-3 bg-white/[0.03] border border-white/[0.06] rounded-lg space-y-3"
-          >
-            <div>
-              <input
-                type="text"
-                placeholder={t("premium.alarm.addForm.placeholder", "알람 메모 입력...")}
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                className="w-full px-2.5 py-1.5 bg-slate-900 border border-white/10 rounded-md text-white placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                type="date"
-                value={newDate}
-                onChange={(e) => setNewDate(e.target.value)}
-                className="w-full px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[11px] focus:outline-none"
-              />
-              <input
-                type="time"
-                value={newTime}
-                onChange={(e) => setNewTime(e.target.value)}
-                className="w-full px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[11px] focus:outline-none"
-              />
-            </div>
-            {errorMsg && <p className="text-[10px] text-rose-400">{errorMsg}</p>}
-            <div className="flex justify-end gap-1.5 pt-1">
-              <button
-                type="button"
-                onClick={() => setShowAddForm(false)}
-                className="px-2.5 py-1 rounded bg-white/5 text-slate-300 hover:bg-white/10 text-[10px] transition cursor-pointer"
-              >
-                {t("premium.alarm.addForm.cancel", "취소")}
-              </button>
-              <button
-                type="submit"
-                className="px-2.5 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-500 text-[10px] transition cursor-pointer"
-              >
-                {t("premium.alarm.addForm.add", "추가")}
-              </button>
-            </div>
-          </motion.form>
         )}
       </div>
     </div>

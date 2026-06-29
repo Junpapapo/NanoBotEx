@@ -540,6 +540,7 @@ export function ChatbotView({
               onAddManualAlarm={(title, timeISO) => addAlarm(title, timeISO, "manual")}
               theme={theme}
               t={t}
+              locale={locale}
             />
           )}
           {activePanel === "guide" && (
@@ -822,6 +823,7 @@ export function ChatbotView({
         onClose={() => setIsAlarmDialogOpen(false)}
         onSave={(title, time) => addAlarm(title, time, alarmSource)}
         t={t}
+        locale={locale}
       />
     </div>
   );

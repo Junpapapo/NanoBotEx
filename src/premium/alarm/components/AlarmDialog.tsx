@@ -8,6 +8,7 @@ interface AlarmDialogProps {
   onClose: () => void;
   onSave: (title: string, timeISO: string) => void;
   t: any;
+  locale: string;
 }
 
 export function AlarmDialog({
@@ -15,7 +16,8 @@ export function AlarmDialog({
   defaultTitle,
   onClose,
   onSave,
-  t
+  t,
+  locale
 }: AlarmDialogProps) {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
@@ -115,9 +117,15 @@ export function AlarmDialog({
                 </label>
                 <input
                   type="date"
+                  lang={locale}
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all custom-datetime-picker"
+                  onClick={(e) => {
+                    try {
+                      e.currentTarget.showPicker();
+                    } catch (err) {}
+                  }}
+                  className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all custom-datetime-picker cursor-pointer"
                 />
               </div>
 
@@ -128,9 +136,15 @@ export function AlarmDialog({
                 </label>
                 <input
                   type="time"
+                  lang={locale}
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all custom-datetime-picker"
+                  onClick={(e) => {
+                    try {
+                      e.currentTarget.showPicker();
+                    } catch (err) {}
+                  }}
+                  className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all custom-datetime-picker cursor-pointer"
                 />
               </div>
             </div>
