@@ -240,10 +240,28 @@ export function ChatbotView({
     try {
       const [tab] = await chrome.tabs.query({
         active: true,
-        lastFocusedWindow: true,
+        currentWindow: true,
       });
       if (!tab || !tab.id) {
         alert("요약할 활성 웹 페이지를 찾을 수 없습니다.");
+        return;
+      }
+
+      const url = tab.url || "";
+      if (
+        url.startsWith("chrome://") ||
+        url.startsWith("chrome-extension://") ||
+        url.includes("chrome.google.com/webstore") ||
+        url.includes("chromewebstore.google.com")
+      ) {
+        alert(
+          "크롬 보안 정책상 브라우저 설정 페이지, 내장 도움말 페이지, 또는 크롬 웹스토어에서는 웹 페이지 요약 기능이 지원되지 않습니다.\n\n일반 뉴스나 블로그 등 외부 웹사이트에서 실행해 주세요."
+        );
+        return;
+      }
+
+      if (url.endsWith(".pdf") || url.includes(".pdf#")) {
+        alert("PDF 뷰어 탭에서는 웹 페이지 요약 기능을 사용할 수 없습니다. 일반 웹페이지에서 실행해 주세요.");
         return;
       }
 
@@ -253,12 +271,18 @@ export function ChatbotView({
           func: () => document.body.innerText,
         },
         async (results) => {
-          if (!results || !results[0]) {
-            alert("웹 페이지 내용을 읽어올 수 없습니다.");
+          if (chrome.runtime.lastError) {
+            console.error("executeScript error:", chrome.runtime.lastError);
+            alert(`웹 페이지 내용을 읽어올 수 없습니다.\n(원인: ${chrome.runtime.lastError.message || "보안 제한 또는 페이지 차단"})`);
             return;
           }
 
-          const rawText = results[0].result as string;
+          if (!results || !results[0] || typeof results[0].result !== "string") {
+            alert("웹 페이지 내용을 읽어올 수 없습니다. 본문 텍스트가 비어 있거나 추출에 실패했습니다.");
+            return;
+          }
+
+          const rawText = results[0].result;
           const cleanedText = rawText
             .replace(/\s+/g, " ")
             .trim()
