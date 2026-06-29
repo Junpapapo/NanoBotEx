@@ -233,7 +233,7 @@ export function ChatbotView({
 
   const handleSummarizeCurrentPage = async () => {
     if (typeof chrome === "undefined" || !chrome.tabs || !chrome.scripting) {
-      alert("크롬 익스텐션 환경에서만 웹 페이지 요약 기능이 지원됩니다.");
+      alert("Page summarization is only supported in a Chrome Extension environment.");
       return;
     }
 
@@ -243,7 +243,7 @@ export function ChatbotView({
         currentWindow: true,
       });
       if (!tab || !tab.id) {
-        alert("요약할 활성 웹 페이지를 찾을 수 없습니다.");
+        alert("Cannot find an active web page to summarize.");
         return;
       }
 
@@ -255,13 +255,13 @@ export function ChatbotView({
         url.includes("chromewebstore.google.com")
       ) {
         alert(
-          "크롬 보안 정책상 브라우저 설정 페이지, 내장 도움말 페이지, 또는 크롬 웹스토어에서는 웹 페이지 요약 기능이 지원되지 않습니다.\n\n일반 뉴스나 블로그 등 외부 웹사이트에서 실행해 주세요."
+          "Due to Chrome's security policies, page summarization is not supported on browser settings, built-in extension pages, or the Chrome Web Store.\n\nPlease try again on a standard external website."
         );
         return;
       }
 
       if (url.endsWith(".pdf") || url.includes(".pdf#")) {
-        alert("PDF 뷰어 탭에서는 웹 페이지 요약 기능을 사용할 수 없습니다. 일반 웹페이지에서 실행해 주세요.");
+        alert("Page summarization is not supported on PDF tabs. Please run on a standard web page.");
         return;
       }
 
@@ -273,12 +273,12 @@ export function ChatbotView({
         async (results) => {
           if (chrome.runtime.lastError) {
             console.error("executeScript error:", chrome.runtime.lastError);
-            alert(`웹 페이지 내용을 읽어올 수 없습니다.\n(원인: ${chrome.runtime.lastError.message || "보안 제한 또는 페이지 차단"})`);
+            alert(`Cannot read the web page content.\n(Reason: ${chrome.runtime.lastError.message || "Security restrictions or page blocked"})`);
             return;
           }
 
           if (!results || !results[0] || typeof results[0].result !== "string") {
-            alert("웹 페이지 내용을 읽어올 수 없습니다. 본문 텍스트가 비어 있거나 추출에 실패했습니다.");
+            alert("Cannot read the web page content. The body text might be empty or extraction failed.");
             return;
           }
 
@@ -289,7 +289,7 @@ export function ChatbotView({
             .slice(0, 3000);
 
           if (!cleanedText) {
-            alert("요약할 텍스트 본문이 비어 있습니다.");
+            alert("The extracted web page text is empty.");
             return;
           }
 
@@ -304,7 +304,7 @@ export function ChatbotView({
       );
     } catch (err: any) {
       console.error("Failed to summarize page:", err);
-      alert("페이지 요약 실패: " + (err.message || err));
+      alert("Failed to summarize page: " + (err.message || err));
     }
   };
 
