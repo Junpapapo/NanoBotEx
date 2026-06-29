@@ -27,6 +27,17 @@ A lightweight utility that brings a customized AI assistant directly onto your b
 - **Chrome Web Store Policy Compliant Tools**:
   - Built-in **Smart Calculator & Unit Converter** (Pyung/㎡ & Temperature).
   - Fully compliant with Web Store security guidelines (zero dynamic code execution; mathematical evaluations run through a secure custom tokenizer instead of unsafe `eval()`).
+- **Premium Reminders & Alarms**:
+  - Set schedule reminders directly from memo panels or AI chat conversations with a ⏰ icon.
+  - Features system OS notifications via background service worker alarms, paired with interactive in-app toast alerts when the sidepanel is active.
+  - Dedicated alarm management subpanel for listing, toggling, and deleting scheduled alarms.
+- **Active Browser Integration**:
+  - **Inline Selection Drag & Action**: Drag text on any web page to evoke a floating Quick Action tooltip (Summarize/Translate) which automatically triggers processing.
+  - **1-Click Active Tab Summarization**: Click the document icon in the chat header to scrape and summarize the active tab in 3 lines.
+- **Micro-Interactions & Premium UI Animations**:
+  - Smooth spring physical layout transitions on chat messages.
+  - **Aurora Glow Borders**: Neon multi-color gradient border rotation animation on the text input container during local model generation.
+  - Elastic spring hover bounce reactions on bot and buddy avatars.
 - **Multilingual Support**: Supports English, Korean (한국어), and Japanese (日本語).
 - **Modern Responsive Design**: Premium dark-mode-first aesthetic with dynamic CSS skin mode (Dark/Light) and customizable theme color accents.
 - **Auto-Focus on Reply**: The text input area automatically regains focus after the AI finishes generating a response, enabling seamless continuous conversation without extra clicks.

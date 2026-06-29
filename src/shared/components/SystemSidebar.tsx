@@ -23,7 +23,8 @@ import {
   MessageSquare,
   MessageSquareOff,
   SlidersHorizontal,
-  BookOpen
+  BookOpen,
+  Bell
 } from "lucide-react";
 import { UserSettings, ScenarioType, BuddySettings } from "../chatbot-types";
 import { ENABLE_PREMIUM } from "../../premium/premium-config";
@@ -40,7 +41,8 @@ export type PanelType =
   | "settings" 
   | "bot-settings"
   | "buddy-settings"
-  | "buddy-diary";
+  | "buddy-diary"
+  | "alarm";
 
 interface SystemSidebarProps {
   activePanel: PanelType;
@@ -257,6 +259,20 @@ export function SystemSidebar({
           title={t("sidebar.tooltips.memo", "메모장")}
         >
           <CheckSquare size={12} />
+        </button>
+
+        {/* 알람 */}
+        <button
+          type="button"
+          onClick={() => handleTabToggle("alarm")}
+          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
+            activePanel === "alarm"
+              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
+              : btnMutedClass
+          }`}
+          title={t("sidebar.tooltips.alarm", "알람 알리미")}
+        >
+          <Bell size={12} />
         </button>
       </div>
 

@@ -80,8 +80,10 @@ export function ChatInput({
 
   return (
     <div className={`p-3 border-t ${theme.borderMuted} ${theme.bgInput} flex-shrink-0 flex flex-col gap-2`}>
-      <div className={`relative flex items-end ${theme.bgSub} border ${theme.borderMuted} rounded-2xl p-2 transition-all ${
-        focusWithinBorderMap[themeKey] || focusWithinBorderMap.indigo
+      <div className={`relative flex items-end ${theme.bgSub} border rounded-2xl p-2 transition-all ${
+        isSending 
+          ? "aurora-glow" 
+          : `${theme.borderMuted} ${focusWithinBorderMap[themeKey] || focusWithinBorderMap.indigo}`
       }`}>
         <textarea
           ref={textareaRef}

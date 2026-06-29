@@ -22,12 +22,14 @@ import { DiagnosticsPanel } from "./tools/DiagnosticsPanel";
 import { BotSettingsPanel } from "./tools/BotSettingsPanel";
 import { SettingsPanel } from "./tools/SettingsPanel";
 import { ALL_AVATARS } from "./tools/settings-panel/avatar-list";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { X, Maximize2, Minimize2 } from "lucide-react";
 import { ENABLE_PREMIUM } from "../../premium/premium-config";
 import { useBuddySession, BuddyChatView, DEFAULT_BUDDY_SETTINGS, BuddySettingsView } from "../../premium/buddy";
 import { BuddySettings } from "../chatbot-types";
 import { BuddyDiaryPanel } from "../../premium/buddy/components/BuddyDiaryPanel";
+import { useAlarm, AlarmDialog, AlarmPanel } from "../../premium/alarm";
+import { Bell, AlertCircle } from "lucide-react";
 
 interface ChatbotViewProps {
   settings: UserSettings;
@@ -79,6 +81,168 @@ export function ChatbotView({
     "buddy_settings",
     DEFAULT_BUDDY_SETTINGS
   );
+
+  // 프리미엄 스마트 알람 관리
+  const {
+    alarms,
+    addAlarm,
+    deleteAlarm,
+    toggleAlarmActive,
+    markAsTriggered
+  } = useAlarm();
+
+  const [isAlarmDialogOpen, setIsAlarmDialogOpen] = useState(false);
+  const [alarmDefaultTitle, setAlarmDefaultTitle] = useState("");
+  const [alarmSource, setAlarmSource] = useState<"memo" | "chat" | "manual">("manual");
+  const [activeToast, setActiveToast] = useState<{ id: string; title: string } | null>(null);
+
+  // 로캘(설정된 언어)에 따라 요약/번역 지침 생성 헬퍼
+  const getPromptInstruction = (type: "summarize" | "translate" | "page_summarize", content: string) => {
+    const isKo = locale === "ko";
+    const isJa = locale === "ja";
+
+    if (type === "summarize") {
+      if (isKo) return `다음 드래그한 텍스트를 분석하여 핵심 내용을 한국어로 3줄 이내로 명확하게 요약해줘.\n\n[텍스트]\n${content}`;
+      if (isJa) return `以下のドラッグしたテキストを分析し、重要な内容を日本語で3行以内で明確に要約してください。\n\n[テキスト]\n${content}`;
+      return `Please analyze the following dragged text and clearly summarize the key points in English within 3 lines.\n\n[Text]\n${content}`;
+    }
+    
+    if (type === "translate") {
+      if (isKo) return `다음 드래그한 텍스트를 문맥에 맞게 아주 매끄러운 한국어로 번역해줘.\n\n[텍스트]\n${content}`;
+      if (isJa) return `以下のドラッグしたテキストを、文脈に合わせて非常に自然な日本語に翻訳してください。\n\n[テキスト]\n${content}`;
+      return `Please translate the following dragged text into very natural English according to the context.\n\n[Text]\n${content}`;
+    }
+
+    // page_summarize
+    if (isKo) return `다음은 사용자가 보고 있는 현재 웹 페이지의 본문입니다. 이 내용을 분석하여 핵심 내용을 친절하고 명확한 한국어 3줄 이내로 요약해서 답변해줘.\n\n[웹 페이지 본문]\n${content}`;
+    if (isJa) return `以下はユーザーが閲覧している現在のウェブページの本文です。この内容を分析し、主要な内容を親切かつ明確に日本語で3行以内で要約して回答してください。\n\n[ウェブページ本文]\n${content}`;
+    return `The following is the main text of the current web page the user is viewing. Please analyze this content and kindly and clearly summarize the key points in English within 3 lines.\n\n[Web Page Content]\n${content}`;
+  };
+
+  // 드래그 액션 처리 헬퍼
+  const handleDragAction = (text: string, type: "summarize" | "translate") => {
+    const prompt = getPromptInstruction(type, text);
+    
+    if (activeMode === "buddy") {
+      sendBuddyMessage(prompt);
+    } else {
+      sendMessage(prompt);
+    }
+  };
+
+  // 알람 트리거 메시지 리스너
+  useEffect(() => {
+    if (typeof chrome === "undefined" || !chrome.runtime || !chrome.runtime.onMessage) return;
+
+    const handleMessage = (message: any) => {
+      if (message.action === "alarm_triggered" && message.alarm) {
+        setActiveToast({
+          id: message.alarm.id,
+          title: message.alarm.title
+        });
+        markAsTriggered(message.alarm.id);
+
+        setTimeout(() => {
+          setActiveToast(prev => prev?.id === message.alarm.id ? null : prev);
+        }, 5000);
+      }
+    };
+
+    chrome.runtime.onMessage.addListener(handleMessage);
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessage);
+    };
+  }, [markAsTriggered]);
+
+  // 스토리지 기반 드래그앤액션 감지 및 중복 없는 소비
+  useEffect(() => {
+    if (typeof chrome === "undefined" || !chrome.storage || !chrome.storage.local) return;
+
+    const consumeDragAction = (pending: any) => {
+      if (pending && pending.text) {
+        handleDragAction(pending.text, pending.type);
+        // 스토리지 클리어하여 중복 실행 방지
+        chrome.storage.local.remove("pending_drag");
+      }
+    };
+
+    // 1. 마운트 시 대기 중인 드래그 스냅샷 소비
+    chrome.storage.local.get(["pending_drag"], (result) => {
+      if (result.pending_drag) {
+        setTimeout(() => {
+          consumeDragAction(result.pending_drag);
+        }, 400);
+      }
+    });
+
+    // 2. 실시간 스토리지 변경 수신
+    const handleStorageChange = (changes: any, areaName: string) => {
+      if (areaName === "local" && changes.pending_drag && changes.pending_drag.newValue) {
+        consumeDragAction(changes.pending_drag.newValue);
+      }
+    };
+
+    chrome.storage.onChanged.addListener(handleStorageChange);
+    return () => {
+      chrome.storage.onChanged.removeListener(handleStorageChange);
+    };
+  }, [activeMode]);
+
+  const handleOpenAlarmDialog = (title: string, source: "memo" | "chat") => {
+    setAlarmDefaultTitle(title);
+    setAlarmSource(source);
+    setIsAlarmDialogOpen(true);
+  };
+
+  const handleSummarizeCurrentPage = async () => {
+    if (typeof chrome === "undefined" || !chrome.tabs || !chrome.scripting) {
+      alert("크롬 익스텐션 환경에서만 웹 페이지 요약 기능이 지원됩니다.");
+      return;
+    }
+
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab || !tab.id) {
+        alert("요약할 활성 웹 페이지를 찾을 수 없습니다.");
+        return;
+      }
+
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: tab.id },
+          func: () => document.body.innerText
+        },
+        async (results) => {
+          if (!results || !results[0]) {
+            alert("웹 페이지 내용을 읽어올 수 없습니다.");
+            return;
+          }
+
+          const rawText = results[0].result as string;
+          const cleanedText = rawText
+            .replace(/\s+/g, " ")
+            .trim()
+            .slice(0, 3000);
+
+          if (!cleanedText) {
+            alert("요약할 텍스트 본문이 비어 있습니다.");
+            return;
+          }
+
+          const prompt = getPromptInstruction("page_summarize", cleanedText);
+          
+          if (activeMode === "buddy") {
+            sendBuddyMessage(prompt);
+          } else {
+            sendMessage(prompt);
+          }
+        }
+      );
+    } catch (err: any) {
+      console.error("Failed to summarize page:", err);
+      alert("페이지 요약 실패: " + (err.message || err));
+    }
+  };
 
   const {
     messages: buddyMessages,
@@ -360,7 +524,24 @@ export function ChatbotView({
               theme={theme}
             />
           )}
-          {activePanel === "memo" && <MemoPanel locale={locale} t={t} theme={theme} />}
+          {activePanel === "memo" && (
+            <MemoPanel 
+              locale={locale} 
+              t={t} 
+              theme={theme} 
+              onOpenAlarm={(title) => handleOpenAlarmDialog(title, "memo")} 
+            />
+          )}
+          {activePanel === "alarm" && (
+            <AlarmPanel
+              alarms={alarms}
+              onToggleActive={toggleAlarmActive}
+              onDelete={deleteAlarm}
+              onAddManualAlarm={(title, timeISO) => addAlarm(title, timeISO, "manual")}
+              theme={theme}
+              t={t}
+            />
+          )}
           {activePanel === "guide" && (
             <GuidePanel 
               t={t} 
@@ -455,6 +636,7 @@ export function ChatbotView({
           showRightMenu={isRightMenuOpen}
           onToggleRightMenu={() => setIsRightMenuOpen(!isRightMenuOpen)}
           onClearScreen={handleClearScreen}
+          onSummarizePage={handleSummarizeCurrentPage}
           layoutMode={layoutMode}
           t={t}
         />
@@ -489,6 +671,7 @@ export function ChatbotView({
                   setGuideSection(section);
                   setActivePanel("guide");
                 }}
+                onOpenAlarm={(title) => handleOpenAlarmDialog(title, "chat")}
                 t={t}
               />
 
@@ -606,6 +789,39 @@ export function ChatbotView({
         onCancel={dialogState.onCancel}
         confirmText={t("common.confirm", "확인")}
         cancelText={t("common.cancel", "취소")}
+      />
+
+      {/* 인앱 토스트 알림 */}
+      <AnimatePresence>
+        {activeToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-16 right-4 z-[9999] p-3 rounded-lg border border-indigo-500/30 bg-[#0c122c]/95 shadow-2xl flex items-start gap-2.5 max-w-[280px]"
+          >
+            <Bell className="h-4 w-4 text-indigo-400 shrink-0 mt-0.5 animate-bounce" />
+            <div className="flex-1 min-w-0">
+              <h4 className="text-[11px] font-bold text-white mb-0.5">{t("premium.alarm.toast.title", "⏰ 알람 리마인더")}</h4>
+              <p className="text-[10px] text-slate-300 truncate">{activeToast.title}</p>
+            </div>
+            <button
+              onClick={() => setActiveToast(null)}
+              className="text-slate-500 hover:text-white transition cursor-pointer"
+            >
+              <X size={12} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 알람 설정 다이얼로그 */}
+      <AlarmDialog
+        isOpen={isAlarmDialogOpen}
+        defaultTitle={alarmDefaultTitle}
+        onClose={() => setIsAlarmDialogOpen(false)}
+        onSave={(title, time) => addAlarm(title, time, alarmSource)}
+        t={t}
       />
     </div>
   );

@@ -24,7 +24,8 @@
       "maximize": "最大化",
       "restore": "元のサイズに戻す",
       "close": "閉じる",
-      "clearScreen": "画面の会話をクリア"
+      "clearScreen": "画面の会話をクリア",
+      "summarizePage": "現在のアクティブタブの要約"
     },
     "input": {
       "placeholder": "メッセージを入力...",
@@ -77,6 +78,7 @@
       "iconToggleOpen": "アイコンを変更 ⚙️",
       "iconToggleClose": "折りたたむ ✕",
       "urlLabel": "ウェブサイト URL",
+      "autofill": "現在のページを取得",
       "namePlaceholder": "ブックマーク名を入力...",
       "deleteConfirm": "このブックマークを削除しますか？",
       "cancel": "キャンセル",
@@ -667,6 +669,45 @@
       "memories": "バディの記憶",
       "diary": {
         "empty": "まだ日記がありません。今日バディとたくさんおしゃべりして、クイックメニューから今日の日記をリクエストしてみてください！🐾"
+      }
+    },
+    "premium": {
+      "alarm": {
+        "title": "アラーム通知",
+        "active": "予定されたアラーム",
+        "empty": "予定されたアラームはありません。",
+        "history": "通知完了履歴",
+        "source": {
+          "memo": "メモ",
+          "chat": "チャット",
+          "manual": "手動"
+        },
+        "addBtn": "新規アラーム追加",
+        "addForm": {
+          "placeholder": "アラームメモを入力...",
+          "cancel": "キャンセル",
+          "add": "追加",
+          "errorEmpty": "アラームの内容を入力してください。",
+          "errorDateTime": "日付と時間を指定してください。",
+          "errorFormat": "無効な日付/時間の形式です。",
+          "errorPast": "未来の時間に設定する必要があります。"
+        },
+        "dialog": {
+          "title": "アラーム予約設定",
+          "labelContent": "アラームの内容",
+          "labelDate": "日付",
+          "labelTime": "時間",
+          "btnSave": "アラーム設定",
+          "errorTitle": "アラームの内容を入力してください。"
+        },
+        "toast": {
+          "title": "⏰ アラームリマインダー"
+        }
+      }
+    },
+    "sidebar": {
+      "tooltips": {
+        "alarm": "アラーム通知"
       }
     }
   }

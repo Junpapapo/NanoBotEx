@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 interface AIAvatarProps {
   avatarPath: string;
@@ -37,7 +38,9 @@ export function AIAvatar({ avatarPath, size = 32, className = "" }: AIAvatarProp
   const isImageAvatar = !!path;
 
   return (
-    <div
+    <motion.div
+      whileHover={{ scale: 1.08, rotate: [0, -1.5, 1.5, 0] }}
+      transition={{ type: "spring", stiffness: 400, damping: 15 }}
       className={`relative rounded-xl overflow-hidden shrink-0 flex items-center justify-center bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-400 p-[1px] shadow-lg shadow-indigo-500/20 ${className}`}
       style={{ width: size, height: size }}
     >
@@ -101,6 +104,6 @@ export function AIAvatar({ avatarPath, size = 32, className = "" }: AIAvatarProp
           </svg>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

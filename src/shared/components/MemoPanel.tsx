@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Plus, Trash2, CheckSquare, ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
+import { Plus, Trash2, CheckSquare, ChevronLeft, ChevronRight, CalendarDays, Bell } from "lucide-react";
 import { useChromeStorage } from "../hooks/useChromeStorage";
 
 interface Note {
@@ -177,7 +177,7 @@ function MiniCalendar({ selectedDate, onSelectDate, todoDates, doneDates, theme,
   );
 }
 
-export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme: any }) {
+export function MemoPanel({ locale, t, theme, onOpenAlarm }: { locale: string; t: any; theme: any; onOpenAlarm?: (title: string) => void }) {
   const [activeTab, setActiveTab] = useState<"memo" | "todo">("memo");
 
   // 메모 상태
@@ -377,6 +377,15 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
                       className={`flex-1 bg-transparent border-b ${theme.borderMuted} text-xs font-bold pb-1 focus:outline-none ${theme.focusBorder} ${theme.textMain}`}
                       placeholder={t("tools.memo.memoTitlePlaceholder", "제목")}
                     />
+                    {onOpenAlarm && activeNote && (
+                      <button
+                        onClick={() => onOpenAlarm(activeNote.title || activeNote.content)}
+                        className={`p-1 rounded ${theme.bgInput} hover:bg-indigo-500/20 text-slate-400 hover:text-indigo-400 border ${theme.borderMuted} transition cursor-pointer`}
+                        title="이 메모를 알람으로 예약"
+                      >
+                        <Bell className="h-3 w-3" />
+                      </button>
+                    )}
                     <button
                       onClick={handleDeleteNote}
                       disabled={notes.length <= 1}
@@ -457,6 +466,16 @@ export function MemoPanel({ locale, t, theme }: { locale: string; t: any; theme:
                         )}
                       </div>
                     </button>
+                    {onOpenAlarm && (
+                      <button
+                        type="button"
+                        onClick={() => onOpenAlarm(todo.text)}
+                        className="p-1 rounded text-slate-400 hover:text-indigo-400 transition cursor-pointer ml-2"
+                        title="이 할 일을 알람으로 예약"
+                      >
+                        <Bell className="h-3.5 w-3.5" />
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleDeleteTodo(todo.id)}

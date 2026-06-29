@@ -24,7 +24,8 @@
       "maximize": "Maximize",
       "restore": "Restore",
       "close": "Close",
-      "clearScreen": "Clear screen messages"
+      "clearScreen": "Clear screen messages",
+      "summarizePage": "Summarize active tab content"
     },
     "input": {
       "placeholder": "Type a message...",
@@ -77,6 +78,7 @@
       "iconToggleOpen": "Change Icon ⚙️",
       "iconToggleClose": "Collapse ✕",
       "urlLabel": "Website URL",
+      "autofill": "Get Current Page",
       "namePlaceholder": "Enter bookmark name...",
       "deleteConfirm": "Delete this bookmark?",
       "cancel": "Cancel",
@@ -660,6 +662,45 @@
       "memories": "Buddy Memory",
       "diary": {
         "empty": "There are no diary entries yet. Have a conversation with Buddy and get your first diary entry from the quick menu! 🐾"
+      }
+    },
+    "premium": {
+      "alarm": {
+        "title": "Alarm Reminders",
+        "active": "Scheduled Alarms",
+        "empty": "No scheduled alarms.",
+        "history": "Triggered History",
+        "source": {
+          "memo": "Memo",
+          "chat": "Chat",
+          "manual": "Manual"
+        },
+        "addBtn": "Add New Alarm",
+        "addForm": {
+          "placeholder": "Enter alarm memo...",
+          "cancel": "Cancel",
+          "add": "Add",
+          "errorEmpty": "Please enter alarm content.",
+          "errorDateTime": "Please specify date and time.",
+          "errorFormat": "Invalid date/time format.",
+          "errorPast": "Must be set in the future."
+        },
+        "dialog": {
+          "title": "Schedule Alarm",
+          "labelContent": "Alarm Message",
+          "labelDate": "Date",
+          "labelTime": "Time",
+          "btnSave": "Set Alarm",
+          "errorTitle": "Please enter alarm content."
+        },
+        "toast": {
+          "title": "⏰ Alarm Reminder"
+        }
+      }
+    },
+    "sidebar": {
+      "tooltips": {
+        "alarm": "Alarm Reminders"
       }
     }
   }

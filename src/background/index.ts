@@ -131,6 +131,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       .catch((err) => sendResponse({ success: false, error: err.message || String(err) }));
     return true;
   }
+
+  if (message.action === "drag_action") {
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({
+        pending_drag: { text: message.text, type: message.type, ts: Date.now() }
+      }, () => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const tabId = tabs[0]?.id;
+          if (tabId) {
+            chrome.sidePanel.open({ tabId })
+              .then(() => sendResponse({ success: true }))
+              .catch((err) => sendResponse({ success: false, error: err.message }));
+          } else {
+            sendResponse({ success: false, error: "No active tab" });
+          }
+        });
+      });
+    }
+    return true;
+  }
 });
 
 async function initBackgroundAISession(systemPrompt?: string, temperature?: number) {
@@ -378,3 +398,44 @@ chrome.runtime.onConnect.addListener((port) => {
     });
   }
 });
+
+// 프리미엄 알람(Reminders) 백그라운드 스케줄러 구현
+chrome.alarms.onAlarm.addListener(async (alarm) => {
+  console.log("[Background] Alarm triggered:", alarm.name);
+  
+  if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.get(["nano_alarms"], (result) => {
+      const alarms: any[] = result.nano_alarms || [];
+      const targetAlarmIndex = alarms.findIndex(a => a.id === alarm.name);
+
+      if (targetAlarmIndex !== -1) {
+        const targetAlarm = alarms[targetAlarmIndex];
+        
+        // 1. OS 푸시 알림 배너 생성
+        chrome.notifications.create(targetAlarm.id, {
+          type: "basic",
+          iconUrl: "/icons/icon128.png",
+          title: "⏰ NanoBot 알람 리마인더",
+          message: targetAlarm.title,
+          priority: 2,
+          requireInteraction: true // 사용자가 닫기 전까지 떠 있음
+        });
+
+        // 2. 인앱 팝업/사이드패널로 실시간 알림 트리거용 브로드캐스팅
+        chrome.runtime.sendMessage({
+          action: "alarm_triggered",
+          alarm: targetAlarm
+        }).catch(() => {
+          // 사이드패널이 닫혀 있으면 에러가 발생할 수 있으나 정상 동작임
+        });
+
+        // 3. 알람 발생 상태 업데이트 및 보관
+        alarms[targetAlarmIndex].triggered = true;
+        alarms[targetAlarmIndex].isActive = false;
+        
+        chrome.storage.local.set({ nano_alarms: alarms });
+      }
+    });
+  }
+});
+

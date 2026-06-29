@@ -24,7 +24,8 @@
       "maximize": "최대화",
       "restore": "이전 크기로",
       "close": "종료",
-      "clearScreen": "화면 대화 지우기"
+      "clearScreen": "화면 대화 지우기",
+      "summarizePage": "현재 활성 탭 본문 요약"
     },
     "input": {
       "placeholder": "메시지를 입력하세요...",
@@ -77,6 +78,7 @@
       "iconToggleOpen": "아이콘 변경 펼치기 ⚙️",
       "iconToggleClose": "아이콘 설정 접기 ✕",
       "urlLabel": "웹사이트 주소 (URL)",
+      "autofill": "현재 페이지 가져오기",
       "namePlaceholder": "즐겨찾기 사이트의 이름을 입력하세요...",
       "deleteConfirm": "정말로 이 즐겨찾기를 삭제하시겠습니까?",
       "cancel": "취소",
@@ -660,6 +662,45 @@
       "memories": "버디 기억",
       "diary": {
         "empty": "아직 작성된 일기가 없어요. 오늘 하루 버디와 깊은 대화를 나누고 퀵 메뉴를 통해 첫 일기를 남겨보세요! 🐾"
+      }
+    },
+    "premium": {
+      "alarm": {
+        "title": "알람 알리미",
+        "active": "예정된 알람",
+        "empty": "예정된 알람이 없습니다.",
+        "history": "알림 완료 이력",
+        "source": {
+          "memo": "메모",
+          "chat": "채팅",
+          "manual": "수동"
+        },
+        "addBtn": "새 알람 추가",
+        "addForm": {
+          "placeholder": "알람 메모 입력...",
+          "cancel": "취소",
+          "add": "추가",
+          "errorEmpty": "알람 내용을 입력해주세요.",
+          "errorDateTime": "날짜와 시간을 지정해주세요.",
+          "errorFormat": "잘못된 날짜/시간 형식입니다.",
+          "errorPast": "미래의 시간으로 설정해야 합니다."
+        },
+        "dialog": {
+          "title": "알람 예약 설정",
+          "labelContent": "알람 내용",
+          "labelDate": "날짜",
+          "labelTime": "시간",
+          "btnSave": "알람 설정",
+          "errorTitle": "알람 내용을 입력해 주세요."
+        },
+        "toast": {
+          "title": "⏰ 알람 리마인더"
+        }
+      }
+    },
+    "sidebar": {
+      "tooltips": {
+        "alarm": "알람 알리미"
       }
     }
   }

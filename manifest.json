@@ -15,11 +15,19 @@
     "storage",
     "sidePanel",
     "activeTab",
-    "scripting"
+    "scripting",
+    "alarms",
+    "notifications"
   ],
   "host_permissions": [
     "https://api.openai.com/*",
     "https://*.googleapis.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/index.ts"]
+    }
   ],
   "background": {
     "service_worker": "src/background/index.ts",

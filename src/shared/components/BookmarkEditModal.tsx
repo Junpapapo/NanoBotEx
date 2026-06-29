@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Settings, Trash2 } from "lucide-react";
+import { Settings, Trash2, Globe } from "lucide-react";
 import ShortcutIcon from "./ShortcutIcon";
 import EmojiIconPicker from "./EmojiIconPicker";
 import { UserBookmark } from "./BookmarksSidebar";
@@ -26,6 +26,21 @@ export function BookmarkEditModal({
   onSave,
   t
 }: BookmarkEditModalProps) {
+  const handleAutoFill = () => {
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs[0];
+        if (activeTab) {
+          setEditingBookmark({
+            ...editingBookmark,
+            title: activeTab.title || editingBookmark.title,
+            url: activeTab.url || editingBookmark.url
+          });
+        }
+      });
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -85,9 +100,20 @@ export function BookmarkEditModal({
           )}
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              {t("bookmarks.modal.urlLabel", "인터넷 주소 (URL)")}
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                {t("bookmarks.modal.urlLabel", "인터넷 주소 (URL)")}
+              </label>
+              <button
+                type="button"
+                onClick={handleAutoFill}
+                className="text-[10px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer flex items-center gap-1"
+                title={t("bookmarks.modal.autofill", "현재 페이지 가져오기")}
+              >
+                <Globe size={11} className="text-indigo-400" />
+                <span>{t("bookmarks.modal.autofill", "현재 페이지 가져오기")}</span>
+              </button>
+            </div>
             <input
               type="text"
               value={editingBookmark.url}

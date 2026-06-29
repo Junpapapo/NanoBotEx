@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Message, UserSettings, QuickMenuItem, BuddySettings } from "../chatbot-types";
 import { ChatMessageItem } from "./ChatMessageItem";
 import { Terminal } from "lucide-react";
@@ -18,6 +19,7 @@ interface ChatMessageListProps {
   quickMenuItems?: QuickMenuItem[];
   onConfirmAction?: (confirmed: boolean) => void;
   buddySettings?: BuddySettings;
+  onOpenAlarm?: (title: string) => void;
 }
 
 export function ChatMessageList({
@@ -31,7 +33,8 @@ export function ChatMessageList({
   isBuddy = false,
   quickMenuItems,
   onConfirmAction,
-  buddySettings
+  buddySettings,
+  onOpenAlarm
 }: ChatMessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
@@ -146,18 +149,30 @@ export function ChatMessageList({
           </div>
         </div>
       ) : (
-        messages.map((m) => (
-          <ChatMessageItem 
-            key={m.id} 
-            message={m} 
-            settings={settings} 
-            effectiveAIAvatar={effectiveAIAvatar} 
-            onQuickQuestion={onQuickQuestion}
-            t={t}
-            quickMenuItems={quickMenuItems}
-            onConfirmAction={onConfirmAction}
-          />
-        ))
+        <AnimatePresence initial={false}>
+          {messages.map((m) => (
+            <motion.div
+              key={m.id}
+              initial={{ opacity: 0, y: 12, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              className="w-full"
+            >
+              <ChatMessageItem 
+                key={m.id} 
+                message={m} 
+                settings={settings} 
+                effectiveAIAvatar={effectiveAIAvatar} 
+                onQuickQuestion={onQuickQuestion}
+                t={t}
+                quickMenuItems={quickMenuItems}
+                onConfirmAction={onConfirmAction}
+                onOpenAlarm={onOpenAlarm}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       )}
     </div>
   );

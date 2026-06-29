@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import { getThemePalette } from "../chatbot-constants";
-import { Check, CheckSquare, FileText, Globe } from "lucide-react";
+import { Check, CheckSquare, FileText, Globe, Bell } from "lucide-react";
 
 interface ChatMessageItemProps {
   message: Message;
@@ -18,9 +18,10 @@ interface ChatMessageItemProps {
   t?: any;
   quickMenuItems?: QuickMenuItem[];
   onConfirmAction?: (confirmed: boolean) => void;
+  onOpenAlarm?: (title: string) => void;
 }
 
-export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t, quickMenuItems, onConfirmAction }: ChatMessageItemProps) {
+export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t, quickMenuItems, onConfirmAction, onOpenAlarm }: ChatMessageItemProps) {
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
   const isUser = message.role === "user";
   const isLight = settings.nano_skin_mode === "light";
@@ -218,6 +219,20 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
                     <FileText size={10} />
                   )}
                 </button>
+                {onOpenAlarm && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenAlarm(cleanContent)}
+                    className={`p-0.5 rounded transition-all cursor-pointer flex items-center justify-center ${
+                      isLight
+                        ? "hover:bg-slate-200/60 text-slate-400 hover:text-slate-700"
+                        : "hover:bg-white/10 text-slate-400 hover:text-white"
+                    }`}
+                    title="이 내용을 알람으로 예약"
+                  >
+                    <Bell size={10} />
+                  </button>
+                )}
               </div>
             )}
           </div>

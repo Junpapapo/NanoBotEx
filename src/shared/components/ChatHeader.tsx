@@ -1,5 +1,5 @@
 import React from "react";
-import { Minus, Maximize2, Minimize2, X, PanelRight, RotateCcw } from "lucide-react";
+import { Minus, Maximize2, Minimize2, X, PanelRight, RotateCcw, FileText } from "lucide-react";
 import { UserSettings } from "../chatbot-types";
 import { getThemePalette } from "../chatbot-constants";
 
@@ -28,6 +28,7 @@ interface ChatHeaderProps {
   showRightMenu: boolean;
   onToggleRightMenu: () => void;
   onClearScreen?: () => void;
+  onSummarizePage?: () => void;
   layoutMode: "sidepanel" | "widget";
   t: any;
 }
@@ -44,6 +45,7 @@ export function ChatHeader({
   showRightMenu,
   onToggleRightMenu,
   onClearScreen,
+  onSummarizePage,
   layoutMode,
   t
 }: ChatHeaderProps) {
@@ -105,6 +107,16 @@ export function ChatHeader({
       </div>
 
       <div className="flex items-center gap-[2px] mt-[3px]">
+        {onSummarizePage && (
+          <button
+            type="button"
+            onClick={onSummarizePage}
+            className={`w-7 h-7 rounded-lg ${theme.bgHover} flex items-center justify-center text-slate-500 hover:${theme.textMain} transition-all cursor-pointer`}
+            title={t("chatbot.tooltips.summarizePage", "현재 활성 탭 본문 요약")}
+          >
+            <FileText size={13} />
+          </button>
+        )}
         {onClearScreen && (
           <button
             type="button"
