@@ -146,7 +146,8 @@ export function ChatbotView({
     const prompt = getPromptInstruction(type, text);
 
     if (activeMode === "buddy") {
-      sendBuddyMessage(prompt);
+      setActiveMode("bot");
+      sendMessage(prompt);
     } else {
       sendMessage(prompt);
     }
@@ -296,7 +297,8 @@ export function ChatbotView({
           const prompt = getPromptInstruction("page_summarize", cleanedText);
 
           if (activeMode === "buddy") {
-            sendBuddyMessage(prompt);
+            setActiveMode("bot");
+            sendMessage(prompt);
           } else {
             sendMessage(prompt);
           }
