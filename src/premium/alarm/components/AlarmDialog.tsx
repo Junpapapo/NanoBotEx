@@ -21,10 +21,7 @@ export function AlarmDialog({
 }: AlarmDialogProps) {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
-  const [selectedHour, setSelectedHour] = useState("09");
-  const [selectedMinute, setSelectedMinute] = useState("00");
-  const [isHourOpen, setIsHourOpen] = useState(false);
-  const [isMinuteOpen, setIsMinuteOpen] = useState(false);
+  const [time, setTime] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
   // 모달이 열릴 때 초기화
@@ -39,11 +36,8 @@ export function AlarmDialog({
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowStr = tomorrow.toISOString().split("T")[0];
       setDate(tomorrowStr);
-      setSelectedHour("09");
-      setSelectedMinute("00");
+      setTime("09:00");
       setErrorMsg("");
-      setIsHourOpen(false);
-      setIsMinuteOpen(false);
     }
   }, [isOpen, defaultTitle]);
 
@@ -58,12 +52,12 @@ export function AlarmDialog({
       return;
     }
 
-    if (!date) {
+    if (!date || !time) {
       setErrorMsg(t("premium.alarm.addForm.errorDateTime", "날짜와 시간을 지정해주세요."));
       return;
     }
 
-    const alarmDateTime = new Date(`${date}T${selectedHour}:${selectedMinute}:00`);
+    const alarmDateTime = new Date(`${date}T${time}`);
     if (isNaN(alarmDateTime.getTime())) {
       setErrorMsg(t("premium.alarm.addForm.errorFormat", "잘못된 날짜/시간 형식입니다."));
       return;
@@ -132,115 +126,28 @@ export function AlarmDialog({
                     } catch (err) {}
                   }}
                   style={{ colorScheme: "dark" }}
-                  className="w-full px-3 py-2 text-xs bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all custom-datetime-picker cursor-pointer"
+                  className="w-full px-3 py-2 text-xs bg-slate-900 border border-white/10 rounded-lg text-white hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
                 />
               </div>
 
-              <div className="flex flex-col">
+              <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1">
                   <Clock className="h-3 w-3 text-indigo-400" />
                   {t("premium.alarm.dialog.labelTime", "시간")}
                 </label>
-                
-                <div className="flex items-center gap-1.5 h-full">
-                  {/* 시간 선택 */}
-                  <div 
-                    className="relative flex-1"
-                    onMouseLeave={() => setIsHourOpen(false)}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsHourOpen(!isHourOpen);
-                        setIsMinuteOpen(false);
-                      }}
-                      className="w-full px-2.5 py-2 text-xs bg-white/5 border border-white/10 rounded-lg text-white hover:border-indigo-500/50 transition-all text-center flex items-center justify-between cursor-pointer"
-                    >
-                      <span className="truncate">{selectedHour} {t("premium.alarm.dialog.hourSuffix", "시")}</span>
-                      <span className="text-[7px] text-slate-500 flex-shrink-0 ml-1">▼</span>
-                    </button>
-                    
-                    <AnimatePresence>
-                      {isHourOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -5 }}
-                          className="absolute left-0 right-0 mt-1 max-h-36 overflow-y-auto bg-[#0c122c] border border-white/10 rounded-lg z-[10000] scrollbar-thin scrollbar-thumb-indigo-600 shadow-xl"
-                        >
-                          {Array.from({ length: 24 }).map((_, i) => {
-                            const val = String(i).padStart(2, "0");
-                            return (
-                              <button
-                                key={val}
-                                type="button"
-                                onClick={() => {
-                                  setSelectedHour(val);
-                                  setIsHourOpen(false);
-                                }}
-                                className={`w-full text-center py-1.5 text-xs text-slate-300 hover:text-white hover:bg-indigo-600/40 transition-all ${
-                                  selectedHour === val ? "bg-indigo-600/30 text-indigo-400 font-bold" : ""
-                                }`}
-                              >
-                                {val}
-                              </button>
-                            );
-                          })}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  <span className="text-slate-400 text-xs font-bold">:</span>
-
-                  {/* 분 선택 */}
-                  <div 
-                    className="relative flex-1"
-                    onMouseLeave={() => setIsMinuteOpen(false)}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsMinuteOpen(!isMinuteOpen);
-                        setIsHourOpen(false);
-                      }}
-                      className="w-full px-2.5 py-2 text-xs bg-white/5 border border-white/10 rounded-lg text-white hover:border-indigo-500/50 transition-all text-center flex items-center justify-between cursor-pointer"
-                    >
-                      <span className="truncate">{selectedMinute} {t("premium.alarm.dialog.minuteSuffix", "분")}</span>
-                      <span className="text-[7px] text-slate-500 flex-shrink-0 ml-1">▼</span>
-                    </button>
-                    
-                    <AnimatePresence>
-                      {isMinuteOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -5 }}
-                          className="absolute left-0 right-0 mt-1 max-h-36 overflow-y-auto bg-[#0c122c] border border-white/10 rounded-lg z-[10000] scrollbar-thin scrollbar-thumb-indigo-600 shadow-xl"
-                        >
-                          {Array.from({ length: 60 }).map((_, i) => {
-                            const val = String(i).padStart(2, "0");
-                            return (
-                              <button
-                                key={val}
-                                type="button"
-                                onClick={() => {
-                                  setSelectedMinute(val);
-                                  setIsMinuteOpen(false);
-                                }}
-                                className={`w-full text-center py-1.5 text-xs text-slate-300 hover:text-white hover:bg-indigo-600/40 transition-all ${
-                                  selectedMinute === val ? "bg-indigo-600/30 text-indigo-400 font-bold" : ""
-                                }`}
-                              >
-                                {val}
-                              </button>
-                            );
-                          })}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
+                <input
+                  type="time"
+                  lang={locale}
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  onClick={(e) => {
+                    try {
+                      e.currentTarget.showPicker();
+                    } catch (err) {}
+                  }}
+                  style={{ colorScheme: "dark" }}
+                  className="w-full px-3 py-2 text-xs bg-slate-900 border border-white/10 rounded-lg text-white hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
+                />
               </div>
             </div>
 

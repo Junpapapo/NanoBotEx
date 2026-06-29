@@ -54,3 +54,17 @@ body {
   animation: aurora-border 3.5s infinite linear;
 }
 
+/* 날짜/시간 피커 브라우저 기본 지시자 아이콘 세련되게 반전 및 튜닝 */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.9;
+}
+

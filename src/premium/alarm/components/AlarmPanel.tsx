@@ -24,10 +24,7 @@ export function AlarmPanel({
 }: AlarmPanelProps) {
   const [newTitle, setNewTitle] = useState("");
   const [newDate, setNewDate] = useState("");
-  const [selectedHour, setSelectedHour] = useState("09");
-  const [selectedMinute, setSelectedMinute] = useState("00");
-  const [isHourOpen, setIsHourOpen] = useState(false);
-  const [isMinuteOpen, setIsMinuteOpen] = useState(false);
+  const [newTime, setNewTime] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -57,10 +54,7 @@ export function AlarmPanel({
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     setNewDate(tomorrow.toISOString().split("T")[0]);
-    setSelectedHour("09");
-    setSelectedMinute("00");
-    setIsHourOpen(false);
-    setIsMinuteOpen(false);
+    setNewTime("09:00");
     setErrorMsg("");
     setShowAddForm(true);
   };
@@ -73,12 +67,12 @@ export function AlarmPanel({
       setErrorMsg(t("premium.alarm.addForm.errorEmpty", "알람 내용을 입력해주세요."));
       return;
     }
-    if (!newDate) {
+    if (!newDate || !newTime) {
       setErrorMsg(t("premium.alarm.addForm.errorDateTime", "날짜와 시간을 지정해주세요."));
       return;
     }
 
-    const alarmDate = new Date(`${newDate}T${selectedHour}:${selectedMinute}:00`);
+    const alarmDate = new Date(`${newDate}T${newTime}`);
     if (isNaN(alarmDate.getTime())) {
       setErrorMsg(t("premium.alarm.addForm.errorFormat", "잘못된 날짜/시간 형식입니다."));
       return;
@@ -92,8 +86,7 @@ export function AlarmPanel({
     onAddManualAlarm(newTitle, alarmDate.toISOString());
     setNewTitle("");
     setNewDate("");
-    setSelectedHour("09");
-    setSelectedMinute("00");
+    setNewTime("");
     setShowAddForm(false);
   };
 
@@ -149,108 +142,21 @@ export function AlarmPanel({
                   } catch (err) {}
                 }}
                 style={{ colorScheme: "dark" }}
-                className="w-full px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[11px] focus:outline-none cursor-pointer"
+                className="w-full px-2.5 py-1.5 bg-slate-900 border border-white/10 rounded-md text-white text-[11px] hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
               />
-              
-              <div className="flex items-center gap-1">
-                {/* 시 선택 */}
-                <div 
-                  className="relative flex-1"
-                  onMouseLeave={() => setIsHourOpen(false)}
-                >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsHourOpen(!isHourOpen);
-                      setIsMinuteOpen(false);
-                    }}
-                    className="w-full px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[11px] hover:border-indigo-500/50 transition-all text-center flex items-center justify-between cursor-pointer"
-                  >
-                    <span className="truncate">{selectedHour} {t("premium.alarm.dialog.hourSuffix", "시")}</span>
-                    <span className="text-[6px] text-slate-500">▼</span>
-                  </button>
-                  
-                  <AnimatePresence>
-                    {isHourOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        className="absolute left-0 right-0 mt-1 max-h-28 overflow-y-auto bg-[#0c122c] border border-white/10 rounded-md z-[10000] scrollbar-thin scrollbar-thumb-indigo-600 shadow-xl"
-                      >
-                        {Array.from({ length: 24 }).map((_, i) => {
-                          const val = String(i).padStart(2, "0");
-                          return (
-                            <button
-                              key={val}
-                              type="button"
-                              onClick={() => {
-                                setSelectedHour(val);
-                                setIsHourOpen(false);
-                              }}
-                              className={`w-full text-center py-1 text-[10px] text-slate-300 hover:text-white hover:bg-indigo-600/40 transition-all ${
-                                selectedHour === val ? "bg-indigo-600/30 text-indigo-400 font-bold" : ""
-                              }`}
-                            >
-                              {val}
-                            </button>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <span className="text-slate-500 font-bold text-[10px]">:</span>
-
-                {/* 분 선택 */}
-                <div 
-                  className="relative flex-1"
-                  onMouseLeave={() => setIsMinuteOpen(false)}
-                >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsMinuteOpen(!isMinuteOpen);
-                      setIsHourOpen(false);
-                    }}
-                    className="w-full px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[11px] hover:border-indigo-500/50 transition-all text-center flex items-center justify-between cursor-pointer"
-                  >
-                    <span className="truncate">{selectedMinute} {t("premium.alarm.dialog.minuteSuffix", "분")}</span>
-                    <span className="text-[6px] text-slate-500">▼</span>
-                  </button>
-                  
-                  <AnimatePresence>
-                    {isMinuteOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        className="absolute left-0 right-0 mt-1 max-h-28 overflow-y-auto bg-[#0c122c] border border-white/10 rounded-md z-[10000] scrollbar-thin scrollbar-thumb-indigo-600 shadow-xl"
-                      >
-                        {Array.from({ length: 60 }).map((_, i) => {
-                          const val = String(i).padStart(2, "0");
-                          return (
-                            <button
-                              key={val}
-                              type="button"
-                              onClick={() => {
-                                setSelectedMinute(val);
-                                setIsMinuteOpen(false);
-                              }}
-                              className={`w-full text-center py-1 text-[10px] text-slate-300 hover:text-white hover:bg-indigo-600/40 transition-all ${
-                                selectedMinute === val ? "bg-indigo-600/30 text-indigo-400 font-bold" : ""
-                              }`}
-                            >
-                              {val}
-                            </button>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
+              <input
+                type="time"
+                lang={locale}
+                value={newTime}
+                onChange={(e) => setNewTime(e.target.value)}
+                onClick={(e) => {
+                  try {
+                    e.currentTarget.showPicker();
+                  } catch (err) {}
+                }}
+                style={{ colorScheme: "dark" }}
+                className="w-full px-2.5 py-1.5 bg-slate-900 border border-white/10 rounded-md text-white text-[11px] hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
+              />
             </div>
             {errorMsg && <p className="text-[10px] text-rose-400">{errorMsg}</p>}
             <div className="flex justify-end gap-1.5 pt-1">
