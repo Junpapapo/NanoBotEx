@@ -126,7 +126,7 @@ export function AlarmDialog({
                     } catch (err) {}
                   }}
                   style={{ colorScheme: "dark" }}
-                  className="w-full px-3 py-2 text-xs bg-slate-900 border border-white/10 rounded-lg text-white hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
+                  className="w-full px-2 py-1.5 text-[10px] bg-slate-900 border border-white/10 rounded-lg text-white hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
                 />
               </div>
 
@@ -146,7 +146,7 @@ export function AlarmDialog({
                     } catch (err) {}
                   }}
                   style={{ colorScheme: "dark" }}
-                  className="w-full px-3 py-2 text-xs bg-slate-900 border border-white/10 rounded-lg text-white hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
+                  className="w-full px-2 py-1.5 text-[10px] bg-slate-900 border border-white/10 rounded-lg text-white hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer"
                 />
               </div>
             </div>
