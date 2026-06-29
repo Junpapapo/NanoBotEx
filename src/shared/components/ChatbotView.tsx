@@ -807,7 +807,7 @@ export function ChatbotView({
           showRightMenu={isRightMenuOpen}
           onToggleRightMenu={() => setIsRightMenuOpen(!isRightMenuOpen)}
           onClearScreen={handleClearScreen}
-          onSummarizePage={handleSummarizeCurrentPage}
+          onSummarizePage={activeMode === "buddy" ? undefined : handleSummarizeCurrentPage}
           layoutMode={layoutMode}
           t={t}
         />
