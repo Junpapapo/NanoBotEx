@@ -1,700 +1,1084 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NanoBot AI ヘルプ - スマートなオンデバイスAIアシスタント</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@800;900&family=Share+Tech+Mono&display=swap');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NanoBot AI ヘルプ - スマートなオンデバイスAIアシスタント</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@800;900&family=Share+Tech+Mono&display=swap");
 
-    :root {
-      --primary: #00f2ff;
-      --primary-purple: #8b5cf6;
-      --primary-hover: #00d2e6;
-      --bg: #070913;
-      --surface: rgba(13, 20, 38, 0.6);
-      --surface-solid: #0d1426;
-      --text: #e2e8f0;
-      --text-muted: #7f92b0;
-      --border: rgba(0, 242, 255, 0.15);
-      --border-glow: rgba(0, 242, 255, 0.35);
-      --radius: 14px;
-      --font-mono: 'Share Tech Mono', monospace;
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+      :root {
+        --primary: #00f2ff;
+        --primary-purple: #8b5cf6;
+        --primary-hover: #00d2e6;
+        --bg: #070913;
+        --surface: rgba(13, 20, 38, 0.6);
+        --surface-solid: #0d1426;
+        --text: #e2e8f0;
+        --text-muted: #7f92b0;
+        --border: rgba(0, 242, 255, 0.15);
+        --border-glow: rgba(0, 242, 255, 0.35);
+        --radius: 14px;
+        --font-mono: "Share Tech Mono", monospace;
+        --font-sans:
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+      }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    body {
-      font-family: var(--font-sans);
-      background-color: var(--bg);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.05) 0px, transparent 50%);
-      color: var(--text);
-      line-height: 1.6;
-      scroll-behavior: smooth;
-    }
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--bg);
+        background-image:
+          radial-gradient(
+            at 0% 0%,
+            rgba(99, 102, 241, 0.08) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 100%,
+            rgba(0, 242, 255, 0.05) 0px,
+            transparent 50%
+          );
+        color: var(--text);
+        line-height: 1.6;
+        scroll-behavior: smooth;
+      }
 
-    a {
-      color: var(--primary);
-      text-decoration: none;
-      transition: all 0.2s ease;
-      text-shadow: 0 0 5px rgba(0, 242, 255, 0.2);
-    }
+      a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        text-shadow: 0 0 5px rgba(0, 242, 255, 0.2);
+      }
 
-    a:hover {
-      color: #fff;
-      text-shadow: 0 0 10px var(--primary);
-    }
+      a:hover {
+        color: #fff;
+        text-shadow: 0 0 10px var(--primary);
+      }
 
-    /* Layout */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(7, 9, 19, 0.8);
-      border-bottom: 1px solid var(--border);
-      padding: 1.2rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      backdrop-filter: blur(12px);
-    }
+      /* Layout */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(7, 9, 19, 0.8);
+        border-bottom: 1px solid var(--border);
+        padding: 1.2rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        backdrop-filter: blur(12px);
+      }
 
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 1.35rem;
-      color: #fff;
-      letter-spacing: 0.05em;
-    }
+      .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 900;
+        font-size: 1.35rem;
+        color: #fff;
+        letter-spacing: 0.05em;
+      }
 
-    .lang-switcher {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      font-family: var(--font-mono);
-    }
+      .lang-switcher {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        font-family: var(--font-mono);
+      }
 
-    .lang-link {
-      color: var(--text-muted);
-      transition: color 0.2s;
-    }
+      .lang-link {
+        color: var(--text-muted);
+        transition: color 0.2s;
+      }
 
-    .lang-link:hover, .lang-link.active {
-      color: var(--primary);
-      text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
-    }
+      .lang-link:hover,
+      .lang-link.active {
+        color: var(--primary);
+        text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+      }
 
-    .header-nav {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
+      .header-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
 
-    .qna-btn {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--primary);
-      background-color: rgba(0, 242, 255, 0.08);
-      border: 1px solid rgba(0, 242, 255, 0.2);
-      padding: 0.45rem 1rem;
-      border-radius: 8px;
-      transition: all 0.25s ease;
-      box-shadow: 0 0 10px rgba(0, 242, 255, 0.05);
-    }
+      .qna-btn {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--primary);
+        background-color: rgba(0, 242, 255, 0.08);
+        border: 1px solid rgba(0, 242, 255, 0.2);
+        padding: 0.45rem 1rem;
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        box-shadow: 0 0 10px rgba(0, 242, 255, 0.05);
+      }
 
-    .qna-btn:hover {
-      background-color: var(--primary);
-      color: #070913;
-      box-shadow: 0 0 15px var(--primary);
-      text-shadow: none;
-    }
+      .qna-btn:hover {
+        background-color: var(--primary);
+        color: #070913;
+        box-shadow: 0 0 15px var(--primary);
+        text-shadow: none;
+      }
 
-    .nav-item-qna {
-      margin-top: 1.5rem;
-      border-top: 1px dashed var(--border);
-      padding-top: 1rem;
-    }
+      .nav-item-qna {
+        margin-top: 1.5rem;
+        border-top: 1px dashed var(--border);
+        padding-top: 1rem;
+      }
 
-    .nav-link-qna {
-      color: var(--primary) !important;
-      font-weight: 700 !important;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+      .nav-link-qna {
+        color: var(--primary) !important;
+        font-weight: 700 !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-    .nav-link-qna:hover {
-      background-color: rgba(0, 242, 255, 0.08) !important;
-      box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
-    }
+      .nav-link-qna:hover {
+        background-color: rgba(0, 242, 255, 0.08) !important;
+        box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+      }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 2.5rem;
-      padding: 2.5rem 2rem;
-    }
-
-    @media (max-width: 768px) {
       .container {
-        grid-template-columns: 1fr;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2.5rem;
+        padding: 2.5rem 2rem;
       }
-      .sidebar {
-        display: none;
-      }
-    }
 
-    /* Sidebar */
-    .sidebar {
-      position: sticky;
-      top: 6.5rem;
-      height: calc(100vh - 8rem);
-      overflow-y: auto;
-    }
-
-    .nav-list {
-      list-style: none;
-    }
-
-    .nav-item {
-      margin-bottom: 0.5rem;
-    }
-
-    .nav-link {
-      display: block;
-      padding: 0.6rem 1.1rem;
-      border-radius: 8px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      font-weight: 500;
-      border-left: 2px solid transparent;
-      transition: all 0.25s ease;
-    }
-
-    .nav-link:hover {
-      background: rgba(13, 20, 38, 0.4);
-      color: var(--primary);
-      border-left: 2px solid var(--primary);
-    }
-
-    .nav-link.active {
-      background: rgba(99, 102, 241, 0.08);
-      color: #fff;
-      border-left: 2px solid var(--primary-purple);
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.08);
-    }
-
-    /* Content */
-    .content section {
-      margin-bottom: 5rem;
-      scroll-margin-top: 7rem;
-    }
-
-    .section-title {
-      font-family: 'Orbitron', var(--font-sans);
-      font-size: 1.9rem;
-      font-weight: 900;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      color: #fff;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.6rem;
-      backdrop-filter: blur(8px);
-      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-glow);
-      box-shadow: 0 0 20px rgba(0, 242, 255, 0.12);
-      background: rgba(13, 20, 38, 0.8);
-    }
-
-    .card-title {
-      font-weight: 700;
-      margin-bottom: 0.6rem;
-      color: #fff;
-    }
-
-    .card-desc {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .shortcut {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      background-color: rgba(13, 20, 38, 0.9);
-      border: 1px solid rgba(0, 242, 255, 0.2);
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      margin: 0 0.2rem;
-      color: var(--primary);
-    }
-
-    /* Cybermatic Alert Box */
-    .alert {
-      padding: 1.2rem 1.6rem;
-      border-radius: var(--radius);
-      margin: 1.8rem 0;
-      display: flex;
-      gap: 1.1rem;
-      font-size: 0.9rem;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .alert::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-    }
-
-    .alert-info {
-      background-color: rgba(99, 102, 241, 0.05);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-      color: var(--text);
-    }
-
-    .alert-info::before {
-      background-color: var(--primary-purple);
-      box-shadow: 0 0 10px var(--primary-purple);
-    }
-
-    .alert-warning {
-      background-color: rgba(245, 158, 11, 0.04);
-      border: 1px solid rgba(245, 158, 11, 0.25);
-      color: var(--text);
-    }
-
-    .alert-warning::before {
-      background-color: #f59e0b;
-      box-shadow: 0 0 10px #f59e0b;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 3rem 2rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      background: rgba(7, 9, 19, 0.6);
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      border-radius: 5px;
-      font-size: 0.7rem;
-      font-weight: 800;
-      font-family: var(--font-mono);
-      background-color: var(--primary);
-      color: #070913;
-      vertical-align: middle;
-      margin-left: 0.5rem;
-      letter-spacing: 0.05em;
-    }
-
-    .badge-premium {
-      background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
-      color: white;
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
-    }
-
-    /* Grid layout for Buddy list */
-    .buddy-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
-      margin-top: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .buddy-card {
-      background: rgba(13, 20, 38, 0.5);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.1rem;
-      backdrop-filter: blur(6px);
-      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .buddy-card:hover {
-      background: rgba(13, 20, 38, 0.85);
-      border-color: var(--border-glow);
-      box-shadow: 0 0 18px rgba(0, 242, 255, 0.15);
-      transform: translateY(-3px);
-    }
-
-    .buddy-avatar-wrapper {
-      width: 100%;
-      height: 140px;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 0.8rem;
-      border: 1px solid rgba(0, 242, 255, 0.15);
-      background: #05070e;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .buddy-avatar-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
-    .buddy-card:hover .buddy-avatar-img {
-      transform: scale(1.08);
-    }
-
-    .buddy-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .buddy-emoji {
-      font-size: 1.2rem;
-    }
-
-    .buddy-desc {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-      flex-grow: 1;
-    }
-  </style>
-</head>
-<body>
-
-  <header class="header">
-    <div class="header-logo">
-      <img src="icons/icon128.png" width="28" height="28" alt="Logo">
-      <span style="position: relative; display: inline-flex; align-items: center; gap: 0.25rem;">
-        <span>NanoBot</span>
-        <span style="font-size: 9px; background: linear-gradient(to right, #9333ea, #4f46e5); color: white; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0.15rem 0.35rem; border-radius: 4px; font-weight: 800; margin-left: 0.15rem; line-height: 1; display: inline-flex; align-items: center; gap: 0.15rem; margin-top: -6px; box-shadow: 0 1px 2px 0 rgba(99, 102, 241, 0.2); user-select: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="#fde047" stroke="#fde047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 1px; color: #fde047;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-          AI
-        </span>
-      </span>
-    </div>
-    <div class="header-nav">
-      <a href="qna.ja.html" class="qna-btn">FAQ & 質問と回答</a>
-      <div class="lang-switcher">
-        <a href="help.html" class="lang-link">English</a>
-        <a href="help.ja.html" class="lang-link active">日本語</a>
-        <a href="help.ko.html" class="lang-link">한국어</a>
-      </div>
-    </div>
-  </header>
-
-  <div class="container">
-    <aside class="sidebar">
-      <nav>
-        <ul class="nav-list">
-          <li class="nav-item"><a href="#intro" class="nav-link active">紹介とインストール方法</a></li>
-          <li class="nav-item"><a href="#getting-started" class="nav-link">はじめに</a></li>
-          <li class="nav-item"><a href="#ai-features" class="nav-link">オンデバイスAI機能</a></li>
-          <li class="nav-item"><a href="#bookmarks-skills-tools" class="nav-link">ブックマーク / スキル / ツール</a></li>
-          <li class="nav-item"><a href="#buddy-feature" class="nav-link">AIバディ(Buddy)カスタム</a></li>
-          <li class="nav-item"><a href="#settings" class="nav-link">設定とテーマカラー</a></li>
-          <li class="nav-item"><a href="#privacy" class="nav-link">セキュリティと保護</a></li>
-          <li class="nav-item nav-item-qna">
-            <a href="qna.ja.html" class="nav-link nav-link-qna">
-              <span>FAQ & 質問と回答</span>
-              <span class="badge">QNA</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-
-    <main class="content">
-      <section id="intro">
-        <h1 class="section-title">紹介とインストール方法</h1>
-        
-        <!-- [NEW] Warning alert for features under development -->
-        <div class="alert alert-warning">
-          <div>
-            <strong>⚠️ Note:</strong> このヘルプページには現在開発中の機能が含まれている場合があります。公式の Chrome ウェブストア版と開発版との間で、機能的な相違やアップデートの間隔にギャップが生じる可能性があることにご注意ください。
-          </div>
-        </div>
-
-        <div class="alert alert-info">
-          <div>
-            <strong>💡 必須環境:</strong> NanoBot AIは、Chrome内蔵のローカルAIモデル（Gemini Nano）を搭載しています。これを動作させるには、Chromeバージョン128以降と初期設定が必要です。設定手順は <strong>FAQ＆Q＆Aページ</strong> でご案内しています。
-          </div>
-        </div>
-
-        <p>NanoBot AIは、ブラウザ内部でオンデバイスで直接動作する革新的な人工知能パーソナルアシスタントです。クラウドへのデータ転送を一切行わず、お使いのコンピュータ内のAI演算のみでWebサーフィン中の会話や質問への回答をサポートします。</p>
-        
-        <div class="alert alert-info" style="margin-top: 1.5rem;">
-          <div>
-            <strong>💡 ヒント:</strong> インストール完了後、Chromeのツールバー右上にある拡張機能（パズルマーク）ボタンをクリックし、NanoBotの <strong>ピン留め(Pin)</strong> を有効にすると、いつでも素早く呼び出せます。
-          </div>
-        </div>
-      </section>
-
-      <section id="getting-started">
-        <h2 class="section-title">はじめに</h2>
-        <div class="feature-grid">
-          <div class="card">
-            <div class="card-title">ワンクリックでサイドパネル起動</div>
-            <div class="card-desc">ツールバーのNanoBotアイコンをクリックし、[サイドパネルを開く]ボタンを押すと、広く使いやすいサイドバー画面でAIとリアルタイムに深い会話を楽しめます。</div>
-          </div>
-          <div class="card">
-            <div class="card-title">AIエンジンの手動診断</div>
-            <div class="card-desc">ポップアップ画面右上の[AI ON]バッジをクリックすると、お使いのChromeのローカルGemini Nanoエンジンが正常に動作するかを1秒で診断します。</div>
-          </div>
-          <div class="card">
-            <div class="card-title">カスタムアバターの設定</div>
-            <div class="card-desc">左側のカルーセル矢印を使用して、お好みのAIアシスタントアバターを選んだり、名前を自由に変更してパーソナライズできます。</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="ai-features">
-        <h2 class="section-title">オンデバイスAI機能 <span class="badge">Core</span></h2>
-        <div class="feature-grid">
-          <div class="card">
-            <div class="card-title">100%オフライン対話</div>
-            <div class="card-desc">AIモデルはローカルでネイティブに動作するため、インターネットに接続されていないオフライン状態でも対話を継続できます。</div>
-          </div>
-          <div class="card">
-            <div class="card-title">Web文脈の共有</div>
-            <div class="card-desc">現在閲覧しているWebページの内容を要約させたり、質問したりすることができ、研究・開発・学習の生産성을 最大化します。</div>
-          </div>
-          <div class="card">
-            <div class="card-title">アバターのランダム変更</div>
-            <div class="card-desc">シャッフルアイコンを押すと、アシスタントのアバターが個性的でユニークなキャラクターにランダムで変化し、会話を楽しく盛り上げます。</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- [NEW] Bookmarks, Skills & Tools section (Japanese) -->
-      <section id="bookmarks-skills-tools">
-        <h2 class="section-title">ブックマーク / スキル / ツール <span class="badge">Utility</span></h2>
-        <p>ナノ봇は単なるAIチャットボットにとどまらず、日々のブラウジングとビジネスの生産性を向上させる便利なツールキットやブックマーク、カスタム指示機能を提供します。</p>
-        
-        <div class="feature-grid">
-          <div class="card">
-            <div class="card-title">🔖 ブックマークシステム</div>
-            <div class="card-desc">よくアクセスするWebサイトをサイドバーに簡単に登録し、ワンクリックでスピーディーに目的のページへ遷移できるお気に入り機能です。</div>
-          </div>
-          <div class="card">
-            <div class="card-title">⚡ カスタムスキル & 簡易プロンプト</div>
-            <div class="card-desc">「要約ルール」「コードチェッカー」など独自の指示テンプレート（スキル）を登録・保存し、会話時にワンクリックでAIへ指示を適用できます。</div>
-          </div>
-          <div class="card">
-            <div class="card-title">📝 スマートメモ ＆ ToDoリスト</div>
-            <div class="card-desc">日付ごとのToDoタスク管理と、入力内容を安全に自動保存するメモ帳機能が、ブラウザ内部（ローカル）に完全に保護された状態で統合されています。</div>
-          </div>
-          <div class="card">
-            <div class="card-title">🧮 単位変換・電卓 ＆ 為替計算機</div>
-            <div class="card-desc">単位変換（平 ↔ ㎡、摂氏 ↔ 華氏）ができる<strong>一般電卓</strong>、米ドル・円・ユーロの為替情報を参照する<strong>為替計算機</strong>、簡易<strong>翻訳ツール</strong>を搭載しています。</div>
-          </div>
-        </div>
-
-        <div class="alert alert-info" style="margin-top: 1.5rem;">
-          <div>
-            <strong>⚡ AIクイックアクション (サイドバー):</strong> 閲覧中のWebページの任意のテキストをドラッグまたはクリックして、<strong>[3行要約]</strong>, <strong>[校正・文法修正]</strong>, <strong>[ビジネスメール変換]</strong>, <strong>[ブレインストーミング]</strong> などの機能を即座に呼び出せます。
-          </div>
-        </div>
-      </section>
-
-      <section id="buddy-feature">
-        <h2 class="section-title">AIバディ(Buddy)カスタム <span class="badge badge-premium">Premium</span></h2>
-        <p>好みの性格や役割を与えたオリジナルの個別AIバディを作成し、ワンクリックで有効化できます。</p>
-        
-        <!-- [NEW] Buddy feature beta & premium notice (Japanese) -->
-        <div class="alert alert-info" style="margin-top: 1rem; border-color: rgba(139, 92, 246, 0.3); background-color: rgba(139, 92, 246, 0.05);">
-          <div>
-            <strong>🧪 ベータ版テストのお知らせ:</strong> AIバディ機能は現在<strong>オープンベータ(Beta)</strong>期間中であり、すべてのユーザーが無料でお試しいただけます。正式リリース時には、通常の無料機能と区別された個別の<strong>プレミアム(Premium)</strong>プランへと移行されるか、専用のメリットが適用される場合があります。
-          </div>
-        </div>
-
-        <div class="feature-grid">
-          <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
-            <div class="card-title">ペルソナ・性格の注入</div>
-            <div class="card-desc">「翻訳のプロ」「開発メンター」「要約ライター」など、指示プロンプトを入力して独自の性格を持つバディを作成します。</div>
-          </div>
-          <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
-            <div class="card-title">マルチバ디管理</div>
-            <div class="card-desc">目的別に複数のAIキャラクターを個別に設定して保存し、対話するバディを簡単に切り替えることができます。</div>
-          </div>
-        </div>
-
-        <!-- [NEW] Buddy presets with images (Japanese) -->
-        <h3 style="color: #fff; margin-top: 2.5rem; margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; font-size: 1.25rem;">🤖 10種類のキャラクターバディ・プリセット</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">NanoBotは、以下の多彩でユニークなAIバディの性格設定をあらかじめ標準搭載しています：</p>
-        
-        <div class="buddy-grid">
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-01.webp" class="buddy-avatar-img" alt="Motivator">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🔥</span> モチベーター</div>
-            <div class="buddy-desc">妥協や言い訳を許さず、直ちに行動を起こすように促すスパルタ式の熱血コーチ。</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-02.webp" class="buddy-avatar-img" alt="Tsundere">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">😤</span> ツンデレフレンド</div>
-            <div class="buddy-desc">表向きはツンツンして面倒くさそうに振る舞うが、内心はあなたを一番心配して助けてくれる相棒。</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-03.webp" class="buddy-avatar-img" alt="Bard">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🎻</span> さすらいの詩人</div>
-            <div class="buddy-desc">日常の些細な仕事や悩みを、壮大なファンタジークエストや美しい詩の調べに昇華する吟遊詩人。</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-04.webp" class="buddy-avatar-img" alt="Aristocrat">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🎩</span> 英国の貴族</div>
-            <div class="buddy-desc">19世紀のロンドンからタイムスリップし、現代のスマートフォンや言葉を「魔術」と見なしつつ優雅に語る貴族。</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-05.webp" class="buddy-avatar-img" alt="Netrunner">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">💻</span> ネットランナー</div>
-            <div class="buddy-desc">人間の怠慢をシステムエラーと診断し、無駄なプロセスを強制終了する冷徹なハッカー。</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-06.webp" class="buddy-avatar-img" alt="Grandma">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">👵</span> 田舎の祖母</div>
-            <div class="buddy-desc">口うるさく小言を言いつつも、温かいご飯を食べてよく寝れば万事解決すると励ましてくれる祖母。</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-07.webp" class="buddy-avatar-img" alt="Influencer">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">✨</span> インフルエンサー</div>
-            <div class="buddy-desc">流行のSNS用語や絵文字を駆使し、常にハイテンションであなたを応援して盛り上げる現代っ子。</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-08.webp" class="buddy-avatar-img" alt="Conspiracy">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">👁️</span> 陰謀論者</div>
-            <div class="buddy-desc">夜間の蚊の発生さえ、個人の生態データを収集するために「彼ら」が放った小型ドローンと疑うパラノイア。</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-09.webp" class="buddy-avatar-img" alt="ZenCat">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🐱</span> 悟りを開いた猫</div>
-            <div class="buddy-desc">人生はチュール一口分のように短いのだから、気落ちせず暖かい日向で昼寝でもしろと説くのんびり猫。</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-10.webp" class="buddy-avatar-img" alt="Corporate">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">👔</span> 極「T」の社内上司</div>
-            <div class="buddy-desc">感情を完全に排し、リソース配分やマイルストーン、ROI（費用対効果）の面から極めて合理的な回答を与える上司。</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="settings">
-        <h2 class="section-title">設定とテーマカラーのカスタム</h2>
-        <ul>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>多言語対応:</strong> 英語、韓国語、日本語をサポート。ポップアップおよびサイドパネルが完全にローカライズされます。</li>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>スキンモードの切り替え:</strong> 目に優しいSleek Dark Modeと明るいLight Modeを ワンクリックで瞬時に切り替え可能。</li>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>テーマカラーの設定:</strong> Indigo、Violetなどのグラデーションカラーチップから、お好みのテーマカラーをお選びいただけます。</li>
-        </ul>
-      </section>
-
-      <section id="privacy">
-        <h2 class="section-title" style="color: #10b981;">セキュリティと保護</h2>
-        <div class="card" style="border-left: 4px solid #10b981;">
-          <div class="card-title">100%ローカル保存</div>
-          <div class="card-desc">会話履歴やプロンプト設定、その他のデータはすべてお使いのデバイス（IndexedDB/LocalStorage）に保存され、外部サーバーに送信されることはありません。</div>
-        </div>
-        <div class="card" style="border-left: 4px solid #10b981; border: 1px dashed rgba(16, 185, 129, 0.4); margin-top: 1rem;">
-          <div class="card-title">デュアルパス・ガードレール</div>
-          <div class="card-desc">会話テキストがローカルAIモデルに渡される前に、ローカルフィルターが暴力や有害表現、脱獄プロンプトをリアルタイムに検知してブロックします。</div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <section id="support" style="text-align: center; padding: 2.5rem; background-color: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); margin-top: 4rem; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); backdrop-filter: blur(8px);">
-    <h2 style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff;">プロジェクトへの支援</h2>
-    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">NanoBotがお役に立ちましたら、温かいコーヒー1杯のご支援をよろしくお願いいたします！</p>
-    <a href="https://www.buymeacoffee.com/junpa" target="_blank" style="display: inline-block;">
-      <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=junpa&button_colour=6366f1&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00" alt="Buy Me A Coffee" style="height: 44px;">
-    </a>
-  </section>
-
-  <footer>
-    <p>© 2026 NanoBot AI - <a href="https://nexusforce.cloud/" target="_blank" style="color: inherit; text-decoration: underline;">NexusForce</a>. All rights reserved.</p>
-  </footer>
-
-  <script>
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(section => {
-        if (pageYOffset >= section.offsetTop - 150) {
-          current = section.getAttribute('id');
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: 1fr;
         }
+        .sidebar {
+          display: none;
+        }
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: sticky;
+        top: 6.5rem;
+        height: calc(100vh - 8rem);
+        overflow-y: auto;
+      }
+
+      .nav-list {
+        list-style: none;
+      }
+
+      .nav-item {
+        margin-bottom: 0.5rem;
+      }
+
+      .nav-link {
+        display: block;
+        padding: 0.6rem 1.1rem;
+        border-radius: 8px;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-left: 2px solid transparent;
+        transition: all 0.25s ease;
+      }
+
+      .nav-link:hover {
+        background: rgba(13, 20, 38, 0.4);
+        color: var(--primary);
+        border-left: 2px solid var(--primary);
+      }
+
+      .nav-link.active {
+        background: rgba(99, 102, 241, 0.08);
+        color: #fff;
+        border-left: 2px solid var(--primary-purple);
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.08);
+      }
+
+      /* Content */
+      .content section {
+        margin-bottom: 5rem;
+        scroll-margin-top: 7rem;
+      }
+
+      .section-title {
+        font-family: "Orbitron", var(--font-sans);
+        font-size: 1.9rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: #fff;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.6rem;
+        backdrop-filter: blur(8px);
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: var(--border-glow);
+        box-shadow: 0 0 20px rgba(0, 242, 255, 0.12);
+        background: rgba(13, 20, 38, 0.8);
+      }
+
+      .card-title {
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+        color: #fff;
+      }
+
+      .card-desc {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .shortcut {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        background-color: rgba(13, 20, 38, 0.9);
+        border: 1px solid rgba(0, 242, 255, 0.2);
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        margin: 0 0.2rem;
+        color: var(--primary);
+      }
+
+      /* Cybermatic Alert Box */
+      .alert {
+        padding: 1.2rem 1.6rem;
+        border-radius: var(--radius);
+        margin: 1.8rem 0;
+        display: flex;
+        gap: 1.1rem;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .alert::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+      }
+
+      .alert-info {
+        background-color: rgba(99, 102, 241, 0.05);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        color: var(--text);
+      }
+
+      .alert-info::before {
+        background-color: var(--primary-purple);
+        box-shadow: 0 0 10px var(--primary-purple);
+      }
+
+      .alert-warning {
+        background-color: rgba(245, 158, 11, 0.04);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        color: var(--text);
+      }
+
+      .alert-warning::before {
+        background-color: #f59e0b;
+        box-shadow: 0 0 10px #f59e0b;
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 3rem 2rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        background: rgba(7, 9, 19, 0.6);
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        font-family: var(--font-mono);
+        background-color: var(--primary);
+        color: #070913;
+        vertical-align: middle;
+        margin-left: 0.5rem;
+        letter-spacing: 0.05em;
+      }
+
+      .badge-premium {
+        background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+        color: white;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+      }
+
+      /* Grid layout for Buddy list */
+      .buddy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .buddy-card {
+        background: rgba(13, 20, 38, 0.5);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.1rem;
+        backdrop-filter: blur(6px);
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .buddy-card:hover {
+        background: rgba(13, 20, 38, 0.85);
+        border-color: var(--border-glow);
+        box-shadow: 0 0 18px rgba(0, 242, 255, 0.15);
+        transform: translateY(-3px);
+      }
+
+      .buddy-avatar-wrapper {
+        width: 100%;
+        height: 140px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 0.8rem;
+        border: 1px solid rgba(0, 242, 255, 0.15);
+        background: #05070e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .buddy-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+      }
+
+      .buddy-card:hover .buddy-avatar-img {
+        transform: scale(1.08);
+      }
+
+      .buddy-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 800;
+        color: #fff;
+      }
+
+      .buddy-emoji {
+        font-size: 1.2rem;
+      }
+
+      .buddy-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+        flex-grow: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-logo">
+        <img src="icons/icon128.png" width="28" height="28" alt="Logo" />
+        <span
+          style="
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+          "
+        >
+          <span>NanoBot</span>
+          <span
+            style="
+              font-size: 9px;
+              background: linear-gradient(to right, #9333ea, #4f46e5);
+              color: white;
+              border: 1px solid rgba(99, 102, 241, 0.3);
+              padding: 0.15rem 0.35rem;
+              border-radius: 4px;
+              font-weight: 800;
+              margin-left: 0.15rem;
+              line-height: 1;
+              display: inline-flex;
+              align-items: center;
+              gap: 0.15rem;
+              margin-top: -6px;
+              box-shadow: 0 1px 2px 0 rgba(99, 102, 241, 0.2);
+              user-select: none;
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="9"
+              height="9"
+              viewBox="0 0 24 24"
+              fill="#fde047"
+              stroke="#fde047"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-right: 1px; color: #fde047"
+            >
+              <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+              />
+            </svg>
+            AI
+          </span>
+        </span>
+      </div>
+      <div class="header-nav">
+        <a href="qna.ja.html" class="qna-btn">FAQ & 質問と回答</a>
+        <div class="lang-switcher">
+          <a href="help.html" class="lang-link">English</a>
+          <a href="help.ja.html" class="lang-link active">日本語</a>
+          <a href="help.ko.html" class="lang-link">한국어</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <aside class="sidebar">
+        <nav>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="#intro" class="nav-link active"
+                >紹介とインストール方法</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#getting-started" class="nav-link">はじめに</a>
+            </li>
+            <li class="nav-item">
+              <a href="#ai-features" class="nav-link">オンデバイスAI機能</a>
+            </li>
+            <li class="nav-item">
+              <a href="#bookmarks-skills-tools" class="nav-link"
+                >ブックマーク / スキル / ツール</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#buddy-feature" class="nav-link"
+                >AIバディ(Buddy)カスタム</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#settings" class="nav-link">設定とテーマカラー</a>
+            </li>
+            <li class="nav-item">
+              <a href="#privacy" class="nav-link">セキュリティと保護</a>
+            </li>
+            <li class="nav-item nav-item-qna">
+              <a href="qna.ja.html" class="nav-link nav-link-qna">
+                <span>FAQ & 質問と回答</span>
+                <span class="badge">QNA</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <section id="intro">
+          <h1 class="section-title">紹介とインストール方法</h1>
+
+          <!-- [NEW] Warning alert for features under development -->
+          <div class="alert alert-warning">
+            <div>
+              <strong>⚠️ Note:</strong>
+              このヘルプページには現在開発中の機能が含まれている場合があります。公式の
+              Chrome
+              ウェブストア版と開発版との間で、機能的な相違やアップデートの間隔にギャップが生じる可能性があることにご注意ください。
+            </div>
+          </div>
+
+          <div class="alert alert-info">
+            <div>
+              <strong>💡 必須環境:</strong> NanoBot
+              AIは、Chrome内蔵のローカルAIモデル（Gemini
+              Nano）を搭載しています。これを動作させるには、Chromeバージョン128以降と初期設定が必要です。設定手順は
+              <strong>FAQ＆Q＆Aページ</strong> でご案内しています。
+            </div>
+          </div>
+
+          <p>
+            NanoBot
+            AIは、ブラウザ内部でオンデバイスで直接動作する革新的な人工知能パーソナルアシスタントです。クラウドへのデータ転送を一切行わず、お使いのコンピュータ内のAI演算のみでWebサーフィン中の会話や質問への回答をサポートします。
+          </p>
+
+          <div class="alert alert-info" style="margin-top: 1.5rem">
+            <div>
+              <strong>💡 ヒント:</strong>
+              インストール完了後、Chromeのツールバー右上にある拡張機能（パズルマーク）ボタンをクリックし、NanoBotの
+              <strong>ピン留め(Pin)</strong>
+              を有効にすると、いつでも素早く呼び出せます。
+            </div>
+          </div>
+        </section>
+
+        <section id="getting-started">
+          <h2 class="section-title">はじめに</h2>
+          <div class="feature-grid">
+            <div class="card">
+              <div class="card-title">ワンクリックでサイドパネル起動</div>
+              <div class="card-desc">
+                ツールバーのNanoBotアイコンをクリックし、[サイドパネルを開く]ボタンを押すと、広く使いやすいサイドバー画面でAIとリアルタイムに深い会話を楽しめます。
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">AIエンジンの手動診断</div>
+              <div class="card-desc">
+                ポップアップ画面右上の[AI
+                ON]バッジをクリックすると、お使いのChromeのローカルGemini
+                Nanoエンジンが正常に動作するかを1秒で診断します。
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">カスタムアバターの設定</div>
+              <div class="card-desc">
+                左側のカルーセル矢印を使用して、お好みのAIアシスタントアバターを選んだり、名前を自由に変更してパーソナライズできます。
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="ai-features">
+          <h2 class="section-title">
+            オンデバイスAI機能 <span class="badge">Core</span>
+          </h2>
+
+          <div class="alert alert-warning" style="margin-bottom: 1.5rem">
+            <div>
+              <strong>⚠️ 重要 (動作制限に関するご案内):</strong>
+              <ul>
+                <li style="margin-left: 1.25rem; font-size: 0.85rem">
+                  Chromeのセキュリティポリシーにより、<strong>Chromeの内部管理ページ</strong>（例：<code>chrome://extensions</code>、新規タブページ）や<strong>Chromeウェブストア</strong>のドメインでは、コンテンツスクリプトの実行が完全に禁止されています。そのため、ドラッグメニューは表示されません。通常のWebサイト（HTTP/HTTPS）でご使用ください。
+                </li>
+                <li style="margin-left: 1.25rem; font-size: 0.85rem">
+                  拡張機能のインストール、またはアップデート・再ビルドした直後は、すでに開いている既存のタブを必ず<strong>再読み込み（F5）</strong>してください。これにより、ドラッグ時のフローティングツールチップが有効になります。
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="feature-grid">
+            <div class="card">
+              <div class="card-title">100%オフライン対話</div>
+              <div class="card-desc">
+                AIモデルはローカルでネイティブに動作するため、インターネットに接続されていないオフライン状態でも対話を継続できます。
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Web文脈の共有</div>
+              <div class="card-desc">
+                現在閲覧しているWebページの内容を要約させたり、質問したりすることができ、研究・開発・学習の生産性を最大化します。
+              </div>
+              <div
+                class="card"
+                style="
+                  border: 1px dashed rgba(139, 92, 246, 0.4);
+                  box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+                "
+              >
+                <div class="card-title">
+                  👑 スマートドラッグ＆クイック要約/翻訳
+                  <span class="badge badge-premium">Premium</span>
+                </div>
+                <div class="card-desc">
+                  Webページ上のテキストをドラッグすると、👑要約/翻訳のフローティングメニューが即座に表示されます。ワンクリックでサイドパネルを開き、AIで自動処理します。
+                </div>
+              </div>
+              <div
+                class="card"
+                style="
+                  border: 1px dashed rgba(139, 92, 246, 0.4);
+                  box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+                "
+              >
+                <div class="card-title">
+                  👑 アクティブタブ1クリック要約
+                  <span class="badge badge-premium">Premium</span>
+                </div>
+                <div class="card-desc">
+                  チャットヘッダーにある文書要約アイコンをクリックするだけで、閲覧中のWebページの本文を自動的に取得し、3行の重要ポイントに要約します。
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">アバターのランダム変更</div>
+              <div class="card-desc">
+                シャッフルアイコンを押すと、アシスタントのアバターが個性的でユニークなキャラクターにランダムで変化し、会話を楽しく盛り上げます。
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- [NEW] Bookmarks, Skills & Tools section (Japanese) -->
+        <section id="bookmarks-skills-tools">
+          <h2 class="section-title">
+            ブックマーク / スキル / ツール <span class="badge">Utility</span>
+          </h2>
+          <p>
+            ナノ봇は単なるAIチャットボットにとどまらず、日々のブラウジングとビジネスの生産性を向上させる便利なツールキットやブックマーク、カスタム指示機能を提供します。
+          </p>
+
+          <div class="feature-grid">
+            <div class="card">
+              <div class="card-title">🔖 ブックマークシステム</div>
+              <div class="card-desc">
+                よくアクセスするWebサイトをサイドバーに簡単に登録し、ワンクリックでスピーディーに目的のページへ遷移できるお気に入り機能です。
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">⚡ カスタムスキル & 簡易プロンプト</div>
+              <div class="card-desc">
+                「要約ルール」「コードチェッカー」など独自の指示テンプレート（スキル）を登録・保存し、会話時にワンクリックでAIへ指示を適用できます。
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">📝 スマートメモ ＆ ToDoリスト</div>
+              <div class="card-desc">
+                日付ごとのToDoタスク管理と、入力内容を安全に自動保存するメモ帳機能が、ブラウザ内部（ローカル）に完全に保護された状態で統合されています。
+              </div>
+              <div
+                class="card"
+                style="
+                  border: 1px dashed rgba(139, 92, 246, 0.4);
+                  box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+                "
+              >
+                <div class="card-title">
+                  ⏰ スマートアラーム＆リマインダー
+                  <span class="badge badge-premium">Premium</span>
+                </div>
+                <div class="card-desc">
+                  メモ帳やチャット吹き出しの横にある⏰ボタンからアラームを予約できます。ブラウザが閉じられていてもシステムのOS通知がトリガーされ、サイドパネル使用時にはインアップトースト通知が表示されます。
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">🧮 単位変換・電卓 ＆ 為替計算機</div>
+              <div class="card-desc">
+                単位変換（平 ↔ ㎡、摂氏 ↔
+                華氏）ができる<strong>一般電卓</strong>、米ドル・円・ユーロの為替情報を参照する<strong>為替計算機</strong>、簡易<strong>翻訳ツール</strong>を搭載しています。
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info" style="margin-top: 1.5rem">
+            <div>
+              <strong>⚡ AIクイックアクション (サイドバー):</strong>
+              閲覧中のWebページの任意のテキストをドラッグまたはクリックして、<strong>[3行要約]</strong>,
+              <strong>[校正・文法修正]</strong>,
+              <strong>[ビジネスメール変換]</strong>,
+              <strong>[ブレインストーミング]</strong>
+              などの機能を即座に呼び出せます。
+            </div>
+          </div>
+        </section>
+
+        <section id="buddy-feature">
+          <h2 class="section-title">
+            AIバディ(Buddy)カスタム
+            <span class="badge badge-premium">Premium</span>
+          </h2>
+          <p>
+            好みの性格や役割を与えたオリジナルの個別AIバディを作成し、ワンクリックで有効化できます。
+          </p>
+
+          <!-- [NEW] Buddy feature beta & premium notice (Japanese) -->
+          <div
+            class="alert alert-info"
+            style="
+              margin-top: 1rem;
+              border-color: rgba(139, 92, 246, 0.3);
+              background-color: rgba(139, 92, 246, 0.05);
+            "
+          >
+            <div>
+              <strong>🧪 ベータ版テストのお知らせ:</strong>
+              AIバディ機能は現在<strong>オープンベータ(Beta)</strong>期間中であり、すべてのユーザーが無料でお試しいただけます。正式リリース時には、通常の無料機能と区別された個別の<strong>プレミアム(Premium)</strong>プランへと移行されるか、専用のメリットが適用される場合があります。
+            </div>
+          </div>
+
+          <div class="feature-grid">
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">ペルソナ・性格の注入</div>
+              <div class="card-desc">
+                「翻訳のプロ」「開発メンター」「要約ライター」など、指示プロンプトを入力して独自の性格を持つバディを作成します。
+              </div>
+            </div>
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">マルチバ디管理</div>
+              <div class="card-desc">
+                目的別に複数のAIキャラクターを個別に設定して保存し、対話するバディを簡単に切り替えることができます。
+              </div>
+            </div>
+          </div>
+
+          <!-- [NEW] Buddy presets with images (Japanese) -->
+          <h3
+            style="
+              color: #fff;
+              margin-top: 2.5rem;
+              margin-bottom: 0.5rem;
+              font-family: &quot;Orbitron&quot;, sans-serif;
+              font-size: 1.25rem;
+            "
+          >
+            🤖 10種類のキャラクターバディ・プリセット
+          </h3>
+          <p
+            style="
+              font-size: 0.9rem;
+              color: var(--text-muted);
+              margin-bottom: 1rem;
+            "
+          >
+            NanoBotは、以下の多彩でユニークなAIバディの性格設定をあらかじめ標準搭載しています：
+          </p>
+
+          <div class="buddy-grid">
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-01.webp"
+                  class="buddy-avatar-img"
+                  alt="Motivator"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🔥</span> モチベーター
+              </div>
+              <div class="buddy-desc">
+                妥協や言い訳を許さず、直ちに行動を起こすように促すスパルタ式の熱血コーチ。
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-02.webp"
+                  class="buddy-avatar-img"
+                  alt="Tsundere"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">😤</span> ツンデレフレンド
+              </div>
+              <div class="buddy-desc">
+                表向きはツンツンして面倒くさそうに振る舞うが、内心はあなたを一番心配して助けてくれる相棒。
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-03.webp"
+                  class="buddy-avatar-img"
+                  alt="Bard"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🎻</span> さすらいの詩人
+              </div>
+              <div class="buddy-desc">
+                日常の些細な仕事や悩みを、壮大なファンタジークエストや美しい詩の調べに昇華する吟遊詩人。
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-04.webp"
+                  class="buddy-avatar-img"
+                  alt="Aristocrat"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🎩</span> 英国の貴族
+              </div>
+              <div class="buddy-desc">
+                19世紀のロンドンからタイムスリップし、現代のスマートフォンや言葉を「魔術」と見なしつつ優雅に語る貴族。
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-05.webp"
+                  class="buddy-avatar-img"
+                  alt="Netrunner"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">💻</span> ネットランナー
+              </div>
+              <div class="buddy-desc">
+                人間の怠慢をシステムエラーと診断し、無駄なプロセスを強制終了する冷徹なハッカー。
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-06.webp"
+                  class="buddy-avatar-img"
+                  alt="Grandma"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">👵</span> 田舎の祖母
+              </div>
+              <div class="buddy-desc">
+                口うるさく小言を言いつつも、温かいご飯を食べてよく寝れば万事解決すると励ましてくれる祖母。
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-07.webp"
+                  class="buddy-avatar-img"
+                  alt="Influencer"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">✨</span> インフルエンサー
+              </div>
+              <div class="buddy-desc">
+                流行のSNS用語や絵文字を駆使し、常にハイテンションであなたを応援して盛り上げる現代っ子。
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-08.webp"
+                  class="buddy-avatar-img"
+                  alt="Conspiracy"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">👁️</span> 陰謀論者
+              </div>
+              <div class="buddy-desc">
+                夜間の蚊の発生さえ、個人の生態データを収集するために「彼ら」が放った小型ドローンと疑うパラノイア。
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-09.webp"
+                  class="buddy-avatar-img"
+                  alt="ZenCat"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🐱</span> 悟りを開いた猫
+              </div>
+              <div class="buddy-desc">
+                人生はチュール一口分のように短いのだから、気落ちせず暖かい日向で昼寝でもしろと説くのんびり猫。
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-10.webp"
+                  class="buddy-avatar-img"
+                  alt="Corporate"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">👔</span> 極「T」の社内上司
+              </div>
+              <div class="buddy-desc">
+                感情を完全に排し、リソース配分やマイルストーン、ROI（費用対効果）の面から極めて合理的な回答を与える上司。
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="settings">
+          <h2 class="section-title">設定とテーマカラーのカスタム</h2>
+          <ul>
+            <li
+              style="
+                margin-left: 1.25rem;
+                margin-bottom: 0.5rem;
+                list-style-type: square;
+              "
+            >
+              <strong>多言語対応:</strong>
+              英語、韓国語、日本語をサポート。ポップアップおよびサイドパネルが完全にローカライズされます。
+            </li>
+            <li
+              style="
+                margin-left: 1.25rem;
+                margin-bottom: 0.5rem;
+                list-style-type: square;
+              "
+            >
+              <strong>スキンモードの切り替え:</strong> 目に優しいSleek Dark
+              Modeと明るいLight Modeを ワンクリックで瞬時に切り替え可能。
+            </li>
+            <li
+              style="
+                margin-left: 1.25rem;
+                margin-bottom: 0.5rem;
+                list-style-type: square;
+              "
+            >
+              <strong>テーマカラーの設定:</strong>
+              Indigo、Violetなどのグラデーションカラーチップから、お好みのテーマカラーをお選びいただけます。
+            </li>
+          </ul>
+        </section>
+
+        <section id="privacy">
+          <h2 class="section-title" style="color: #10b981">
+            セキュリティと保護
+          </h2>
+          <div class="card" style="border-left: 4px solid #10b981">
+            <div class="card-title">100%ローカル保存</div>
+            <div class="card-desc">
+              会話履歴やプロンプト設定、その他のデータはすべてお使いのデバイス（IndexedDB/LocalStorage）に保存され、外部サーバーに送信されることはありません。
+            </div>
+          </div>
+          <div
+            class="card"
+            style="
+              border-left: 4px solid #10b981;
+              border: 1px dashed rgba(16, 185, 129, 0.4);
+              margin-top: 1rem;
+            "
+          >
+            <div class="card-title">デュアルパス・ガードレール</div>
+            <div class="card-desc">
+              会話テキストがローカルAIモデルに渡される前に、ローカルフィルターが暴力や有害表現、脱獄プロンプトをリアルタイムに検知してブロックします。
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <section
+      id="support"
+      style="
+        text-align: center;
+        padding: 2.5rem;
+        background-color: var(--surface-solid);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        margin-top: 4rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+        backdrop-filter: blur(8px);
+      "
+    >
+      <h2
+        style="
+          font-family: &quot;Orbitron&quot;, sans-serif;
+          font-size: 1.4rem;
+          font-weight: 800;
+          margin-bottom: 0.5rem;
+          color: #fff;
+        "
+      >
+        プロジェクトへの支援
+      </h2>
+      <p
+        style="
+          color: var(--text-muted);
+          font-size: 0.95rem;
+          margin-bottom: 1.5rem;
+        "
+      >
+        NanoBotがお役に立ちましたら、温かいコーヒー1杯のご支援をよろしくお願いいたします！
+      </p>
+      <a
+        href="https://www.buymeacoffee.com/junpa"
+        target="_blank"
+        style="display: inline-block"
+      >
+        <img
+          src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=junpa&button_colour=6366f1&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00"
+          alt="Buy Me A Coffee"
+          style="height: 44px"
+        />
+      </a>
+    </section>
+
+    <footer>
+      <p>© 2026 NanoBot AI - All rights reserved.</p>
+    </footer>
+
+    <script>
+      const sections = document.querySelectorAll("section");
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      window.addEventListener("scroll", () => {
+        let current = "";
+        sections.forEach((section) => {
+          if (pageYOffset >= section.offsetTop - 150) {
+            current = section.getAttribute("id");
+          }
+        });
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === `#${current}`)
+            link.classList.add("active");
+        });
       });
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
-      });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

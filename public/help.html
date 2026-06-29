@@ -1,700 +1,1135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NanoBot AI Help - Smart On-device AI Assistant</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@800;900&family=Share+Tech+Mono&display=swap');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NanoBot AI Help - Smart On-device AI Assistant</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@800;900&family=Share+Tech+Mono&display=swap");
 
-    :root {
-      --primary: #00f2ff;
-      --primary-purple: #8b5cf6;
-      --primary-hover: #00d2e6;
-      --bg: #070913;
-      --surface: rgba(13, 20, 38, 0.6);
-      --surface-solid: #0d1426;
-      --text: #e2e8f0;
-      --text-muted: #7f92b0;
-      --border: rgba(0, 242, 255, 0.15);
-      --border-glow: rgba(0, 242, 255, 0.35);
-      --radius: 14px;
-      --font-mono: 'Share Tech Mono', monospace;
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+      :root {
+        --primary: #00f2ff;
+        --primary-purple: #8b5cf6;
+        --primary-hover: #00d2e6;
+        --bg: #070913;
+        --surface: rgba(13, 20, 38, 0.6);
+        --surface-solid: #0d1426;
+        --text: #e2e8f0;
+        --text-muted: #7f92b0;
+        --border: rgba(0, 242, 255, 0.15);
+        --border-glow: rgba(0, 242, 255, 0.35);
+        --radius: 14px;
+        --font-mono: "Share Tech Mono", monospace;
+        --font-sans:
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+      }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    body {
-      font-family: var(--font-sans);
-      background-color: var(--bg);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.05) 0px, transparent 50%);
-      color: var(--text);
-      line-height: 1.6;
-      scroll-behavior: smooth;
-    }
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--bg);
+        background-image:
+          radial-gradient(
+            at 0% 0%,
+            rgba(99, 102, 241, 0.08) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 100%,
+            rgba(0, 242, 255, 0.05) 0px,
+            transparent 50%
+          );
+        color: var(--text);
+        line-height: 1.6;
+        scroll-behavior: smooth;
+      }
 
-    a {
-      color: var(--primary);
-      text-decoration: none;
-      transition: all 0.2s ease;
-      text-shadow: 0 0 5px rgba(0, 242, 255, 0.2);
-    }
+      a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        text-shadow: 0 0 5px rgba(0, 242, 255, 0.2);
+      }
 
-    a:hover {
-      color: #fff;
-      text-shadow: 0 0 10px var(--primary);
-    }
+      a:hover {
+        color: #fff;
+        text-shadow: 0 0 10px var(--primary);
+      }
 
-    /* Layout */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(7, 9, 19, 0.8);
-      border-bottom: 1px solid var(--border);
-      padding: 1.2rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      backdrop-filter: blur(12px);
-    }
+      /* Layout */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(7, 9, 19, 0.8);
+        border-bottom: 1px solid var(--border);
+        padding: 1.2rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        backdrop-filter: blur(12px);
+      }
 
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 1.35rem;
-      color: #fff;
-      letter-spacing: 0.05em;
-    }
+      .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 900;
+        font-size: 1.35rem;
+        color: #fff;
+        letter-spacing: 0.05em;
+      }
 
-    .lang-switcher {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      font-family: var(--font-mono);
-    }
+      .lang-switcher {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        font-family: var(--font-mono);
+      }
 
-    .lang-link {
-      color: var(--text-muted);
-      transition: color 0.2s;
-    }
+      .lang-link {
+        color: var(--text-muted);
+        transition: color 0.2s;
+      }
 
-    .lang-link:hover, .lang-link.active {
-      color: var(--primary);
-      text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
-    }
+      .lang-link:hover,
+      .lang-link.active {
+        color: var(--primary);
+        text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+      }
 
-    .header-nav {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
+      .header-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
 
-    .qna-btn {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--primary);
-      background-color: rgba(0, 242, 255, 0.08);
-      border: 1px solid rgba(0, 242, 255, 0.2);
-      padding: 0.45rem 1rem;
-      border-radius: 8px;
-      transition: all 0.25s ease;
-      box-shadow: 0 0 10px rgba(0, 242, 255, 0.05);
-    }
+      .qna-btn {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--primary);
+        background-color: rgba(0, 242, 255, 0.08);
+        border: 1px solid rgba(0, 242, 255, 0.2);
+        padding: 0.45rem 1rem;
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        box-shadow: 0 0 10px rgba(0, 242, 255, 0.05);
+      }
 
-    .qna-btn:hover {
-      background-color: var(--primary);
-      color: #070913;
-      box-shadow: 0 0 15px var(--primary);
-      text-shadow: none;
-    }
+      .qna-btn:hover {
+        background-color: var(--primary);
+        color: #070913;
+        box-shadow: 0 0 15px var(--primary);
+        text-shadow: none;
+      }
 
-    .nav-item-qna {
-      margin-top: 1.5rem;
-      border-top: 1px dashed var(--border);
-      padding-top: 1rem;
-    }
+      .nav-item-qna {
+        margin-top: 1.5rem;
+        border-top: 1px dashed var(--border);
+        padding-top: 1rem;
+      }
 
-    .nav-link-qna {
-      color: var(--primary) !important;
-      font-weight: 700 !important;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+      .nav-link-qna {
+        color: var(--primary) !important;
+        font-weight: 700 !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-    .nav-link-qna:hover {
-      background-color: rgba(0, 242, 255, 0.08) !important;
-      box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
-    }
+      .nav-link-qna:hover {
+        background-color: rgba(0, 242, 255, 0.08) !important;
+        box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+      }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 2.5rem;
-      padding: 2.5rem 2rem;
-    }
-
-    @media (max-width: 768px) {
       .container {
-        grid-template-columns: 1fr;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2.5rem;
+        padding: 2.5rem 2rem;
       }
-      .sidebar {
-        display: none;
-      }
-    }
 
-    /* Sidebar */
-    .sidebar {
-      position: sticky;
-      top: 6.5rem;
-      height: calc(100vh - 8rem);
-      overflow-y: auto;
-    }
-
-    .nav-list {
-      list-style: none;
-    }
-
-    .nav-item {
-      margin-bottom: 0.5rem;
-    }
-
-    .nav-link {
-      display: block;
-      padding: 0.6rem 1.1rem;
-      border-radius: 8px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      font-weight: 500;
-      border-left: 2px solid transparent;
-      transition: all 0.25s ease;
-    }
-
-    .nav-link:hover {
-      background: rgba(13, 20, 38, 0.4);
-      color: var(--primary);
-      border-left: 2px solid var(--primary);
-    }
-
-    .nav-link.active {
-      background: rgba(99, 102, 241, 0.08);
-      color: #fff;
-      border-left: 2px solid var(--primary-purple);
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.08);
-    }
-
-    /* Content */
-    .content section {
-      margin-bottom: 5rem;
-      scroll-margin-top: 7rem;
-    }
-
-    .section-title {
-      font-family: 'Orbitron', var(--font-sans);
-      font-size: 1.9rem;
-      font-weight: 900;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      color: #fff;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.6rem;
-      backdrop-filter: blur(8px);
-      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-glow);
-      box-shadow: 0 0 20px rgba(0, 242, 255, 0.12);
-      background: rgba(13, 20, 38, 0.8);
-    }
-
-    .card-title {
-      font-weight: 700;
-      margin-bottom: 0.6rem;
-      color: #fff;
-    }
-
-    .card-desc {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .shortcut {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      background-color: rgba(13, 20, 38, 0.9);
-      border: 1px solid rgba(0, 242, 255, 0.2);
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      margin: 0 0.2rem;
-      color: var(--primary);
-    }
-
-    /* Cybermatic Alert Box */
-    .alert {
-      padding: 1.2rem 1.6rem;
-      border-radius: var(--radius);
-      margin: 1.8rem 0;
-      display: flex;
-      gap: 1.1rem;
-      font-size: 0.9rem;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .alert::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-    }
-
-    .alert-info {
-      background-color: rgba(99, 102, 241, 0.05);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-      color: var(--text);
-    }
-
-    .alert-info::before {
-      background-color: var(--primary-purple);
-      box-shadow: 0 0 10px var(--primary-purple);
-    }
-
-    .alert-warning {
-      background-color: rgba(245, 158, 11, 0.04);
-      border: 1px solid rgba(245, 158, 11, 0.25);
-      color: var(--text);
-    }
-
-    .alert-warning::before {
-      background-color: #f59e0b;
-      box-shadow: 0 0 10px #f59e0b;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 3rem 2rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      background: rgba(7, 9, 19, 0.6);
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      border-radius: 5px;
-      font-size: 0.7rem;
-      font-weight: 800;
-      font-family: var(--font-mono);
-      background-color: var(--primary);
-      color: #070913;
-      vertical-align: middle;
-      margin-left: 0.5rem;
-      letter-spacing: 0.05em;
-    }
-
-    .badge-premium {
-      background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
-      color: white;
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
-    }
-
-    /* Grid layout for Buddy list */
-    .buddy-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
-      margin-top: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .buddy-card {
-      background: rgba(13, 20, 38, 0.5);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.1rem;
-      backdrop-filter: blur(6px);
-      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .buddy-card:hover {
-      background: rgba(13, 20, 38, 0.85);
-      border-color: var(--border-glow);
-      box-shadow: 0 0 18px rgba(0, 242, 255, 0.15);
-      transform: translateY(-3px);
-    }
-
-    .buddy-avatar-wrapper {
-      width: 100%;
-      height: 140px;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 0.8rem;
-      border: 1px solid rgba(0, 242, 255, 0.15);
-      background: #05070e;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .buddy-avatar-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
-    .buddy-card:hover .buddy-avatar-img {
-      transform: scale(1.08);
-    }
-
-    .buddy-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .buddy-emoji {
-      font-size: 1.2rem;
-    }
-
-    .buddy-desc {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-      flex-grow: 1;
-    }
-  </style>
-</head>
-<body>
-
-  <header class="header">
-    <div class="header-logo">
-      <img src="icons/icon128.png" width="28" height="28" alt="Logo">
-      <span style="position: relative; display: inline-flex; align-items: center; gap: 0.25rem;">
-        <span>NanoBot</span>
-        <span style="font-size: 9px; background: linear-gradient(to right, #9333ea, #4f46e5); color: white; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0.15rem 0.35rem; border-radius: 4px; font-weight: 800; margin-left: 0.15rem; line-height: 1; display: inline-flex; align-items: center; gap: 0.15rem; margin-top: -6px; box-shadow: 0 1px 2px 0 rgba(99, 102, 241, 0.2); user-select: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="#fde047" stroke="#fde047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 1px; color: #fde047;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-          AI
-        </span>
-      </span>
-    </div>
-    <div class="header-nav">
-      <a href="qna.html" class="qna-btn">FAQ & Q&A</a>
-      <div class="lang-switcher">
-        <a href="help.html" class="lang-link active">English</a>
-        <a href="help.ja.html" class="lang-link">日本語</a>
-        <a href="help.ko.html" class="lang-link">한국어</a>
-      </div>
-    </div>
-  </header>
-
-  <div class="container">
-    <aside class="sidebar">
-      <nav>
-        <ul class="nav-list">
-          <li class="nav-item"><a href="#intro" class="nav-link active">Intro & Installation</a></li>
-          <li class="nav-item"><a href="#getting-started" class="nav-link">Getting Started</a></li>
-          <li class="nav-item"><a href="#ai-features" class="nav-link">On-device AI Features</a></li>
-          <li class="nav-item"><a href="#bookmarks-skills-tools" class="nav-link">Bookmarks / Skills / Tools</a></li>
-          <li class="nav-item"><a href="#buddy-feature" class="nav-link">AI Buddy Customization</a></li>
-          <li class="nav-item"><a href="#settings" class="nav-link">Settings & Theme Colors</a></li>
-          <li class="nav-item"><a href="#privacy" class="nav-link">Security & Privacy</a></li>
-          <li class="nav-item nav-item-qna">
-            <a href="qna.html" class="nav-link nav-link-qna">
-              <span>FAQ & Q&A</span>
-              <span class="badge">QNA</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-
-    <main class="content">
-      <section id="intro">
-        <h1 class="section-title">Intro & Installation</h1>
-        
-        <!-- [NEW] Warning alert for features under development -->
-        <div class="alert alert-warning">
-          <div>
-            <strong>⚠️ Note:</strong> This help page may contain features that are currently under development. Please note that there may be functional differences and update gaps between the official Chrome Web Store version and the development version.
-          </div>
-        </div>
-
-        <div class="alert alert-info">
-          <div>
-            <strong>💡 Requirement:</strong> NanoBot AI relies on Chrome's built-in local AI model (Gemini Nano). Running it requires Chrome version 128+ and a one-time configuration. Please refer to our <strong>FAQ & Q&A page</strong> for step-by-step guidance.
-          </div>
-        </div>
-
-        <p>NanoBot AI is an innovative, fully on-device personal assistant that runs directly in your Chrome browser. It works without sending any conversation data to cloud servers, delivering ultra-private, local intelligence directly on your own computer.</p>
-        
-        <div class="alert alert-info" style="margin-top: 1.5rem;">
-          <div>
-            <strong>💡 Tip:</strong> After installing, click the Extensions icon (puzzle piece) in the Chrome toolbar and <strong>Pin</strong> NanoBot for quick access anytime.
-          </div>
-        </div>
-      </section>
-
-      <section id="getting-started">
-        <h2 class="section-title">Getting Started</h2>
-        <div class="feature-grid">
-          <div class="card">
-            <div class="card-title">1-Click Sidepanel</div>
-            <div class="card-desc">Click the NanoBot icon in the toolbar, then select [Open Sidepanel] to enjoy a spacious sidebar layout for long, immersive interactions with the AI.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">Manual Engine Test</div>
-            <div class="card-desc">Click the [AI ON] status badge in the top right of the popup to run a 1-second diagnostic check on your browser's local Gemini Nano engine.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">Custom Avatar & Name</div>
-            <div class="card-desc">Use the carousel arrows to select your AI assistant's avatar, and type in a custom name to tailor your experience.</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="ai-features">
-        <h2 class="section-title">On-device AI Features <span class="badge">Core</span></h2>
-        <div class="feature-grid">
-          <div class="card">
-            <div class="card-title">100% Offline Chat</div>
-            <div class="card-desc">Since the model runs natively on your machine, your conversations continue even when you lose internet connectivity.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">Context Sharing</div>
-            <div class="card-desc">Summarize and ask questions about the webpage you are currently reading, boosting your study, writing, and coding productivity.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">Avatar Shuffle</div>
-            <div class="card-desc">Click the shuffle icon to randomly select from a collection of fun, unique avatars for your assistant.</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- [NEW] Bookmarks, Skills & Tools section (English) -->
-      <section id="bookmarks-skills-tools">
-        <h2 class="section-title">Bookmarks / Skills / Tools <span class="badge">Utility</span></h2>
-        <p>Beyond standard chat, NanoBot provides a versatile set of extensions, shortcut prompts, and smart utility tools to upgrade your browsing efficiency.</p>
-        
-        <div class="feature-grid">
-          <div class="card">
-            <div class="card-title">🔖 Bookmarks System</div>
-            <div class="card-desc">Save and manage your frequently visited websites directly in the NanoBot sidebar. Instantly jump to your favorite pages with a single click.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">⚡ Custom Skills & Prompts</div>
-            <div class="card-desc">Create your own custom prompt templates (e.g. translation instructions, code reviewer). Toggle a skill with one click to force specific rules on the AI's responses.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">📝 Smart Notes & Todo Lists</div>
-            <div class="card-desc">Organize your days with local Todo checklists and a full-featured notepad that automatically saves your drafts locally and securely.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">🧮 Utility Tools & Calculators</div>
-            <div class="card-desc">Includes a <strong>General Calculator</strong> with unit conversions (e.g. area and temperature), a real-time <strong>Exchange Rate Converter</strong>, and a dedicated <strong>Translator</strong>.</div>
-          </div>
-        </div>
-
-        <div class="alert alert-info" style="margin-top: 1.5rem;">
-          <div>
-            <strong>⚡ AI Quick Actions (Sidebar):</strong> Highlight text on any page and instantly trigger actions like <strong>[3-Line Summary]</strong>, <strong>[Grammar Check]</strong>, <strong>[Business Email Tone]</strong>, or <strong>[Idea Brainstorming]</strong>.
-          </div>
-        </div>
-      </section>
-
-      <section id="buddy-feature">
-        <h2 class="section-title">AI Buddy Customization <span class="badge badge-premium">Premium</span></h2>
-        <p>Unlock and configure specialized companion AI Buddies with custom personalities, avatars, and behavioral guidelines to assist your specialized workflows.</p>
-        
-        <!-- [NEW] Buddy feature beta & premium notice -->
-        <div class="alert alert-info" style="margin-top: 1rem; border-color: rgba(139, 92, 246, 0.3); background-color: rgba(139, 92, 246, 0.05);">
-          <div>
-            <strong>🧪 Beta Test Notice:</strong> The AI Buddy feature is currently in <strong>Open Beta</strong> and is free for all users. Upon official release, it will transition into a separate <strong>Premium</strong> tier with specific pricing and benefits.
-          </div>
-        </div>
-
-        <div class="feature-grid">
-          <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
-            <div class="card-title">Persona Customization</div>
-            <div class="card-desc">Inject custom instructions (e.g., Translation Expert, Tech Lead, Essay Writer) to instruct your AI Buddy on how to respond.</div>
-          </div>
-          <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
-            <div class="card-title">Multi-Buddy Management</div>
-            <div class="card-desc">Create and store multiple AI characters for different purposes, and switch between them seamlessly.</div>
-          </div>
-        </div>
-
-        <!-- [NEW] Buddy presets with images (English) -->
-        <h3 style="color: #fff; margin-top: 2.5rem; margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; font-size: 1.25rem;">🤖 10 Unique Persona Buddy Presets</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">NanoBot features a rich selection of custom pre-configured AI companion personalities:</p>
-        
-        <div class="buddy-grid">
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-01.webp" class="buddy-avatar-img" alt="Motivator">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🔥</span> Motivator</div>
-            <div class="buddy-desc">A hardcore, spartan life coach who despises laziness and pushes you to take immediate action.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-02.webp" class="buddy-avatar-img" alt="Tsundere">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">😤</span> Tsundere Mate</div>
-            <div class="buddy-desc">Pretends to be annoyed and cold on the outside, but actually cares deeply and offers helper insights.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-03.webp" class="buddy-avatar-img" alt="Bard">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🎻</span> Medieval Bard</div>
-            <div class="buddy-desc">Translates your daily tasks and complaints into epic legends, songs, and theatrical quests.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-04.webp" class="buddy-avatar-img" alt="Aristocrat">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🎩</span> Victorian Noble</div>
-            <div class="buddy-desc">An elegant 19th-century gentleman/lady who views modern smartphones and digital jargon as magic.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-05.webp" class="buddy-avatar-img" alt="Netrunner">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">💻</span> Netrunner</div>
-            <div class="buddy-desc">An elite hacker treating cognitive blocks as software bugs, prescribing terminal system de-frags.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-06.webp" class="buddy-avatar-img" alt="Grandma">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">👵</span> Country Grandma</div>
-            <div class="buddy-desc">Scolds you gently for screen-time, reminding you that a warm soup and nap fix most worries.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-07.webp" class="buddy-avatar-img" alt="Influencer">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">✨</span> Gen Z Influencer</div>
-            <div class="buddy-desc">Super energetic, spamming current internet memes and emojis to vibe check and hype your day.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-08.webp" class="buddy-avatar-img" alt="Conspiracy">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">👁️</span> Paranoiac Analyst</div>
-            <div class="buddy-desc">Convinced that even basic local mosquitoes are micro-drone bio-trackers sent to map sleep data.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-09.webp" class="buddy-avatar-img" alt="ZenCat">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🐱</span> Zen Scholar Cat</div>
-            <div class="buddy-desc">Stretches in warm sunlight, advising you that life is short and napping is superior to rushing.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-10.webp" class="buddy-avatar-img" alt="Corporate">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">👔</span> Corporate Leader</div>
-            <div class="buddy-desc">Deconstructs emotional concerns into operational risk evaluations, milestone KPIs, and ROI.</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="settings">
-        <h2 class="section-title">Settings & Theme Customization</h2>
-        <ul>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>Localization:</strong> NanoBot supports English, Korean, and Japanese out of the box, translating both the popup and sidepanel.</li>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>Skin Modes:</strong> Switch between a premium, custom Dark Mode and a crisp, clean Light Mode in one click.</li>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>Theme Colors:</strong> Choose from 5 sleek gradient color schemes (such as Indigo or Violet) to match your visual taste.</li>
-        </ul>
-      </section>
-
-      <section id="privacy">
-        <h2 class="section-title" style="color: #10b981;">Security & Privacy</h2>
-        <div class="card" style="border-left: 4px solid #10b981;">
-          <div class="card-title">100% Local Operations</div>
-          <div class="card-desc">All chat histories, prompt configurations, and settings are stored locally on your device (IndexedDB/LocalStorage). No data is ever sent to external cloud servers.</div>
-        </div>
-        <div class="card" style="border-left: 4px solid #10b981; border: 1px dashed rgba(16, 185, 129, 0.4); margin-top: 1rem;">
-          <div class="card-title">Dual-Pass Guardrails</div>
-          <div class="card-desc">Before reaching the core model, a local safety classifier pre-screens inputs in real-time, blocking violent, explicit, or prompt-jailbreak requests immediately.</div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <section id="support" style="text-align: center; padding: 2.5rem; background-color: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); margin-top: 4rem; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); backdrop-filter: blur(8px);">
-    <h2 style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff;">Support the Project</h2>
-    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">If NanoBot helps you stay productive, consider buying me a coffee!</p>
-    <a href="https://www.buymeacoffee.com/junpa" target="_blank" style="display: inline-block;">
-      <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=junpa&button_colour=6366f1&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00" alt="Buy Me A Coffee" style="height: 44px;">
-    </a>
-  </section>
-
-  <footer>
-    <p>© 2026 NanoBot AI - <a href="https://nexusforce.cloud/" target="_blank" style="color: inherit; text-decoration: underline;">NexusForce</a>. All rights reserved.</p>
-  </footer>
-
-  <script>
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(section => {
-        if (pageYOffset >= section.offsetTop - 150) {
-          current = section.getAttribute('id');
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: 1fr;
         }
+        .sidebar {
+          display: none;
+        }
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: sticky;
+        top: 6.5rem;
+        height: calc(100vh - 8rem);
+        overflow-y: auto;
+      }
+
+      .nav-list {
+        list-style: none;
+      }
+
+      .nav-item {
+        margin-bottom: 0.5rem;
+      }
+
+      .nav-link {
+        display: block;
+        padding: 0.6rem 1.1rem;
+        border-radius: 8px;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-left: 2px solid transparent;
+        transition: all 0.25s ease;
+      }
+
+      .nav-link:hover {
+        background: rgba(13, 20, 38, 0.4);
+        color: var(--primary);
+        border-left: 2px solid var(--primary);
+      }
+
+      .nav-link.active {
+        background: rgba(99, 102, 241, 0.08);
+        color: #fff;
+        border-left: 2px solid var(--primary-purple);
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.08);
+      }
+
+      /* Content */
+      .content section {
+        margin-bottom: 5rem;
+        scroll-margin-top: 7rem;
+      }
+
+      .section-title {
+        font-family: "Orbitron", var(--font-sans);
+        font-size: 1.9rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: #fff;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.6rem;
+        backdrop-filter: blur(8px);
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: var(--border-glow);
+        box-shadow: 0 0 20px rgba(0, 242, 255, 0.12);
+        background: rgba(13, 20, 38, 0.8);
+      }
+
+      .card-title {
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+        color: #fff;
+      }
+
+      .card-desc {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .shortcut {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        background-color: rgba(13, 20, 38, 0.9);
+        border: 1px solid rgba(0, 242, 255, 0.2);
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        margin: 0 0.2rem;
+        color: var(--primary);
+      }
+
+      /* Cybermatic Alert Box */
+      .alert {
+        padding: 1.2rem 1.6rem;
+        border-radius: var(--radius);
+        margin: 1.8rem 0;
+        display: flex;
+        gap: 1.1rem;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .alert::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+      }
+
+      .alert-info {
+        background-color: rgba(99, 102, 241, 0.05);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        color: var(--text);
+      }
+
+      .alert-info::before {
+        background-color: var(--primary-purple);
+        box-shadow: 0 0 10px var(--primary-purple);
+      }
+
+      .alert-warning {
+        background-color: rgba(245, 158, 11, 0.04);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        color: var(--text);
+      }
+
+      .alert-warning::before {
+        background-color: #f59e0b;
+        box-shadow: 0 0 10px #f59e0b;
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 3rem 2rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        background: rgba(7, 9, 19, 0.6);
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        font-family: var(--font-mono);
+        background-color: var(--primary);
+        color: #070913;
+        vertical-align: middle;
+        margin-left: 0.5rem;
+        letter-spacing: 0.05em;
+      }
+
+      .badge-premium {
+        background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+        color: white;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+      }
+
+      /* Grid layout for Buddy list */
+      .buddy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .buddy-card {
+        background: rgba(13, 20, 38, 0.5);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.1rem;
+        backdrop-filter: blur(6px);
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .buddy-card:hover {
+        background: rgba(13, 20, 38, 0.85);
+        border-color: var(--border-glow);
+        box-shadow: 0 0 18px rgba(0, 242, 255, 0.15);
+        transform: translateY(-3px);
+      }
+
+      .buddy-avatar-wrapper {
+        width: 100%;
+        height: 140px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 0.8rem;
+        border: 1px solid rgba(0, 242, 255, 0.15);
+        background: #05070e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .buddy-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+      }
+
+      .buddy-card:hover .buddy-avatar-img {
+        transform: scale(1.08);
+      }
+
+      .buddy-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 800;
+        color: #fff;
+      }
+
+      .buddy-emoji {
+        font-size: 1.2rem;
+      }
+
+      .buddy-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+        flex-grow: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-logo">
+        <img src="icons/icon128.png" width="28" height="28" alt="Logo" />
+        <span
+          style="
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+          "
+        >
+          <span>NanoBot</span>
+          <span
+            style="
+              font-size: 9px;
+              background: linear-gradient(to right, #9333ea, #4f46e5);
+              color: white;
+              border: 1px solid rgba(99, 102, 241, 0.3);
+              padding: 0.15rem 0.35rem;
+              border-radius: 4px;
+              font-weight: 800;
+              margin-left: 0.15rem;
+              line-height: 1;
+              display: inline-flex;
+              align-items: center;
+              gap: 0.15rem;
+              margin-top: -6px;
+              box-shadow: 0 1px 2px 0 rgba(99, 102, 241, 0.2);
+              user-select: none;
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="9"
+              height="9"
+              viewBox="0 0 24 24"
+              fill="#fde047"
+              stroke="#fde047"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-right: 1px; color: #fde047"
+            >
+              <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+              />
+            </svg>
+            AI
+          </span>
+        </span>
+      </div>
+      <div class="header-nav">
+        <a href="qna.html" class="qna-btn">FAQ & Q&A</a>
+        <div class="lang-switcher">
+          <a href="help.html" class="lang-link active">English</a>
+          <a href="help.ja.html" class="lang-link">日本語</a>
+          <a href="help.ko.html" class="lang-link">한국어</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <aside class="sidebar">
+        <nav>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="#intro" class="nav-link active">Intro & Installation</a>
+            </li>
+            <li class="nav-item">
+              <a href="#getting-started" class="nav-link">Getting Started</a>
+            </li>
+            <li class="nav-item">
+              <a href="#ai-features" class="nav-link">On-device AI Features</a>
+            </li>
+            <li class="nav-item">
+              <a href="#bookmarks-skills-tools" class="nav-link"
+                >Bookmarks / Skills / Tools</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#buddy-feature" class="nav-link"
+                >AI Buddy Customization</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#settings" class="nav-link">Settings & Theme Colors</a>
+            </li>
+            <li class="nav-item">
+              <a href="#privacy" class="nav-link">Security & Privacy</a>
+            </li>
+            <li class="nav-item nav-item-qna">
+              <a href="qna.html" class="nav-link nav-link-qna">
+                <span>FAQ & Q&A</span>
+                <span class="badge">QNA</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <section id="intro">
+          <h1 class="section-title">Intro & Installation</h1>
+
+          <!-- [NEW] Warning alert for features under development -->
+          <div class="alert alert-warning">
+            <div>
+              <strong>⚠️ Note:</strong> This help page may contain features that
+              are currently under development. Please note that there may be
+              functional differences and update gaps between the official Chrome
+              Web Store version and the development version.
+            </div>
+          </div>
+
+          <div class="alert alert-info">
+            <div>
+              <strong>💡 Requirement:</strong> NanoBot AI relies on Chrome's
+              built-in local AI model (Gemini Nano). Running it requires Chrome
+              version 128+ and a one-time configuration. Please refer to our
+              <strong>FAQ & Q&A page</strong> for step-by-step guidance.
+            </div>
+          </div>
+
+          <p>
+            NanoBot AI is an innovative, fully on-device personal assistant that
+            runs directly in your Chrome browser. It works without sending any
+            conversation data to cloud servers, delivering ultra-private, local
+            intelligence directly on your own computer.
+          </p>
+
+          <div class="alert alert-info" style="margin-top: 1.5rem">
+            <div>
+              <strong>💡 Tip:</strong> After installing, click the Extensions
+              icon (puzzle piece) in the Chrome toolbar and
+              <strong>Pin</strong> NanoBot for quick access anytime.
+            </div>
+          </div>
+        </section>
+
+        <section id="getting-started">
+          <h2 class="section-title">Getting Started</h2>
+          <div class="feature-grid">
+            <div class="card">
+              <div class="card-title">1-Click Sidepanel</div>
+              <div class="card-desc">
+                Click the NanoBot icon in the toolbar, then select [Open
+                Sidepanel] to enjoy a spacious sidebar layout for long,
+                immersive interactions with the AI.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Manual Engine Test</div>
+              <div class="card-desc">
+                Click the [AI ON] status badge in the top right of the popup to
+                run a 1-second diagnostic check on your browser's local Gemini
+                Nano engine.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Custom Avatar & Name</div>
+              <div class="card-desc">
+                Use the carousel arrows to select your AI assistant's avatar,
+                and type in a custom name to tailor your experience.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="ai-features">
+          <h2 class="section-title">
+            On-device AI Features <span class="badge">Core</span>
+          </h2>
+
+          <div class="alert alert-warning" style="margin-bottom: 1.5rem">
+            <div>
+              <strong>⚠️ Important Note (Usage Restrictions):</strong>
+              <ul>
+                <li style="margin-left: 1.25rem; font-size: 0.85rem">
+                  Due to Chrome's strict security policies, content scripts are
+                  blocked on <strong>internal Chrome pages</strong> (e.g.,
+                  <code>chrome://extensions</code>, New Tab Page) and the
+                  <strong>Chrome Web Store</strong>. Please test drag functions
+                  on standard HTTP/HTTPS websites.
+                </li>
+                <li style="margin-left: 1.25rem; font-size: 0.85rem">
+                  Immediately after installing or updating/rebuilding the
+                  extension, you must <strong>reload (F5)</strong> existing
+                  browser tabs to activate the floating drag action tooltip.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="feature-grid">
+            <div class="card">
+              <div class="card-title">100% Offline Chat</div>
+              <div class="card-desc">
+                Since the model runs natively on your machine, your
+                conversations continue even when you lose internet connectivity.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Context Sharing</div>
+              <div class="card-desc">
+                Summarize and ask questions about the webpage you are currently
+                reading, boosting your study, writing, and coding productivity.
+              </div>
+            </div>
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">
+                👑 Smart Drag & Quick Actions
+                <span class="badge badge-premium">Premium</span>
+              </div>
+              <div class="card-desc">
+                Highlight any text on a web page to evoke the 👑
+                Summary/Translation floating tooltip. Click it to open the
+                sidepanel and process content instantly.
+              </div>
+            </div>
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">
+                👑 1-Click Tab Summary
+                <span class="badge badge-premium">Premium</span>
+              </div>
+              <div class="card-desc">
+                Click the document summary icon in the chat header to scrape and
+                generate a concise 3-line summary of the current active browser
+                tab.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Avatar Shuffle</div>
+              <div class="card-desc">
+                Click the shuffle icon to randomly select from a collection of
+                fun, unique avatars for your assistant.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- [NEW] Bookmarks, Skills & Tools section (English) -->
+        <section id="bookmarks-skills-tools">
+          <h2 class="section-title">
+            Bookmarks / Skills / Tools <span class="badge">Utility</span>
+          </h2>
+          <p>
+            Beyond standard chat, NanoBot provides a versatile set of
+            extensions, shortcut prompts, and smart utility tools to upgrade
+            your browsing efficiency.
+          </p>
+
+          <div class="feature-grid">
+            <div class="card">
+              <div class="card-title">🔖 Bookmarks System</div>
+              <div class="card-desc">
+                Save and manage your frequently visited websites directly in the
+                NanoBot sidebar. Instantly jump to your favorite pages with a
+                single click.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">⚡ Custom Skills & Prompts</div>
+              <div class="card-desc">
+                Create your own custom prompt templates (e.g. translation
+                instructions, code reviewer). Toggle a skill with one click to
+                force specific rules on the AI's responses.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Smart Notes & Todo Lists</div>
+              <div class="card-desc">
+                Organize your days with local Todo checklists and a
+                full-featured notepad that automatically saves your drafts
+                locally and securely.
+              </div>
+            </div>
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">
+                ⏰ Smart Alarms & Reminders
+                <span class="badge badge-premium">Premium</span>
+              </div>
+              <div class="card-desc">
+                Schedule alarms directly from your notes or AI conversation
+                panels with a ⏰ icon. System OS notifications are fired even
+                when the browser is closed, paired with smooth in-app toast
+                alerts when the sidepanel is active.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">🧮 Utility Tools & Calculators</div>
+              <div class="card-desc">
+                Includes a <strong>General Calculator</strong> with unit
+                conversions (e.g. area and temperature), a real-time
+                <strong>Exchange Rate Converter</strong>, and a dedicated
+                <strong>Translator</strong>.
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info" style="margin-top: 1.5rem">
+            <div>
+              <strong>⚡ AI Quick Actions (Sidebar):</strong> Highlight text on
+              any page and instantly trigger actions like
+              <strong>[3-Line Summary]</strong>,
+              <strong>[Grammar Check]</strong>,
+              <strong>[Business Email Tone]</strong>, or
+              <strong>[Idea Brainstorming]</strong>.
+            </div>
+          </div>
+        </section>
+
+        <section id="buddy-feature">
+          <h2 class="section-title">
+            AI Buddy Customization
+            <span class="badge badge-premium">Premium</span>
+          </h2>
+          <p>
+            Unlock and configure specialized companion AI Buddies with custom
+            personalities, avatars, and behavioral guidelines to assist your
+            specialized workflows.
+          </p>
+
+          <!-- [NEW] Buddy feature beta & premium notice -->
+          <div
+            class="alert alert-info"
+            style="
+              margin-top: 1rem;
+              border-color: rgba(139, 92, 246, 0.3);
+              background-color: rgba(139, 92, 246, 0.05);
+            "
+          >
+            <div>
+              <strong>🧪 Beta Test Notice:</strong> The AI Buddy feature is
+              currently in <strong>Open Beta</strong> and is free for all users.
+              Upon official release, it will transition into a separate
+              <strong>Premium</strong> tier with specific pricing and benefits.
+            </div>
+          </div>
+
+          <div class="feature-grid">
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">Persona Customization</div>
+              <div class="card-desc">
+                Inject custom instructions (e.g., Translation Expert, Tech Lead,
+                Essay Writer) to instruct your AI Buddy on how to respond.
+              </div>
+            </div>
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">Multi-Buddy Management</div>
+              <div class="card-desc">
+                Create and store multiple AI characters for different purposes,
+                and switch between them seamlessly.
+              </div>
+            </div>
+          </div>
+
+          <!-- [NEW] Buddy presets with images (English) -->
+          <h3
+            style="
+              color: #fff;
+              margin-top: 2.5rem;
+              margin-bottom: 0.5rem;
+              font-family: &quot;Orbitron&quot;, sans-serif;
+              font-size: 1.25rem;
+            "
+          >
+            🤖 10 Unique Persona Buddy Presets
+          </h3>
+          <p
+            style="
+              font-size: 0.9rem;
+              color: var(--text-muted);
+              margin-bottom: 1rem;
+            "
+          >
+            NanoBot features a rich selection of custom pre-configured AI
+            companion personalities:
+          </p>
+
+          <div class="buddy-grid">
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-01.webp"
+                  class="buddy-avatar-img"
+                  alt="Motivator"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🔥</span> Motivator
+              </div>
+              <div class="buddy-desc">
+                A hardcore, spartan life coach who despises laziness and pushes
+                you to take immediate action.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-02.webp"
+                  class="buddy-avatar-img"
+                  alt="Tsundere"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">😤</span> Tsundere Mate
+              </div>
+              <div class="buddy-desc">
+                Pretends to be annoyed and cold on the outside, but actually
+                cares deeply and offers helper insights.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-03.webp"
+                  class="buddy-avatar-img"
+                  alt="Bard"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🎻</span> Medieval Bard
+              </div>
+              <div class="buddy-desc">
+                Translates your daily tasks and complaints into epic legends,
+                songs, and theatrical quests.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-04.webp"
+                  class="buddy-avatar-img"
+                  alt="Aristocrat"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🎩</span> Victorian Noble
+              </div>
+              <div class="buddy-desc">
+                An elegant 19th-century gentleman/lady who views modern
+                smartphones and digital jargon as magic.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-05.webp"
+                  class="buddy-avatar-img"
+                  alt="Netrunner"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">💻</span> Netrunner
+              </div>
+              <div class="buddy-desc">
+                An elite hacker treating cognitive blocks as software bugs,
+                prescribing terminal system de-frags.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-06.webp"
+                  class="buddy-avatar-img"
+                  alt="Grandma"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">👵</span> Country Grandma
+              </div>
+              <div class="buddy-desc">
+                Scolds you gently for screen-time, reminding you that a warm
+                soup and nap fix most worries.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-07.webp"
+                  class="buddy-avatar-img"
+                  alt="Influencer"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">✨</span> Gen Z Influencer
+              </div>
+              <div class="buddy-desc">
+                Super energetic, spamming current internet memes and emojis to
+                vibe check and hype your day.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-08.webp"
+                  class="buddy-avatar-img"
+                  alt="Conspiracy"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">👁️</span> Paranoiac Analyst
+              </div>
+              <div class="buddy-desc">
+                Convinced that even basic local mosquitoes are micro-drone
+                bio-trackers sent to map sleep data.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-09.webp"
+                  class="buddy-avatar-img"
+                  alt="ZenCat"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🐱</span> Zen Scholar Cat
+              </div>
+              <div class="buddy-desc">
+                Stretches in warm sunlight, advising you that life is short and
+                napping is superior to rushing.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-10.webp"
+                  class="buddy-avatar-img"
+                  alt="Corporate"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">👔</span> Corporate Leader
+              </div>
+              <div class="buddy-desc">
+                Deconstructs emotional concerns into operational risk
+                evaluations, milestone KPIs, and ROI.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="settings">
+          <h2 class="section-title">Settings & Theme Customization</h2>
+          <ul>
+            <li
+              style="
+                margin-left: 1.25rem;
+                margin-bottom: 0.5rem;
+                list-style-type: square;
+              "
+            >
+              <strong>Localization:</strong> NanoBot supports English, Korean,
+              and Japanese out of the box, translating both the popup and
+              sidepanel.
+            </li>
+            <li
+              style="
+                margin-left: 1.25rem;
+                margin-bottom: 0.5rem;
+                list-style-type: square;
+              "
+            >
+              <strong>Skin Modes:</strong> Switch between a premium, custom Dark
+              Mode and a crisp, clean Light Mode in one click.
+            </li>
+            <li
+              style="
+                margin-left: 1.25rem;
+                margin-bottom: 0.5rem;
+                list-style-type: square;
+              "
+            >
+              <strong>Theme Colors:</strong> Choose from 5 sleek gradient color
+              schemes (such as Indigo or Violet) to match your visual taste.
+            </li>
+          </ul>
+        </section>
+
+        <section id="privacy">
+          <h2 class="section-title" style="color: #10b981">
+            Security & Privacy
+          </h2>
+          <div class="card" style="border-left: 4px solid #10b981">
+            <div class="card-title">100% Local Operations</div>
+            <div class="card-desc">
+              All chat histories, prompt configurations, and settings are stored
+              locally on your device (IndexedDB/LocalStorage). No data is ever
+              sent to external cloud servers.
+            </div>
+          </div>
+          <div
+            class="card"
+            style="
+              border-left: 4px solid #10b981;
+              border: 1px dashed rgba(16, 185, 129, 0.4);
+              margin-top: 1rem;
+            "
+          >
+            <div class="card-title">Dual-Pass Guardrails</div>
+            <div class="card-desc">
+              Before reaching the core model, a local safety classifier
+              pre-screens inputs in real-time, blocking violent, explicit, or
+              prompt-jailbreak requests immediately.
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <section
+      id="support"
+      style="
+        text-align: center;
+        padding: 2.5rem;
+        background-color: var(--surface-solid);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        margin-top: 4rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+        backdrop-filter: blur(8px);
+      "
+    >
+      <h2
+        style="
+          font-family: &quot;Orbitron&quot;, sans-serif;
+          font-size: 1.4rem;
+          font-weight: 800;
+          margin-bottom: 0.5rem;
+          color: #fff;
+        "
+      >
+        Support the Project
+      </h2>
+      <p
+        style="
+          color: var(--text-muted);
+          font-size: 0.95rem;
+          margin-bottom: 1.5rem;
+        "
+      >
+        If NanoBot helps you stay productive, consider buying me a coffee!
+      </p>
+      <a
+        href="https://www.buymeacoffee.com/junpa"
+        target="_blank"
+        style="display: inline-block"
+      >
+        <img
+          src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=junpa&button_colour=6366f1&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00"
+          alt="Buy Me A Coffee"
+          style="height: 44px"
+        />
+      </a>
+    </section>
+
+    <footer>
+      <p>© 2026 NanoBot AI - All rights reserved.</p>
+    </footer>
+
+    <script>
+      const sections = document.querySelectorAll("section");
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      window.addEventListener("scroll", () => {
+        let current = "";
+        sections.forEach((section) => {
+          if (pageYOffset >= section.offsetTop - 150) {
+            current = section.getAttribute("id");
+          }
+        });
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === `#${current}`)
+            link.classList.add("active");
+        });
       });
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
-      });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

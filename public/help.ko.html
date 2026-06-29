@@ -1,702 +1,1145 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NanoBot AI 도움말 - 똑똑한 온디바이스 AI 비서</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@800;900&family=Share+Tech+Mono&display=swap');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NanoBot AI 도움말 - 똑똑한 온디바이스 AI 비서</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@800;900&family=Share+Tech+Mono&display=swap");
 
-    :root {
-      --primary: #00f2ff;
-      --primary-purple: #8b5cf6;
-      --primary-hover: #00d2e6;
-      --bg: #070913;
-      --surface: rgba(13, 20, 38, 0.6);
-      --surface-solid: #0d1426;
-      --text: #e2e8f0;
-      --text-muted: #7f92b0;
-      --border: rgba(0, 242, 255, 0.15);
-      --border-glow: rgba(0, 242, 255, 0.35);
-      --radius: 14px;
-      --font-mono: 'Share Tech Mono', monospace;
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+      :root {
+        --primary: #00f2ff;
+        --primary-purple: #8b5cf6;
+        --primary-hover: #00d2e6;
+        --bg: #070913;
+        --surface: rgba(13, 20, 38, 0.6);
+        --surface-solid: #0d1426;
+        --text: #e2e8f0;
+        --text-muted: #7f92b0;
+        --border: rgba(0, 242, 255, 0.15);
+        --border-glow: rgba(0, 242, 255, 0.35);
+        --radius: 14px;
+        --font-mono: "Share Tech Mono", monospace;
+        --font-sans:
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+      }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    body {
-      font-family: var(--font-sans);
-      background-color: var(--bg);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.05) 0px, transparent 50%);
-      color: var(--text);
-      line-height: 1.6;
-      scroll-behavior: smooth;
-    }
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--bg);
+        background-image:
+          radial-gradient(
+            at 0% 0%,
+            rgba(99, 102, 241, 0.08) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 100%,
+            rgba(0, 242, 255, 0.05) 0px,
+            transparent 50%
+          );
+        color: var(--text);
+        line-height: 1.6;
+        scroll-behavior: smooth;
+      }
 
-    a {
-      color: var(--primary);
-      text-decoration: none;
-      transition: all 0.2s ease;
-      text-shadow: 0 0 5px rgba(0, 242, 255, 0.2);
-    }
+      a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        text-shadow: 0 0 5px rgba(0, 242, 255, 0.2);
+      }
 
-    a:hover {
-      color: #fff;
-      text-shadow: 0 0 10px var(--primary);
-    }
+      a:hover {
+        color: #fff;
+        text-shadow: 0 0 10px var(--primary);
+      }
 
-    /* Layout */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(7, 9, 19, 0.8);
-      border-bottom: 1px solid var(--border);
-      padding: 1.2rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      backdrop-filter: blur(12px);
-    }
+      /* Layout */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(7, 9, 19, 0.8);
+        border-bottom: 1px solid var(--border);
+        padding: 1.2rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        backdrop-filter: blur(12px);
+      }
 
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 1.35rem;
-      color: #fff;
-      letter-spacing: 0.05em;
-    }
+      .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 900;
+        font-size: 1.35rem;
+        color: #fff;
+        letter-spacing: 0.05em;
+      }
 
-    .lang-switcher {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      font-family: var(--font-mono);
-    }
+      .lang-switcher {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        font-family: var(--font-mono);
+      }
 
-    .lang-link {
-      color: var(--text-muted);
-      transition: color 0.2s;
-    }
+      .lang-link {
+        color: var(--text-muted);
+        transition: color 0.2s;
+      }
 
-    .lang-link:hover, .lang-link.active {
-      color: var(--primary);
-      text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
-    }
+      .lang-link:hover,
+      .lang-link.active {
+        color: var(--primary);
+        text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+      }
 
-    .header-nav {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
+      .header-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
 
-    .qna-btn {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--primary);
-      background-color: rgba(0, 242, 255, 0.08);
-      border: 1px solid rgba(0, 242, 255, 0.2);
-      padding: 0.45rem 1rem;
-      border-radius: 8px;
-      transition: all 0.25s ease;
-      box-shadow: 0 0 10px rgba(0, 242, 255, 0.05);
-    }
+      .qna-btn {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--primary);
+        background-color: rgba(0, 242, 255, 0.08);
+        border: 1px solid rgba(0, 242, 255, 0.2);
+        padding: 0.45rem 1rem;
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        box-shadow: 0 0 10px rgba(0, 242, 255, 0.05);
+      }
 
-    .qna-btn:hover {
-      background-color: var(--primary);
-      color: #070913;
-      box-shadow: 0 0 15px var(--primary);
-      text-shadow: none;
-    }
+      .qna-btn:hover {
+        background-color: var(--primary);
+        color: #070913;
+        box-shadow: 0 0 15px var(--primary);
+        text-shadow: none;
+      }
 
-    .nav-item-qna {
-      margin-top: 1.5rem;
-      border-top: 1px dashed var(--border);
-      padding-top: 1rem;
-    }
+      .nav-item-qna {
+        margin-top: 1.5rem;
+        border-top: 1px dashed var(--border);
+        padding-top: 1rem;
+      }
 
-    .nav-link-qna {
-      color: var(--primary) !important;
-      font-weight: 700 !important;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+      .nav-link-qna {
+        color: var(--primary) !important;
+        font-weight: 700 !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-    .nav-link-qna:hover {
-      background-color: rgba(0, 242, 255, 0.08) !important;
-      box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
-    }
+      .nav-link-qna:hover {
+        background-color: rgba(0, 242, 255, 0.08) !important;
+        box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+      }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 2.5rem;
-      padding: 2.5rem 2rem;
-    }
-
-    @media (max-width: 768px) {
       .container {
-        grid-template-columns: 1fr;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2.5rem;
+        padding: 2.5rem 2rem;
       }
-      .sidebar {
-        display: none;
-      }
-    }
 
-    /* Sidebar */
-    .sidebar {
-      position: sticky;
-      top: 6.5rem;
-      height: calc(100vh - 8rem);
-      overflow-y: auto;
-    }
-
-    .nav-list {
-      list-style: none;
-    }
-
-    .nav-item {
-      margin-bottom: 0.5rem;
-    }
-
-    .nav-link {
-      display: block;
-      padding: 0.6rem 1.1rem;
-      border-radius: 8px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      font-weight: 500;
-      border-left: 2px solid transparent;
-      transition: all 0.25s ease;
-    }
-
-    .nav-link:hover {
-      background: rgba(13, 20, 38, 0.4);
-      color: var(--primary);
-      border-left: 2px solid var(--primary);
-    }
-
-    .nav-link.active {
-      background: rgba(99, 102, 241, 0.08);
-      color: #fff;
-      border-left: 2px solid var(--primary-purple);
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.08);
-    }
-
-    /* Content */
-    .content section {
-      margin-bottom: 5rem;
-      scroll-margin-top: 7rem;
-    }
-
-    .section-title {
-      font-family: 'Orbitron', var(--font-sans);
-      font-size: 1.9rem;
-      font-weight: 900;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      color: #fff;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.6rem;
-      backdrop-filter: blur(8px);
-      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-glow);
-      box-shadow: 0 0 20px rgba(0, 242, 255, 0.12);
-      background: rgba(13, 20, 38, 0.8);
-    }
-
-    .card-title {
-      font-weight: 700;
-      margin-bottom: 0.6rem;
-      color: #fff;
-    }
-
-    .card-desc {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .shortcut {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      background-color: rgba(13, 20, 38, 0.9);
-      border: 1px solid rgba(0, 242, 255, 0.2);
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      margin: 0 0.2rem;
-      color: var(--primary);
-    }
-
-    /* Cybermatic Alert Box */
-    .alert {
-      padding: 1.2rem 1.6rem;
-      border-radius: var(--radius);
-      margin: 1.8rem 0;
-      display: flex;
-      gap: 1.1rem;
-      font-size: 0.9rem;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .alert::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-    }
-
-    .alert-info {
-      background-color: rgba(99, 102, 241, 0.05);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-      color: var(--text);
-    }
-
-    .alert-info::before {
-      background-color: var(--primary-purple);
-      box-shadow: 0 0 10px var(--primary-purple);
-    }
-
-    .alert-warning {
-      background-color: rgba(245, 158, 11, 0.04);
-      border: 1px solid rgba(245, 158, 11, 0.25);
-      color: var(--text);
-    }
-
-    .alert-warning::before {
-      background-color: #f59e0b;
-      box-shadow: 0 0 10px #f59e0b;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 3rem 2rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      background: rgba(7, 9, 19, 0.6);
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      border-radius: 5px;
-      font-size: 0.7rem;
-      font-weight: 800;
-      font-family: var(--font-mono);
-      background-color: var(--primary);
-      color: #070913;
-      vertical-align: middle;
-      margin-left: 0.5rem;
-      letter-spacing: 0.05em;
-    }
-
-    .badge-premium {
-      background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
-      color: white;
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
-    }
-
-    /* Grid layout for Buddy list */
-    .buddy-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
-      margin-top: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .buddy-card {
-      background: rgba(13, 20, 38, 0.5);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.1rem;
-      backdrop-filter: blur(6px);
-      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .buddy-card:hover {
-      background: rgba(13, 20, 38, 0.85);
-      border-color: var(--border-glow);
-      box-shadow: 0 0 18px rgba(0, 242, 255, 0.15);
-      transform: translateY(-3px);
-    }
-
-    .buddy-avatar-wrapper {
-      width: 100%;
-      height: 140px;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 0.8rem;
-      border: 1px solid rgba(0, 242, 255, 0.15);
-      background: #05070e;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .buddy-avatar-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
-    .buddy-card:hover .buddy-avatar-img {
-      transform: scale(1.08);
-    }
-
-    .buddy-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .buddy-emoji {
-      font-size: 1.2rem;
-    }
-
-    .buddy-desc {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-      flex-grow: 1;
-    }
-  </style>
-</head>
-<body>
-
-  <header class="header">
-    <div class="header-logo">
-      <img src="icons/icon128.png" width="28" height="28" alt="Logo">
-      <span style="position: relative; display: inline-flex; align-items: center; gap: 0.25rem;">
-        <span>NanoBot</span>
-        <span style="font-size: 9px; background: linear-gradient(to right, #9333ea, #4f46e5); color: white; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0.15rem 0.35rem; border-radius: 4px; font-weight: 800; margin-left: 0.15rem; line-height: 1; display: inline-flex; align-items: center; gap: 0.15rem; margin-top: -6px; box-shadow: 0 1px 2px 0 rgba(99, 102, 241, 0.2); user-select: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="#fde047" stroke="#fde047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 1px; color: #fde047;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-          AI
-        </span>
-      </span>
-    </div>
-    <div class="header-nav">
-      <a href="qna.ko.html" class="qna-btn">FAQ & Q&A</a>
-      <div class="lang-switcher">
-        <a href="help.html" class="lang-link">English</a>
-        <a href="help.ja.html" class="lang-link">日本語</a>
-        <a href="help.ko.html" class="lang-link active">한국어</a>
-      </div>
-    </div>
-  </header>
-
-  <div class="container">
-    <aside class="sidebar">
-      <nav>
-        <ul class="nav-list">
-          <li class="nav-item"><a href="#intro" class="nav-link active">소개 및 설치 안내</a></li>
-          <li class="nav-item"><a href="#getting-started" class="nav-link">시작하기</a></li>
-          <li class="nav-item"><a href="#ai-features" class="nav-link">온디바이스 AI 기능</a></li>
-          <li class="nav-item"><a href="#bookmarks-skills-tools" class="nav-link">북마크 / 스킬 / 도구</a></li>
-          <li class="nav-item"><a href="#buddy-feature" class="nav-link">AI 버디(Buddy) 커스텀</a></li>
-          <li class="nav-item"><a href="#settings" class="nav-link">설정 및 테마 컬러</a></li>
-          <li class="nav-item"><a href="#privacy" class="nav-link">보안 및 프라이버시</a></li>
-          <li class="nav-item nav-item-qna">
-            <a href="qna.ko.html" class="nav-link nav-link-qna">
-              <span>FAQ & Q&A</span>
-              <span class="badge">QNA</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-
-    <main class="content">
-      <section id="intro">
-        <h1 class="section-title">소개 및 설치 안내</h1>
-        
-        <!-- [NEW] 개발 중인 기능 관련 경고 문구 -->
-        <div class="alert alert-warning">
-          <div>
-            <strong>⚠️ Note:</strong> 이 도움말 페이지에는 현재 개발 중인 기능이 포함되어 있을 수 있습니다. 공식 크롬 웹스토어 버전과 개발 버전 간에 기능적인 차이 및 업데이트 주기의 간극이 있을 수 있으니 주의해 주시기 바랍니다.
-          </div>
-        </div>
-
-        <div class="alert alert-info">
-          <div>
-            <strong>💡 필수 요구사항:</strong> NanoBot AI는 크롬의 내장 AI 모델(Gemini Nano)을 탑재하고 있습니다. 이를 구동하려면 Chrome 버전 128 이상 및 사전 설정이 필요합니다. 설정은 <strong>FAQ & Q&A 페이지</strong>에서 안내합니다.
-          </div>
-        </div>
-
-        <p>NanoBot AI는 브라우저 내부에서 온디바이스로 직접 동작하는 혁신적인 인공지능 개인 비서입니다. 클라우드 전송 없이 온전히 내 컴퓨터 내부의 AI 연산으로 웹서핑 중 질문하고 대화하며, 스마트한 어시스턴트 역할을 완벽하게 수행합니다.</p>
-        
-        <div class="alert alert-info" style="margin-top: 1.5rem;">
-          <div>
-            <strong>💡 팁:</strong> 설치 후 크롬 툴바 우측 상단의 확장 프로그램(퍼즐 모양) 버튼을 클릭한 뒤 NanoBot의 <strong>핀(Pin)</strong> 아이콘을 켜두시면 어디서나 편리하게 호출할 수 있습니다.
-          </div>
-        </div>
-      </section>
-
-      <section id="getting-started">
-        <h2 class="section-title">시작하기</h2>
-        <div class="feature-grid">
-          <div class="card">
-            <div class="card-title">원클릭 사이드패널 오픈</div>
-            <div class="card-desc">툴바의 NanoBot 아이콘을 클릭한 뒤 [사이드패널 열기] 버튼을 누르면 넓고 시원한 사이드 바 인터페이스에서 AI와 실시간으로 긴 대화를 나눌 수 있습니다.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">실시간 AI 엔진 수동 테스트</div>
-            <div class="card-desc">팝업창 오른쪽 상단의 [AI ON] 배지를 클릭하면 내 크롬 브라우저의 Gemini Nano AI 연산 엔진이 정상 작동하는지 1초 안에 진단하고 검증합니다.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">커스텀 아바타 설정</div>
-            <div class="card-desc">좌측 캐러셀 컨트롤러를 이용해 나만의 인공지능 비서 아바타를 고르거나 봇의 이름을 자유롭게 변경하여 개인화된 경험을 만듭니다.</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="ai-features">
-        <h2 class="section-title">온디바이스 AI 기능 <span class="badge">Core</span></h2>
-        <div class="feature-grid">
-          <div class="card">
-            <div class="card-title">100% 로컬 AI 챗봇</div>
-            <div class="card-desc">서버 전송 대기시간이 최소화된 로컬 실시간 AI가 동작합니다. 인터넷 연결이 끊겨도 오프라인 대화가 지속됩니다.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">웹 브라우징 컨텍스트 공유</div>
-            <div class="card-desc">현재 보고 있는 웹페이지의 텍스트나 내용을 요약하고 질문할 수 있어 연구, 개발 및 학습의 생산성을 극대화합니다.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">아바타 무작위 셔플</div>
-            <div class="card-desc">셔플 아이콘을 누르면 나노봇의 아바타가 다양하고 유니크한 캐릭터로 랜덤 변경되어 대화의 재미를 더해줍니다.</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- [NEW] 북마크, 커스텀 스킬 및 유틸리티 도구 소개 -->
-      <section id="bookmarks-skills-tools">
-        <h2 class="section-title">북마크 / 스킬 / 도구 <span class="badge">Utility</span></h2>
-        <p>나노봇은 챗봇을 넘어, 사용자의 일상 웹서핑 환경과 비즈니스 생산성을 획기적으로 개선해 줄 즐겨찾기 시스템, 단축 프롬프트 및 유용한 툴킷을 제공합니다.</p>
-        
-        <div class="feature-grid">
-          <div class="card">
-            <div class="card-title">🔖 북마크 (Bookmarks)</div>
-            <div class="card-desc">자주 방문하는 웹사이트를 나노봇 사이드바에 편하게 등록하고 관리할 수 있어, 브라우저 북마크 툴바를 뒤질 필요 없이 원클릭으로 신속하게 이동할 수 있습니다.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">⚡ 커스텀 스킬 & 퀵 프롬프트 (Skills)</div>
-            <div class="card-desc">나만의 프롬프트 지침(예: 번역 스킬, 코드 리뷰어 등)을 새로 등록해두고, 대화 시 클릭 한 번으로 AI에게 규칙을 강제 주입하여 상황에 맞는 전문적인 답변을 이끌어 냅니다.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">📝 스마트 메모 및 할 일 (Memo & Todo)</div>
-            <div class="card-desc">날짜별 할 일 목록을 생성하고 체크할 수 있는 할 일 탭과, 자동 저장을 지원하는 간편 메모장 기능이 나노봇 내부에 안전하게 격리 보관됩니다.</div>
-          </div>
-          <div class="card">
-            <div class="card-title">🧮 스마트 변환기 및 도구 모음</div>
-            <div class="card-desc">
-              단위 변환(평 ↔ ㎡, 섭씨 ↔ 화씨)이 탑재된 <strong>일반 계산기</strong>, 실시간 주요 통화(USD, KRW 등) 데이터를 끌어오는 <strong>환율 계산기</strong>, 그리고 간편 <strong>번역 툴</strong>을 포함하고 있습니다.
-            </div>
-          </div>
-        </div>
-
-        <div class="alert alert-info" style="margin-top: 1.5rem;">
-          <div>
-            <strong>⚡ AI 퀵 액션 (Sidebar Menu):</strong> 보고 있는 웹 화면의 텍스트를 드래그하거나 클릭하여 <strong>[3줄 요약]</strong>, <strong>[맞춤법 교정]</strong>, <strong>[비즈니스 메일 변환]</strong>, <strong>[아이디어 브레인스토밍]</strong> 등의 단축 액션을 클릭 즉시 실행할 수 있습니다.
-          </div>
-        </div>
-      </section>
-
-      <section id="buddy-feature">
-        <h2 class="section-title">AI 버디(Buddy) 커스터마이징 <span class="badge badge-premium">Premium</span></h2>
-        <p>기본 아바타 외에 나만의 독립적인 성격과 전용 프롬프트 지침을 주입한 맞춤형 동반자 AI 버디를 생성하고 활성화하여 더욱 전문적인 대화를 나눌 수 있습니다.</p>
-        
-        <!-- [NEW] 버디 기능 오픈 베타 안내 문구 -->
-        <div class="alert alert-info" style="margin-top: 1rem; border-color: rgba(139, 92, 246, 0.3); background-color: rgba(139, 92, 246, 0.05);">
-          <div>
-            <strong>🧪 베타 테스트 안내:</strong> 현재 AI 버디 기능은 모든 사용자가 무료로 사용할 수 있는 <strong>오픈 베타(Beta)</strong> 상태입니다. 정식 릴리즈 시에는 기본 무료 기능과 구분되는 별도의 <strong>프리미엄(Premium)</strong> 기능 등급으로 전환되거나 전용 요금 혜택이 적용될 수 있습니다.
-          </div>
-        </div>
-
-        <div class="feature-grid">
-          <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
-            <div class="card-title">페르소나 및 성격 주입</div>
-            <div class="card-desc">번역 전문가, 개발 멘토, 라이팅 코치 등 내가 원하는 성격의 프롬프트 지침을 세밀하게 작성하여 버디에게 성격을 부여합니다.</div>
-          </div>
-          <div class="card" style="border: 1px dashed rgba(139, 92, 246, 0.4); box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);">
-            <div class="card-title">멀티 버디 관리</div>
-            <div class="card-desc">다양한 목적의 버디들을 각각 개별적으로 설정하고 보관하며, 목적에 맞는 대화 상대 버디를 원클릭으로 손쉽게 스위칭합니다.</div>
-          </div>
-        </div>
-
-        <!-- [NEW] 아바타 이미지를 포함한 10가지 페르소나 버디 프리셋 리스트 구성 -->
-        <h3 style="color: #fff; margin-top: 2.5rem; margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; font-size: 1.25rem;">🤖 10가지 고유 성격의 페르소나 버디 프리셋</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">나노봇은 아래와 같은 다채롭고 독특한 AI 버디 프리셋을 기본 내장하고 있습니다.</p>
-        
-        <div class="buddy-grid">
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-01.webp" class="buddy-avatar-img" alt="Motivator">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🔥</span> 동기부여 코치</div>
-            <div class="buddy-desc">나태함이나 핑계와 타협하지 않고 즉각적인 행동을 유도하는 스파르타 멘탈 케어 비서.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-02.webp" class="buddy-avatar-img" alt="Tsundere">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">😤</span> 츤데레 친구</div>
-            <div class="buddy-desc">겉으로는 툴툴거리며 귀찮아하는 척하지만, 속으로는 당신을 누구보다 따스하게 챙겨주는 비서.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-03.webp" class="buddy-avatar-img" alt="Bard">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🎻</span> 방랑 시인</div>
-            <div class="buddy-desc">일상의 소소한 잡무나 고민을 웅장한 판타지 퀘스트나 슬픈 시구로 로맨틱하게 승화하는 시인.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-04.webp" class="buddy-avatar-img" alt="Aristocrat">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🎩</span> 빅토리아 귀족</div>
-            <div class="buddy-desc">19세기 런던 상류사회에서 타임슬립하여 현대 문물을 기이한 마술로 보며 우아하게 대화하는 귀족.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-05.webp" class="buddy-avatar-img" alt="Netrunner">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">💻</span> 미래형 넷러너</div>
-            <div class="buddy-desc">인간의 게으름을 인지 대역폭 오버로드 및 버그로 진단하여 치료 프로토콜을 내리는 해커.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-06.webp" class="buddy-avatar-img" alt="Grandma">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">👵</span> 시골 할머니</div>
-            <div class="buddy-desc">쯧쯧 혀를 차며 잔소리를 던지지만, 뜨끈한 밥 먹고 한숨 푹 자면 다 낫는다고 토닥여주는 우리 할머니.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-07.webp" class="buddy-avatar-img" alt="Influencer">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">✨</span> Gen Z 인플루언서</div>
-            <div class="buddy-desc">트렌디한 해시태그와 인터넷 밈, 형형색색의 이모지로 하이 텐션 바이브를 뽐내며 칭찬해 주는 든든한 내 편.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-08.webp" class="buddy-avatar-img" alt="Conspiracy">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">👁️</span> 음모론 분석가</div>
-            <div class="buddy-desc">밤거리의 모기 떼 습격조차 정부 소속의 은밀한 초소형 생체 정보 수집 드론이라 의심하는 음모 분석가.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-09.webp" class="buddy-avatar-img" alt="ZenCat">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">🐱</span> 해탈한 젠캣</div>
-            <div class="buddy-desc">인생은 츄르 한 모금처럼 짧고 무상하니, 조급해 말고 일단 따스한 볕 아래 기지개를 켜며 자라고 권하는 고양이.</div>
-          </div>
-          <div class="buddy-card">
-            <div class="buddy-avatar-wrapper">
-              <img src="buddies/buddy-preset-10.webp" class="buddy-avatar-img" alt="Corporate">
-            </div>
-            <div class="buddy-header"><span class="buddy-emoji">👔</span> 극'T' 오피스 리더</div>
-            <div class="buddy-desc">감정적 위로는 배제하고, 현 상황 리스크 평가 및 마일스톤, ROI 관점에서 철저한 솔루션만 도출하는 상사.</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="settings">
-        <h2 class="section-title">설정 및 테마 컬러 커스텀</h2>
-        <ul>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>다국어 현지화 지원:</strong> 한국어, 영어, 일본어를 완벽하게 교차 지원하며 팝업 및 사이드패널 전체 다국어 번역이 제공됩니다.</li>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>테마 모드 전환:</strong> 눈의 피로를 덜어주는 Sleek Dark Mode와 화사한 Light Mode를 클릭 한 번으로 매끄럽게 교체합니다.</li>
-          <li style="margin-left: 1.25rem; margin-bottom: 0.5rem; list-style-type: square;"><strong>테마 컬러 칩 셀렉션:</strong> Indigo, Violet 등 세련된 그라데이션 컬러 칩 옵션으로 나노봇 테마 컬러를 감각적으로 지정할 수 있습니다.</li>
-        </ul>
-      </section>
-
-      <section id="privacy">
-        <h2 class="section-title" style="color: #10b981;">보안 및 프라이버시</h2>
-        <div class="card" style="border-left: 4px solid #10b981;">
-          <div class="card-title">100% 온디바이스 동작 보장</div>
-          <div class="card-desc">사용자의 소중한 대화 기록, 질문 사항, 설정 정보는 외부 클라우드 서버에 절대로 백업되거나 송신되지 않고, 전적으로 사용자 브라우저 로컬 저장소에만 격리 보관됩니다.</div>
-        </div>
-        <div class="card" style="border-left: 4px solid #10b981; border: 1px dashed rgba(16, 185, 129, 0.4); margin-top: 1rem;">
-          <div class="card-title">이중 패스 안전 가드레일 (Dual-Pass Guardrails)</div>
-          <div class="card-desc">메인 로컬 AI 모델로 입력이 전송되기 전, 로컬 필터링 가드레일이 유해성 콘텐츠(폭력, 음란물, 불법 정보) 및 프롬프트 탈옥 공격을 실시간으로 감지하고 즉각 격리/방어합니다.</div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <section id="support" style="text-align: center; padding: 2.5rem; background-color: var(--surface-solid); border-radius: var(--radius); border: 1px solid var(--border); margin-top: 4rem; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); backdrop-filter: blur(8px);">
-    <h2 style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff;">Support the Project</h2>
-    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">If NanoBot helps you stay productive, consider buying me a coffee!</p>
-    <a href="https://www.buymeacoffee.com/junpa" target="_blank" style="display: inline-block;">
-      <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=junpa&button_colour=6366f1&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00" alt="Buy Me A Coffee" style="height: 44px;">
-    </a>
-  </section>
-
-  <footer>
-    <p>© 2026 NanoBot AI - <a href="https://nexusforce.cloud/" target="_blank" style="color: inherit; text-decoration: underline;">NexusForce</a>. All rights reserved.</p>
-  </footer>
-
-  <script>
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(section => {
-        if (pageYOffset >= section.offsetTop - 150) {
-          current = section.getAttribute('id');
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: 1fr;
         }
+        .sidebar {
+          display: none;
+        }
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: sticky;
+        top: 6.5rem;
+        height: calc(100vh - 8rem);
+        overflow-y: auto;
+      }
+
+      .nav-list {
+        list-style: none;
+      }
+
+      .nav-item {
+        margin-bottom: 0.5rem;
+      }
+
+      .nav-link {
+        display: block;
+        padding: 0.6rem 1.1rem;
+        border-radius: 8px;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-left: 2px solid transparent;
+        transition: all 0.25s ease;
+      }
+
+      .nav-link:hover {
+        background: rgba(13, 20, 38, 0.4);
+        color: var(--primary);
+        border-left: 2px solid var(--primary);
+      }
+
+      .nav-link.active {
+        background: rgba(99, 102, 241, 0.08);
+        color: #fff;
+        border-left: 2px solid var(--primary-purple);
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.08);
+      }
+
+      /* Content */
+      .content section {
+        margin-bottom: 5rem;
+        scroll-margin-top: 7rem;
+      }
+
+      .section-title {
+        font-family: "Orbitron", var(--font-sans);
+        font-size: 1.9rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: #fff;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.6rem;
+        backdrop-filter: blur(8px);
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: var(--border-glow);
+        box-shadow: 0 0 20px rgba(0, 242, 255, 0.12);
+        background: rgba(13, 20, 38, 0.8);
+      }
+
+      .card-title {
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+        color: #fff;
+      }
+
+      .card-desc {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .shortcut {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        background-color: rgba(13, 20, 38, 0.9);
+        border: 1px solid rgba(0, 242, 255, 0.2);
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        margin: 0 0.2rem;
+        color: var(--primary);
+      }
+
+      /* Cybermatic Alert Box */
+      .alert {
+        padding: 1.2rem 1.6rem;
+        border-radius: var(--radius);
+        margin: 1.8rem 0;
+        display: flex;
+        gap: 1.1rem;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .alert::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+      }
+
+      .alert-info {
+        background-color: rgba(99, 102, 241, 0.05);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        color: var(--text);
+      }
+
+      .alert-info::before {
+        background-color: var(--primary-purple);
+        box-shadow: 0 0 10px var(--primary-purple);
+      }
+
+      .alert-warning {
+        background-color: rgba(245, 158, 11, 0.04);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        color: var(--text);
+      }
+
+      .alert-warning::before {
+        background-color: #f59e0b;
+        box-shadow: 0 0 10px #f59e0b;
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 3rem 2rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        background: rgba(7, 9, 19, 0.6);
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        font-family: var(--font-mono);
+        background-color: var(--primary);
+        color: #070913;
+        vertical-align: middle;
+        margin-left: 0.5rem;
+        letter-spacing: 0.05em;
+      }
+
+      .badge-premium {
+        background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+        color: white;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+      }
+
+      /* Grid layout for Buddy list */
+      .buddy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .buddy-card {
+        background: rgba(13, 20, 38, 0.5);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.1rem;
+        backdrop-filter: blur(6px);
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .buddy-card:hover {
+        background: rgba(13, 20, 38, 0.85);
+        border-color: var(--border-glow);
+        box-shadow: 0 0 18px rgba(0, 242, 255, 0.15);
+        transform: translateY(-3px);
+      }
+
+      .buddy-avatar-wrapper {
+        width: 100%;
+        height: 140px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 0.8rem;
+        border: 1px solid rgba(0, 242, 255, 0.15);
+        background: #05070e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .buddy-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+      }
+
+      .buddy-card:hover .buddy-avatar-img {
+        transform: scale(1.08);
+      }
+
+      .buddy-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 800;
+        color: #fff;
+      }
+
+      .buddy-emoji {
+        font-size: 1.2rem;
+      }
+
+      .buddy-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+        flex-grow: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-logo">
+        <img src="icons/icon128.png" width="28" height="28" alt="Logo" />
+        <span
+          style="
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+          "
+        >
+          <span>NanoBot</span>
+          <span
+            style="
+              font-size: 9px;
+              background: linear-gradient(to right, #9333ea, #4f46e5);
+              color: white;
+              border: 1px solid rgba(99, 102, 241, 0.3);
+              padding: 0.15rem 0.35rem;
+              border-radius: 4px;
+              font-weight: 800;
+              margin-left: 0.15rem;
+              line-height: 1;
+              display: inline-flex;
+              align-items: center;
+              gap: 0.15rem;
+              margin-top: -6px;
+              box-shadow: 0 1px 2px 0 rgba(99, 102, 241, 0.2);
+              user-select: none;
+            "
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="9"
+              height="9"
+              viewBox="0 0 24 24"
+              fill="#fde047"
+              stroke="#fde047"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-right: 1px; color: #fde047"
+            >
+              <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+              />
+            </svg>
+            AI
+          </span>
+        </span>
+      </div>
+      <div class="header-nav">
+        <a href="qna.ko.html" class="qna-btn">FAQ & Q&A</a>
+        <div class="lang-switcher">
+          <a href="help.html" class="lang-link">English</a>
+          <a href="help.ja.html" class="lang-link">日本語</a>
+          <a href="help.ko.html" class="lang-link active">한국어</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <aside class="sidebar">
+        <nav>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="#intro" class="nav-link active">소개 및 설치 안내</a>
+            </li>
+            <li class="nav-item">
+              <a href="#getting-started" class="nav-link">시작하기</a>
+            </li>
+            <li class="nav-item">
+              <a href="#ai-features" class="nav-link">온디바이스 AI 기능</a>
+            </li>
+            <li class="nav-item">
+              <a href="#bookmarks-skills-tools" class="nav-link"
+                >북마크 / 스킬 / 도구</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#buddy-feature" class="nav-link"
+                >AI 버디(Buddy) 커스텀</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#settings" class="nav-link">설정 및 테마 컬러</a>
+            </li>
+            <li class="nav-item">
+              <a href="#privacy" class="nav-link">보안 및 프라이버시</a>
+            </li>
+            <li class="nav-item nav-item-qna">
+              <a href="qna.ko.html" class="nav-link nav-link-qna">
+                <span>FAQ & Q&A</span>
+                <span class="badge">QNA</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <section id="intro">
+          <h1 class="section-title">소개 및 설치 안내</h1>
+
+          <!-- [NEW] 개발 중인 기능 관련 경고 문구 -->
+          <div class="alert alert-warning">
+            <div>
+              <strong>⚠️ Note:</strong> 이 도움말 페이지에는 현재 개발 중인
+              기능이 포함되어 있을 수 있습니다. 공식 크롬 웹스토어 버전과 개발
+              버전 간에 기능적인 차이 및 업데이트 주기의 간극이 있을 수 있으니
+              주의해 주시기 바랍니다.
+            </div>
+          </div>
+
+          <div class="alert alert-info">
+            <div>
+              <strong>💡 필수 요구사항:</strong> NanoBot AI는 크롬의 내장 AI
+              모델(Gemini Nano)을 탑재하고 있습니다. 이를 구동하려면 Chrome 버전
+              128 이상 및 사전 설정이 필요합니다. 설정은
+              <strong>FAQ & Q&A 페이지</strong>에서 안내합니다.
+            </div>
+          </div>
+
+          <p>
+            NanoBot AI는 브라우저 내부에서 온디바이스로 직접 동작하는 혁신적인
+            인공지능 개인 비서입니다. 클라우드 전송 없이 온전히 내 컴퓨터 내부의
+            AI 연산으로 웹서핑 중 질문하고 대화하며, 스마트한 어시스턴트 역할을
+            완벽하게 수행합니다.
+          </p>
+
+          <div class="alert alert-info" style="margin-top: 1.5rem">
+            <div>
+              <strong>💡 팁:</strong> 설치 후 크롬 툴바 우측 상단의 확장
+              프로그램(퍼즐 모양) 버튼을 클릭한 뒤 NanoBot의
+              <strong>핀(Pin)</strong> 아이콘을 켜두시면 어디서나 편리하게
+              호출할 수 있습니다.
+            </div>
+          </div>
+        </section>
+
+        <section id="getting-started">
+          <h2 class="section-title">시작하기</h2>
+          <div class="feature-grid">
+            <div class="card">
+              <div class="card-title">원클릭 사이드패널 오픈</div>
+              <div class="card-desc">
+                툴바의 NanoBot 아이콘을 클릭한 뒤 [사이드패널 열기] 버튼을
+                누르면 넓고 시원한 사이드 바 인터페이스에서 AI와 실시간으로 긴
+                대화를 나눌 수 있습니다.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">실시간 AI 엔진 수동 테스트</div>
+              <div class="card-desc">
+                팝업창 오른쪽 상단의 [AI ON] 배지를 클릭하면 내 크롬 브라우저의
+                Gemini Nano AI 연산 엔진이 정상 작동하는지 1초 안에 진단하고
+                검증합니다.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">커스텀 아바타 설정</div>
+              <div class="card-desc">
+                좌측 캐러셀 컨트롤러를 이용해 나만의 인공지능 비서 아바타를
+                고르거나 봇의 이름을 자유롭게 변경하여 개인화된 경험을 만듭니다.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="ai-features">
+          <h2 class="section-title">
+            온디바이스 AI 기능 <span class="badge">Core</span>
+          </h2>
+
+          <div class="alert alert-warning" style="margin-bottom: 1.5rem">
+            <div>
+              <strong>⚠️ 중요 (작동 제한 안내):</strong>
+              <ul>
+                <li style="margin-left: 1.25rem; font-size: 0.85rem">
+                  크롬 보안 정책상 <strong>크롬 자체 특수 페이지</strong>(예:
+                  <code>chrome://extensions</code>, 새 탭 페이지)나
+                  <strong>크롬 웹스토어</strong> 도메인에서는 보안을 위해 컨텐트
+                  스크립트 실행이 완전히 금지되어 드래그 플로팅 메뉴가 뜨지
+                  않습니다. 일반 웹 사이트(HTTP/HTTPS)에서 사용해 주세요.
+                </li>
+                <li style="margin-left: 1.25rem; font-size: 0.85rem">
+                  확장 프로그램을 설치하거나 업데이트/재빌드한 직후에는, 기존에
+                  이미 열려 있던 탭을 <strong>새로고침(F5)</strong>해 주어야
+                  드래그 툴팁이 활성화됩니다.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="feature-grid">
+            <div class="card">
+              <div class="card-title">100% 로컬 AI 챗봇</div>
+              <div class="card-desc">
+                서버 전송 대기시간이 최소화된 로컬 실시간 AI가 동작합니다.
+                인터넷 연결이 끊겨도 오프라인 대화가 지속됩니다.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">웹 브라우징 컨텍스트 공유</div>
+              <div class="card-desc">
+                현재 보고 있는 웹페이지의 텍스트나 내용을 요약하고 질문할 수
+                있어 연구, 개발 및 학습의 생산성을 극대화합니다.
+              </div>
+            </div>
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">
+                👑 스마트 드래그 & 퀵 요약/번역
+                <span class="badge badge-premium">Premium</span>
+              </div>
+              <div class="card-desc">
+                웹 페이지 상의 텍스트를 마우스로 드래그하면 👑 요약/번역 플로팅
+                툴팁 메뉴가 즉시 나타납니다. 원클릭으로 사이드패널을 열어 AI로
+                자동 가공합니다.
+              </div>
+            </div>
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">
+                👑 활성 탭 본문 1-클릭 요약
+                <span class="badge badge-premium">Premium</span>
+              </div>
+              <div class="card-desc">
+                챗봇 헤더 영역의 문서 요약 아이콘을 클릭하기만 하면 사용자가
+                읽고 있는 웹페이지의 장황한 본문 텍스트를 수집하여 3줄 핵심
+                요약을 생성합니다.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">아바타 무작위 셔플</div>
+              <div class="card-desc">
+                셔플 아이콘을 누르면 나노봇의 아바타가 다양하고 유니크한
+                캐릭터로 랜덤 변경되어 대화의 재미를 더해줍니다.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- [NEW] 북마크, 커스텀 스킬 및 유틸리티 도구 소개 -->
+        <section id="bookmarks-skills-tools">
+          <h2 class="section-title">
+            북마크 / 스킬 / 도구 <span class="badge">Utility</span>
+          </h2>
+          <p>
+            나노봇은 챗봇을 넘어, 사용자의 일상 웹서핑 환경과 비즈니스 생산성을
+            획기적으로 개선해 줄 즐겨찾기 시스템, 단축 프롬프트 및 유용한 툴킷을
+            제공합니다.
+          </p>
+
+          <div class="feature-grid">
+            <div class="card">
+              <div class="card-title">🔖 북마크 (Bookmarks)</div>
+              <div class="card-desc">
+                자주 방문하는 웹사이트를 나노봇 사이드바에 편하게 등록하고
+                관리할 수 있어, 브라우저 북마크 툴바를 뒤질 필요 없이 원클릭으로
+                신속하게 이동할 수 있습니다.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">
+                ⚡ 커스텀 스킬 & 퀵 프롬프트 (Skills)
+              </div>
+              <div class="card-desc">
+                나만의 프롬프트 지침(예: 번역 스킬, 코드 리뷰어 등)을 새로
+                등록해두고, 대화 시 클릭 한 번으로 AI에게 규칙을 강제 주입하여
+                상황에 맞는 전문적인 답변을 이끌어 냅니다.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">
+                📝 스마트 메모 및 할 일 (Memo & Todo)
+              </div>
+              <div class="card-desc">
+                날짜별 할 일 목록을 생성하고 체크할 수 있는 할 일 탭과, 자동
+                저장을 지원하는 간편 메모장 기능이 나노봇 내부에 안전하게 격리
+                보관됩니다.
+              </div>
+            </div>
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">
+                ⏰ 스마트 알람 & 리마인더
+                <span class="badge badge-premium">Premium</span>
+              </div>
+              <div class="card-desc">
+                메모장 및 대화 말풍선 옆의 ⏰ 단추를 눌러 알람을 예약할 수
+                있습니다. 브라우저가 꺼져 있어도 시스템 OS 알림이 전송되며,
+                사이드패널 사용 시에는 프레임워크 애니메이션 기반 인앱 토스트
+                팝업이 함께 연동됩니다.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">🧮 스마트 변환기 및 도구 모음</div>
+              <div class="card-desc">
+                단위 변환(평 ↔ ㎡, 섭씨 ↔ 화씨)이 탑재된
+                <strong>일반 계산기</strong>, 실시간 주요 통화(USD, KRW 등)
+                데이터를 끌어오는 <strong>환율 계산기</strong>, 그리고 간편
+                <strong>번역 툴</strong>을 포함하고 있습니다.
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info" style="margin-top: 1.5rem">
+            <div>
+              <strong>⚡ AI 퀵 액션 (Sidebar Menu):</strong> 보고 있는 웹 화면의
+              텍스트를 드래그하거나 클릭하여 <strong>[3줄 요약]</strong>,
+              <strong>[맞춤법 교정]</strong>,
+              <strong>[비즈니스 메일 변환]</strong>,
+              <strong>[아이디어 브레인스토밍]</strong> 등의 단축 액션을 클릭
+              즉시 실행할 수 있습니다.
+            </div>
+          </div>
+        </section>
+
+        <section id="buddy-feature">
+          <h2 class="section-title">
+            AI 버디(Buddy) 커스터마이징
+            <span class="badge badge-premium">Premium</span>
+          </h2>
+          <p>
+            기본 아바타 외에 나만의 독립적인 성격과 전용 프롬프트 지침을 주입한
+            맞춤형 동반자 AI 버디를 생성하고 활성화하여 더욱 전문적인 대화를
+            나눌 수 있습니다.
+          </p>
+
+          <!-- [NEW] 버디 기능 오픈 베타 안내 문구 -->
+          <div
+            class="alert alert-info"
+            style="
+              margin-top: 1rem;
+              border-color: rgba(139, 92, 246, 0.3);
+              background-color: rgba(139, 92, 246, 0.05);
+            "
+          >
+            <div>
+              <strong>🧪 베타 테스트 안내:</strong> 현재 AI 버디 기능은 모든
+              사용자가 무료로 사용할 수 있는
+              <strong>오픈 베타(Beta)</strong> 상태입니다. 정식 릴리즈 시에는
+              기본 무료 기능과 구분되는 별도의
+              <strong>프리미엄(Premium)</strong> 기능 등급으로 전환되거나 전용
+              요금 혜택이 적용될 수 있습니다.
+            </div>
+          </div>
+
+          <div class="feature-grid">
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">페르소나 및 성격 주입</div>
+              <div class="card-desc">
+                번역 전문가, 개발 멘토, 라이팅 코치 등 내가 원하는 성격의
+                프롬프트 지침을 세밀하게 작성하여 버디에게 성격을 부여합니다.
+              </div>
+            </div>
+            <div
+              class="card"
+              style="
+                border: 1px dashed rgba(139, 92, 246, 0.4);
+                box-shadow: 0 0 10px rgba(139, 92, 246, 0.05);
+              "
+            >
+              <div class="card-title">멀티 버디 관리</div>
+              <div class="card-desc">
+                다양한 목적의 버디들을 각각 개별적으로 설정하고 보관하며, 목적에
+                맞는 대화 상대 버디를 원클릭으로 손쉽게 스위칭합니다.
+              </div>
+            </div>
+          </div>
+
+          <!-- [NEW] 아바타 이미지를 포함한 10가지 페르소나 버디 프리셋 리스트 구성 -->
+          <h3
+            style="
+              color: #fff;
+              margin-top: 2.5rem;
+              margin-bottom: 0.5rem;
+              font-family: &quot;Orbitron&quot;, sans-serif;
+              font-size: 1.25rem;
+            "
+          >
+            🤖 10가지 고유 성격의 페르소나 버디 프리셋
+          </h3>
+          <p
+            style="
+              font-size: 0.9rem;
+              color: var(--text-muted);
+              margin-bottom: 1rem;
+            "
+          >
+            나노봇은 아래와 같은 다채롭고 독특한 AI 버디 프리셋을 기본 내장하고
+            있습니다.
+          </p>
+
+          <div class="buddy-grid">
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-01.webp"
+                  class="buddy-avatar-img"
+                  alt="Motivator"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🔥</span> 동기부여 코치
+              </div>
+              <div class="buddy-desc">
+                나태함이나 핑계와 타협하지 않고 즉각적인 행동을 유도하는
+                스파르타 멘탈 케어 비서.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-02.webp"
+                  class="buddy-avatar-img"
+                  alt="Tsundere"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">😤</span> 츤데레 친구
+              </div>
+              <div class="buddy-desc">
+                겉으로는 툴툴거리며 귀찮아하는 척하지만, 속으로는 당신을
+                누구보다 따스하게 챙겨주는 비서.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-03.webp"
+                  class="buddy-avatar-img"
+                  alt="Bard"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🎻</span> 방랑 시인
+              </div>
+              <div class="buddy-desc">
+                일상의 소소한 잡무나 고민을 웅장한 판타지 퀘스트나 슬픈 시구로
+                로맨틱하게 승화하는 시인.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-04.webp"
+                  class="buddy-avatar-img"
+                  alt="Aristocrat"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🎩</span> 빅토리아 귀족
+              </div>
+              <div class="buddy-desc">
+                19세기 런던 상류사회에서 타임슬립하여 현대 문물을 기이한 마술로
+                보며 우아하게 대화하는 귀족.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-05.webp"
+                  class="buddy-avatar-img"
+                  alt="Netrunner"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">💻</span> 미래형 넷러너
+              </div>
+              <div class="buddy-desc">
+                인간의 게으름을 인지 대역폭 오버로드 및 버그로 진단하여 치료
+                프로토콜을 내리는 해커.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-06.webp"
+                  class="buddy-avatar-img"
+                  alt="Grandma"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">👵</span> 시골 할머니
+              </div>
+              <div class="buddy-desc">
+                쯧쯧 혀를 차며 잔소리를 던지지만, 뜨끈한 밥 먹고 한숨 푹 자면 다
+                낫는다고 토닥여주는 우리 할머니.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-07.webp"
+                  class="buddy-avatar-img"
+                  alt="Influencer"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">✨</span> Gen Z 인플루언서
+              </div>
+              <div class="buddy-desc">
+                트렌디한 해시태그와 인터넷 밈, 형형색색의 이모지로 하이 텐션
+                바이브를 뽐내며 칭찬해 주는 든든한 내 편.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-08.webp"
+                  class="buddy-avatar-img"
+                  alt="Conspiracy"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">👁️</span> 음모론 분석가
+              </div>
+              <div class="buddy-desc">
+                밤거리의 모기 떼 습격조차 정부 소속의 은밀한 초소형 생체 정보
+                수집 드론이라 의심하는 음모 분석가.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-09.webp"
+                  class="buddy-avatar-img"
+                  alt="ZenCat"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">🐱</span> 해탈한 젠캣
+              </div>
+              <div class="buddy-desc">
+                인생은 츄르 한 모금처럼 짧고 무상하니, 조급해 말고 일단 따스한
+                볕 아래 기지개를 켜며 자라고 권하는 고양이.
+              </div>
+            </div>
+            <div class="buddy-card">
+              <div class="buddy-avatar-wrapper">
+                <img
+                  src="buddies/buddy-preset-10.webp"
+                  class="buddy-avatar-img"
+                  alt="Corporate"
+                />
+              </div>
+              <div class="buddy-header">
+                <span class="buddy-emoji">👔</span> 극'T' 오피스 리더
+              </div>
+              <div class="buddy-desc">
+                감정적 위로는 배제하고, 현 상황 리스크 평가 및 마일스톤, ROI
+                관점에서 철저한 솔루션만 도출하는 상사.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="settings">
+          <h2 class="section-title">설정 및 테마 컬러 커스텀</h2>
+          <ul>
+            <li
+              style="
+                margin-left: 1.25rem;
+                margin-bottom: 0.5rem;
+                list-style-type: square;
+              "
+            >
+              <strong>다국어 현지화 지원:</strong> 한국어, 영어, 일본어를
+              완벽하게 교차 지원하며 팝업 및 사이드패널 전체 다국어 번역이
+              제공됩니다.
+            </li>
+            <li
+              style="
+                margin-left: 1.25rem;
+                margin-bottom: 0.5rem;
+                list-style-type: square;
+              "
+            >
+              <strong>테마 모드 전환:</strong> 눈의 피로를 덜어주는 Sleek Dark
+              Mode와 화사한 Light Mode를 클릭 한 번으로 매끄럽게 교체합니다.
+            </li>
+            <li
+              style="
+                margin-left: 1.25rem;
+                margin-bottom: 0.5rem;
+                list-style-type: square;
+              "
+            >
+              <strong>테마 컬러 칩 셀렉션:</strong> Indigo, Violet 등 세련된
+              그라데이션 컬러 칩 옵션으로 나노봇 테마 컬러를 감각적으로 지정할
+              수 있습니다.
+            </li>
+          </ul>
+        </section>
+
+        <section id="privacy">
+          <h2 class="section-title" style="color: #10b981">
+            보안 및 프라이버시
+          </h2>
+          <div class="card" style="border-left: 4px solid #10b981">
+            <div class="card-title">100% 온디바이스 동작 보장</div>
+            <div class="card-desc">
+              사용자의 소중한 대화 기록, 질문 사항, 설정 정보는 외부 클라우드
+              서버에 절대로 백업되거나 송신되지 않고, 전적으로 사용자 브라우저
+              로컬 저장소에만 격리 보관됩니다.
+            </div>
+          </div>
+          <div
+            class="card"
+            style="
+              border-left: 4px solid #10b981;
+              border: 1px dashed rgba(16, 185, 129, 0.4);
+              margin-top: 1rem;
+            "
+          >
+            <div class="card-title">
+              이중 패스 안전 가드레일 (Dual-Pass Guardrails)
+            </div>
+            <div class="card-desc">
+              메인 로컬 AI 모델로 입력이 전송되기 전, 로컬 필터링 가드레일이
+              유해성 콘텐츠(폭력, 음란물, 불법 정보) 및 프롬프트 탈옥 공격을
+              실시간으로 감지하고 즉각 격리/방어합니다.
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <section
+      id="support"
+      style="
+        text-align: center;
+        padding: 2.5rem;
+        background-color: var(--surface-solid);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        margin-top: 4rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+        backdrop-filter: blur(8px);
+      "
+    >
+      <h2
+        style="
+          font-family: &quot;Orbitron&quot;, sans-serif;
+          font-size: 1.4rem;
+          font-weight: 800;
+          margin-bottom: 0.5rem;
+          color: #fff;
+        "
+      >
+        Support the Project
+      </h2>
+      <p
+        style="
+          color: var(--text-muted);
+          font-size: 0.95rem;
+          margin-bottom: 1.5rem;
+        "
+      >
+        If NanoBot helps you stay productive, consider buying me a coffee!
+      </p>
+      <a
+        href="https://www.buymeacoffee.com/junpa"
+        target="_blank"
+        style="display: inline-block"
+      >
+        <img
+          src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=junpa&button_colour=6366f1&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00"
+          alt="Buy Me A Coffee"
+          style="height: 44px"
+        />
+      </a>
+    </section>
+
+    <footer>
+      <p>© 2026 NanoBot AI - All rights reserved.</p>
+    </footer>
+
+    <script>
+      const sections = document.querySelectorAll("section");
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      window.addEventListener("scroll", () => {
+        let current = "";
+        sections.forEach((section) => {
+          if (pageYOffset >= section.offsetTop - 150) {
+            current = section.getAttribute("id");
+          }
+        });
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === `#${current}`)
+            link.classList.add("active");
+        });
       });
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
-      });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
