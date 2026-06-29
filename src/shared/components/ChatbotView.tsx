@@ -201,7 +201,7 @@ export function ChatbotView({
     }
 
     try {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
       if (!tab || !tab.id) {
         alert("요약할 활성 웹 페이지를 찾을 수 없습니다.");
         return;

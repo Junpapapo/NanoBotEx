@@ -28,7 +28,7 @@ export function BookmarkEditModal({
 }: BookmarkEditModalProps) {
   const handleAutoFill = () => {
     if (typeof chrome !== "undefined" && chrome.tabs) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
         const activeTab = tabs[0];
         if (activeTab) {
           setEditingBookmark({
