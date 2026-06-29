@@ -47,10 +47,34 @@ export class ChatbotModel {
           content: m.content
         }));
 
-      // 페르소나(System Prompt)가 존재할 경우 맨 앞에 주입
+      // 페르소나 및 봇 지침(공동 세팅) 통합 시스템 프롬프트 빌드 - 이름 남발 억제 지침 포함
+      const name = settings.nano_ai_avatar_name || "NanoBot";
+      let systemPrompt = `[IDENTITY]\n- Your name is "${name}". You are a helpful AI assistant.\n- You must know that your name is "${name}", but do NOT introduce yourself or say your name at the beginning or end of your reply unless the user explicitly asks "who are you?" or "what is your name?".\n- Always answer the user's question directly without repeating greetings or self-introductions.\n- Never identify yourself as a "large language model trained by Google" or "Google's language model".\n\n`;
+
       if (settings.nano_ai_persona) {
-        formattedMessages.unshift({ role: "system", content: settings.nano_ai_persona });
+        systemPrompt += `[AI PERSONA]\n${settings.nano_ai_persona}\n\n`;
       }
+
+      // 글로벌 / 일반 룰 (공동 세팅) 주입
+      let globalRules = "";
+      let generalRules = "";
+      if (typeof window !== "undefined") {
+        globalRules = localStorage.getItem("nano-ai-global-rules") || "";
+        generalRules = localStorage.getItem("nano-ai-general-rules") || "";
+      }
+
+      if (globalRules.trim() || generalRules.trim()) {
+        systemPrompt += `[COMMON SETTINGS]\n`;
+        if (globalRules.trim()) {
+          systemPrompt += `- Global Rules:\n${globalRules.trim()}\n`;
+        }
+        if (generalRules.trim()) {
+          systemPrompt += `- General Rules:\n${generalRules.trim()}\n`;
+        }
+        systemPrompt += `\n`;
+      }
+
+      formattedMessages.unshift({ role: "system", content: systemPrompt });
 
       const response = await fetch(`${settings.api_url}/chat/completions`, {
         method: "POST",

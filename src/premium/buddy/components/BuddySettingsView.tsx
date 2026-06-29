@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useChromeStorage } from "../../../shared/hooks/useChromeStorage";
 import { BuddySettings, BuddyPersonalityPreset } from "../../../shared/chatbot-types";
 import { BUDDY_AVATAR_LIST } from "./buddy-avatar-list";
-import { ChevronLeft, ChevronRight, Shuffle, Smile, AlignLeft, Heart, Volume2, Lock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Shuffle, Smile, AlignLeft, Heart, Volume2, Lock, Sparkles } from "lucide-react";
 import { DEFAULT_BUDDY_SETTINGS } from "./BuddySettingsPanel";
 import { BUDDY_PERSONALITIES } from "../data/buddy-presets";
 
@@ -248,6 +248,18 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
                       updates.buddy_avatar = found.defaultAvatar;
                       updates.buddy_tts_rate = found.defaultTtsRate ?? 1.0;
                       updates.buddy_tts_pitch = found.defaultTtsPitch ?? 1.0;
+                      if (found.defaultEmojiLevel !== undefined) {
+                        updates.buddy_emoji_level = found.defaultEmojiLevel;
+                      }
+                      if (found.defaultResponseLength !== undefined) {
+                        updates.buddy_response_length = found.defaultResponseLength;
+                      }
+                      if (found.defaultEmpathyLevel !== undefined) {
+                        updates.buddy_empathy_level = found.defaultEmpathyLevel;
+                      }
+                      if (found.defaultTemperature !== undefined) {
+                        updates.buddy_temperature = found.defaultTemperature;
+                      }
                     }
                   }
                   updateFields(updates);
@@ -325,6 +337,38 @@ export function BuddySettingsView({ theme, t }: BuddySettingsViewProps) {
               onChange={(v) => updateField("buddy_empathy_level", v)}
               theme={theme}
             />
+
+            {/* 답변 창의성 (Temperature) 조절 슬라이더 */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles size={13} className="text-purple-400" />
+                  <span className={`text-[10.5px] font-bold ${theme.textMain}`}>
+                    {t("buddy.detail.temperature.label", "답변 창의성 (Temperature)")}
+                  </span>
+                </div>
+                <span className="text-[9.5px] font-black text-purple-400">
+                  {(buddySettings.buddy_temperature ?? 0.8).toFixed(1)}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={0.0}
+                max={2.0}
+                step={0.1}
+                value={buddySettings.buddy_temperature ?? 0.8}
+                onChange={(e) => updateField("buddy_temperature", parseFloat(e.target.value))}
+                className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-slate-700 accent-purple-500
+                  [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5
+                  [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-purple-500 [&::-webkit-slider-thumb]:shadow"
+                style={{ outline: "none" }}
+              />
+              <div className="flex justify-between px-0.5 text-[8.5px] font-bold text-slate-500">
+                <span>{t("buddy.detail.temperature.precise", "신중/일관")}</span>
+                <span>{t("buddy.detail.temperature.creative", "창의/상상")}</span>
+              </div>
+            </div>
             
             {/* 추가 토글 설정 */}
             <div className={`flex flex-col gap-4 border-t ${theme.borderMuted} pt-5 mt-2`}>

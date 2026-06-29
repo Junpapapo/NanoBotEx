@@ -79,6 +79,50 @@ export function DisplaySettings({
             </div>
           </div>
 
+          {/* 세션 자동 만료 시간 슬라이더 */}
+          {(() => {
+            const TIMEOUT_STEPS = [0, 15, 30, 60, 120];
+            const currentTimeout = settings.nano_session_timeout_minutes ?? 60;
+            const stepIdx = TIMEOUT_STEPS.indexOf(currentTimeout) !== -1
+              ? TIMEOUT_STEPS.indexOf(currentTimeout)
+              : 3;
+            const timeoutLabel = currentTimeout === 0
+              ? t("session.timeoutOff", "끔")
+              : `${currentTimeout}${t("session.timeoutMinSuffix", "분")}`;
+            return (
+              <div className="space-y-2 select-none">
+                <div className="flex justify-between items-center">
+                  <label className="font-bold text-slate-400 text-[10px] uppercase tracking-wider">
+                    {t("session.timeoutLabel", "세션 자동 만료")}
+                  </label>
+                  <span className={`text-[10px] font-extrabold ${theme.text}`}>
+                    {timeoutLabel}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[9px] ${isLight ? "text-slate-400" : "text-slate-500"} font-bold shrink-0`}>
+                    {t("session.timeoutOff", "끔")}
+                  </span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="4"
+                    step="1"
+                    value={stepIdx}
+                    onChange={(e) => {
+                      const idx = parseInt(e.target.value);
+                      updateSettings({ nano_session_timeout_minutes: TIMEOUT_STEPS[idx] });
+                    }}
+                    className={`flex-1 h-1 ${isLight ? "bg-slate-200" : "bg-slate-800"} rounded-lg appearance-none cursor-pointer accent-indigo-500`}
+                  />
+                  <span className={`text-[9px] ${isLight ? "text-slate-400" : "text-slate-500"} font-bold shrink-0`}>
+                    2h
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Danger Zone (위험존) - 평소 접힌 상태 */}
           <div className="border-t border-red-500/10 pt-4 mt-6">
             <button

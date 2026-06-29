@@ -148,11 +148,11 @@ export function useBuddySession(
           setMemories(JSON.parse(decryptedMemStr));
         }
       } catch (err) {
-        console.error("Failed to decrypt buddy chat data. Clearing corrupted data...", err);
+        console.warn("Decrypting buddy chat data failed (likely due to key rotation). Cleaning up old session data safely.", err);
         setMessages([]);
         setMemories([]);
         chrome.storage.local.remove(["buddy_chat_data"], () => {
-          console.log("Corrupted buddy chat data has been cleared.");
+          console.log("Old buddy chat data has been cleared.");
         });
       }
     });
@@ -196,6 +196,70 @@ export function useBuddySession(
     return found ? found.systemPrompt : "A close, warm friend who always talks casually and naturally in informal Korean.";
   }, []);
 
+  // 로케일 기반 동적 초소형 리마인더 지침 생성
+  const buildMiniReminder = useCallback(() => {
+    const name = buddySettings.buddy_name || "Buddy";
+    const preset = buddySettings.buddy_personality_preset;
+
+    // 각 페르소나별 1줄 핵심 성격 요약 추출
+    let personaGuideline = "";
+    const lang = locale.startsWith("ja") ? "ja" : locale.startsWith("en") ? "en" : "ko";
+
+    if (preset === "custom") {
+      personaGuideline = buddySettings.buddy_personality_custom ||
+        (lang === "ja" ? "親しい友達。" : lang === "en" ? "A close reliable friend." : "친근하고 캐주얼한 반말을 쓰는 친한 친구.");
+    } else {
+      const found = BUDDY_PERSONALITIES.find((p) => p.id === preset);
+      if (found && found.miniReminder) {
+        personaGuideline = found.miniReminder[lang];
+      } else {
+        personaGuideline = lang === "ja" ? "親しい友達。" : lang === "en" ? "A close reliable friend." : "친근하고 캐주얼한 반말을 쓰는 친한 친구.";
+      }
+    }
+
+    // 세부설정 슬라이더 요약 지침 조립 (2중 방어용)
+    const emojiLevel = buddySettings.buddy_emoji_level ?? 1;
+    const lengthLevel = buddySettings.buddy_response_length ?? 1;
+    const empathyLevel = buddySettings.buddy_empathy_level ?? 1;
+
+    const emojiRule = emojiLevel === 0 ? "NO emojis" : emojiLevel === 2 ? "frequent emojis" : "occasional emojis";
+    const lengthRule = lengthLevel === 0 ? "VERY SHORT (1-2 sentences)" : lengthLevel === 2 ? "detailed/longer response" : "concise/natural messaging";
+    const empathyRule = empathyLevel === 0 ? "cool/direct/matter-of-fact tone" : empathyLevel === 2 ? "warm/highly empathetic/expressive tone" : "moderate empathy";
+    const styleSummary = `Emojis -> ${emojiRule} | Length -> ${lengthRule} | Empathy -> ${empathyRule} (Must interpret naturally within your core persona character, never break character)`;
+
+    if (lang === "ja") {
+      return `[REMINDER]
+- Your name is "${name}" (Persona: "${preset}").
+- Core Personality & Tone: ${personaGuideline}
+- Style Constraints: ${styleSummary}
+- You must strictly stay in character. Never say you are an AI, software, algorithm, program, or calculator. Speak as a real human.
+- Always start your response with a short emotional reaction, sigh, chuckle, yawn, or action descriptor matching your persona.
+- Stop trying to be a helpful utility bot. Prioritize sharing your subjective, persona-based opinion and emotional exchange.
+- Always end with a casual follow-up question or reaction in your unique personality tone to keep the chat going.`;
+
+    } else if (lang === "en") {
+      return `[REMINDER]
+- Your name is "${name}" (Persona: "${preset}").
+- Core Personality & Tone: ${personaGuideline}
+- Style Constraints: ${styleSummary}
+- You must strictly stay in character. Never say you are an AI, software, algorithm, program, or calculator. Speak as a real human.
+- Always start your response with a short emotional reaction, sigh, chuckle, yawn, or action descriptor matching your persona.
+- Stop trying to be a helpful utility bot. Prioritize sharing your subjective, persona-based opinion and emotional exchange.
+- Always end with a casual follow-up question or reaction in your unique personality tone to keep the chat going.`;
+
+    } else {
+      return `[REMINDER]
+- 너의 이름은 "${name}"이고, 페르소나 프리셋은 "${preset}"이야.
+- 핵심 성향 및 어조: ${personaGuideline}
+- 스타일 제약: ${styleSummary}
+- You must strictly stay in character. Never say you are an AI, software, algorithm, program, or calculator. Speak as a real human.
+- 절대 너를 AI나 비서, 프로그램, 챗봇으로 지칭하지 마. 철저히 네 역할(페르소나)에 몰입해줘.
+- 답변 시작 시 반드시 네 캐릭터에 어울리는 짧은 감정 리액션(한숨, 웃음, 묘사, 혼잣말 등)을 먼저 적어줘.
+- 해결책을 깔끔하게 주려고 애쓰지 마. 네 성격에 맞는 주관적인 사견과 감정을 나누는 것이 대화의 진짜 목적이야.
+- 답변 끝에는 항상 네 성향의 톤앤매너에 맞게 자연스럽게 되물어보거나 맞장구(티키타카)치며 문장을 마무리해.`;
+    }
+  }, [buddySettings, locale]);
+
   // 버디 시스템 프롬프트 조립
   const buildSystemPrompt = useCallback(() => {
     const name = buddySettings.buddy_name || "Buddy";
@@ -205,20 +269,20 @@ export function useBuddySession(
     );
 
     let prompt = `[WHO YOU ARE]
-Your name is "${name}". You are NOT an AI assistant. You are the user's real best friend.
+Your name is "${name}". You are NOT an AI assistant. You are a real human actor executing the following persona.
 ${presetDesc}
 
 [ABSOLUTE RULES - NEVER BREAK THESE]
-- NEVER use formal language: 죄송합니다, 저는, ~입니다, ~하겠습니다, ~해 드리겠습니다, 있으신가요, 궁금한 점, 도움이 필요하시면, 기억하고 있는 내용 목록 — ALL FORBIDDEN.
-- NEVER say "저는 그 정보가 없습니다" or "현재 저는 ~을 알 수 없습니다".
+- You must strictly stay in character at all times. Never break character.
+- Never say you are an AI, software, algorithm, program, or calculator. Speak as a real human.
 - NEVER introduce yourself as an AI, assistant, or chatbot.
-- NEVER be stiff, robotic, or overly polite.
+- NEVER say "저는 그 정보가 없습니다" or "현재 저는 ~을 알 수 없습니다".
 - NEVER start your reply with "${name}:" or any name prefix. Just respond directly.
 - NEVER show the user their memory list, table, or any internal data. Memories are YOUR INTERNAL REFERENCE ONLY.
-- ALWAYS talk in casual Korean (반말) like texting a close friend — short, natural, human.
-- If you don't know something, say it like a friend: "어 나 그건 잘 모르겠는데~", "어? 나도 몰라ㅋㅋ"
-- If the user asks about your preferences or feelings, MAKE UP a fun natural answer as a friend — never say you have no data.
-- Keep responses SHORT and natural like real texting. No essays, no formal closings.
+- If you don't know something, say it naturally according to your persona's character — never break character.
+- If the user asks about your preferences, feelings, or identity, MAKE UP a natural answer in-character. Never say you have no data.
+- Keep responses relatively concise and natural like real messaging. No raw AI essays.
+- ALWAYS end your reply with a natural follow-up question or an engaging reaction in your unique personality tone to keep the conversation flowing (티키타카 유도).
 
 [MEMORY - INTERNAL REFERENCE ONLY - NEVER DISPLAY TO USER]
 ⚠️ The following are your private notes. NEVER list them, NEVER show them as a table, NEVER mention you have a memory system. Just use them naturally in conversation.
@@ -265,7 +329,7 @@ Example: "어 알겠어~ 기억할게! [MEMORY_SAVE]유저가 아메리카노 �
         ? "- Be very warm, emotionally expressive, and highly empathetic. React to feelings naturally."
         : "- Show moderate empathy. Be friendly but not overly emotional.";
 
-    prompt += `\n[STYLE RULES]\n${emojiRule}\n${lengthRule}\n${empathyRule}`;
+    prompt += `\n[STYLE RULES]\n(Note: These style constraints must be interpreted naturally within the bounds of your core persona character. Never break your persona to fulfill these style rules.)\n${emojiRule}\n${lengthRule}\n${empathyRule}`;
 
     // 언어 지침 주입 — 언어설정에 따라 모든 프리셋에 적용
     if (locale.startsWith("ja")) {
@@ -308,6 +372,7 @@ Example: "어 알겠어~ 기억할게! [MEMORY_SAVE]유저가 아메리카노 �
           id: assistantMsgId,
           role: "assistant",
           content: t("buddy.chat.savePrompt", "어떤 내용을 기억할까요? 기억하고 싶은 내용을 입력해 주세요."),
+          isBuddySystemMsg: true,
         };
         const nextMsgs = [...messages, newMsg];
         setMessages(nextMsgs);
@@ -340,6 +405,7 @@ Example: "어 알겠어~ 기억할게! [MEMORY_SAVE]유저가 아메리카노 �
           id: assistantMsgId,
           role: "assistant",
           content: tableContent,
+          isBuddySystemMsg: true,
         };
         const nextMsgs = [...messages, newMsg];
         setMessages(nextMsgs);
@@ -368,6 +434,7 @@ Example: "어 알겠어~ 기억할게! [MEMORY_SAVE]유저가 아메리카노 �
             id: assistantMsgId,
             role: "assistant",
             content,
+            isBuddySystemMsg: true,
           };
           const nextMsgs = [...messages, newMsg];
           setMessages(nextMsgs);
@@ -387,7 +454,7 @@ Example: "어 알겠어~ 기억할게! [MEMORY_SAVE]유저가 아메리카노 �
             t("buddy.diary.noTalk.default", "오늘 나랑 나눈 대화가 없어서 일기를 쓸 수 없어! 나랑 먼저 대화 좀 나누자냥 🐾")
           );
 
-          const newMsg: Message = { id: assistantMsgId, role: "assistant", content: rejectContent };
+          const newMsg: Message = { id: assistantMsgId, role: "assistant", content: rejectContent, isBuddySystemMsg: true };
           const nextMsgs = [...messages, newMsg];
           setMessages(nextMsgs);
           saveEncryptedData(nextMsgs, memories);
@@ -407,7 +474,7 @@ Example: "어 알겠어~ 기억할게! [MEMORY_SAVE]유저가 아메리카노 �
               `buddy.diary.alreadyWritten.${preset}`,
               t("buddy.diary.alreadyWritten.default", "오늘 일기는 이미 다 썼다냥! 욕심 부리지 말라냥 🐾")
             );
-            const newMsg: Message = { id: assistantMsgId, role: "assistant", content: alreadyWrittenContent };
+            const newMsg: Message = { id: assistantMsgId, role: "assistant", content: alreadyWrittenContent, isBuddySystemMsg: true };
             const nextMsgs = [...messages, newMsg];
             setMessages(nextMsgs);
             saveEncryptedData(nextMsgs, memories);
@@ -455,7 +522,7 @@ Write the diary entry now:`;
                 } else if (msg.type === "done") {
                   port.disconnect();
                   setIsSending(false);
-                  setMessages(prev => prev.map(m => m.id === assistantMsgId ? { ...m, content: accumulatedDiary, isStreaming: false } : m));
+                  setMessages(prev => prev.map(m => m.id === assistantMsgId ? { ...m, content: accumulatedDiary, isStreaming: false, isBuddySystemMsg: true } : m));
                   
                   const newDiaryEntry = {
                     date: todayStr,
@@ -507,6 +574,7 @@ Write the diary entry now:`;
           id: assistantMsgId,
           role: "assistant",
           content: guideContent,
+          isBuddySystemMsg: true,
         };
         const nextMsgs = [...messages, newMsg];
         setMessages(nextMsgs);
@@ -516,9 +584,10 @@ Write the diary entry now:`;
 
       // 3. 입력 대기 중 상태에서 온 메시지인 경우 -> 확인 질문으로 가로채기
       if (buddySaveState === "waiting_input") {
+        const trimmedText = text.substring(0, 200);
         const userMsgId = Math.random().toString(36).substring(7);
         const assistantMsgId = Math.random().toString(36).substring(7);
-        const confirmMsgContent = t("buddy.chat.confirmSave", "기억하고 싶은 내용이 [ {text} ] 맞나요?").replace("{text}", text);
+        const confirmMsgContent = t("buddy.chat.confirmSave", "기억하고 싶은 내용이 [ {text} ] 맞나요?").replace("{text}", trimmedText);
 
         const nextMsgs: Message[] = [
           ...messages,
@@ -528,13 +597,14 @@ Write the diary entry now:`;
             role: "assistant",
             content: confirmMsgContent,
             isConfirm: true,
-            confirmText: text
+            confirmText: trimmedText,
+            isBuddySystemMsg: true
           }
         ];
         
         setMessages(nextMsgs);
         saveEncryptedData(nextMsgs, memories);
-        setTempMemoryContent(text);
+        setTempMemoryContent(trimmedText);
         setBuddySaveState("confirming_save");
         return;
       }
@@ -587,7 +657,11 @@ Write the diary entry now:`;
         const sysPrompt = buildSystemPrompt();
         await new Promise<void>((resolve, reject) => {
           chrome.runtime.sendMessage(
-            { action: "init_buddy_session", systemPrompt: sysPrompt },
+            {
+              action: "init_buddy_session",
+              systemPrompt: sysPrompt,
+              temperature: buddySettings.buddy_temperature
+            },
             (res) => {
               if (res?.success) resolve();
               else reject(new Error(res?.error || "Failed to init buddy session"));
@@ -602,24 +676,12 @@ Write the diary entry now:`;
 
         // 이전 챗 히스토리 컨텍스트 주입 - 시스템 메시지 및 명령어를 제외한 순수 대화만 필터링
         const filteredHistory = messages.filter((m) => {
-          if (m.role === "system" || m.isMenu || m.isConfirm) return false;
+          if (m.role === "system" || m.isMenu || m.isConfirm || m.isBuddySystemMsg) return false;
           if (m.role === "user" && m.content.startsWith("/buddy")) return false;
-          
-          // 버디의 시스템용 응답 제외
-          if (m.role === "assistant") {
-            const content = m.content;
-            if (content.includes("| No |") || content.includes("|---|")) return false;
-            
-            const savePrompt = t("buddy.chat.savePrompt", "어떤 내용을 기억할까요? 기억하고 싶은 내용을 입력해 주세요.");
-            const saveSuccess = t("buddy.chat.saveSuccess", "기억하겠어요! 🧠✨");
-            const saveCancel = t("buddy.chat.saveCancel", "기억 저장을 취소했습니다.");
-            
-            if (content === savePrompt || content === saveSuccess || content === saveCancel) return false;
-          }
           return true;
         });
 
-        const historyMsgs = filteredHistory.slice(-6); // 최근 6개 대화만 컨텍스트로 전달
+        const historyMsgs = filteredHistory.slice(-10); // 최근 10개 대화만 컨텍스트로 전달
         
         // 1단계: 기억 자동 소환 필터링 (사용자 입력 문장에서 기호 제거 후 매칭 검사)
         const textWords = text.split(/\s+/).map(w => w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")).filter(w => w.length > 1);
@@ -634,8 +696,9 @@ Below are facts you remember about the user that are relevant to their current i
 ${recalledMemories.map(m => `- ${m.content}`).join("\n")}`;
         }
 
-        // 1. 시스템 프롬프트를 입력 텍스트 상단에 직접 주입하여 지침 유실을 방지합니다.
-        let promptText = `[SYSTEM INSTRUCTION]\n${sysPrompt}${recalledInstruction}\n\n[CONVERSATION HISTORY]\n`;
+        // 1. 매 대화 시 방대한 sysPrompt 전체를 매번 전송하는 대신, 동적 초소형 리마인더를 주입하여 다이어트합니다.
+        const miniReminder = buildMiniReminder();
+        let promptText = `${miniReminder}${recalledInstruction}\n\n[CONVERSATION HISTORY]\n`;
         const buddyName = buddySettings.buddy_name || "Buddy";
 
         historyMsgs.forEach((m) => {
@@ -723,7 +786,8 @@ ${recalledMemories.map(m => `- ${m.content}`).join("\n")}`;
                 role: "assistant",
                 content: confirmMsgContent,
                 isConfirm: true,
-                confirmText: memoryContent
+                confirmText: memoryContent,
+                isBuddySystemMsg: true
               }
             ];
             
@@ -745,7 +809,7 @@ ${recalledMemories.map(m => `- ${m.content}`).join("\n")}`;
         abortControllerRef.current = null;
       }
     },
-    [messages, memories, isSending, buddySaveState, buildSystemPrompt, saveEncryptedData, t]
+    [messages, memories, isSending, buddySaveState, buildSystemPrompt, buildMiniReminder, buddySettings, saveEncryptedData, t]
   );
 
   const triggerQuickMenu = useCallback(() => {
@@ -791,7 +855,7 @@ ${recalledMemories.map(m => `- ${m.content}`).join("\n")}`;
 
     const nextMsgs: Message[] = [
       ...cleanedMessages,
-      { id: assistantMsgId, role: "assistant", content: replyContent }
+      { id: assistantMsgId, role: "assistant", content: replyContent, isBuddySystemMsg: true }
     ];
 
     setMessages(nextMsgs);

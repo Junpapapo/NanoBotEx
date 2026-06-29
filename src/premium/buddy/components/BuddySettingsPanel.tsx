@@ -16,6 +16,7 @@ export const DEFAULT_BUDDY_SETTINGS: BuddySettings = {
   buddy_emoji_level: 1,
   buddy_response_length: 1,
   buddy_empathy_level: 1,
+  buddy_temperature: 0.8,
 };
 
 
@@ -239,6 +240,18 @@ export function BuddySettingsPanel({ theme, t }: BuddySettingsPanelProps) {
                 updates.buddy_avatar = found.defaultAvatar;
                 updates.buddy_tts_rate = found.defaultTtsRate ?? 1.0;
                 updates.buddy_tts_pitch = found.defaultTtsPitch ?? 1.0;
+                if (found.defaultEmojiLevel !== undefined) {
+                  updates.buddy_emoji_level = found.defaultEmojiLevel;
+                }
+                if (found.defaultResponseLength !== undefined) {
+                  updates.buddy_response_length = found.defaultResponseLength;
+                }
+                if (found.defaultEmpathyLevel !== undefined) {
+                  updates.buddy_empathy_level = found.defaultEmpathyLevel;
+                }
+                if (found.defaultTemperature !== undefined) {
+                  updates.buddy_temperature = found.defaultTemperature;
+                }
               }
             }
             updateFields(updates);

@@ -1,5 +1,6 @@
 let activeAISession: any = null;
 let activeBuddySession: any = null; // 프라이빗 AI 버디 세션 (메인 세션과 독립)
+let activeBuddySessionPrompt: string | null = null; // 현재 캐싱된 버디 세션의 시스템 프롬프트
 let activeSafetySession: any = null; // Dual-Pass Guardrails 전용 판별 세션 (상시 유지)
 
 // 백그라운드 AI 지원 여부 체크 헬퍼
@@ -162,7 +163,6 @@ async function initBackgroundAISession(systemPrompt?: string, temperature?: numb
     return await lm.create(opts);
   };
 
-  // 점진적 Fallback 구현 ( expectedOutputs 에서 'ko' 제거 반영 )
   try {
     const opts: any = {
       expectedOutputs: [{ type: "text", languages: ["en", "ja"] }],
@@ -199,6 +199,7 @@ async function initBackgroundAISession(systemPrompt?: string, temperature?: numb
 }
 
 async function initBackgroundBuddySession(systemPrompt?: string, temperature?: number) {
+  console.log("[Background] Creating new buddy session.");
   destroyBackgroundBuddySession();
   const lm = await getAIModel();
   if (!lm) throw new Error("Local AI is not available in background context");
@@ -218,6 +219,7 @@ async function initBackgroundBuddySession(systemPrompt?: string, temperature?: n
       opts.systemInstruction = systemPrompt;
     }
     activeBuddySession = await runCreate(opts);
+    activeBuddySessionPrompt = systemPrompt || null;
   } catch (err1) {
     try {
       const opts: any = {};
@@ -227,6 +229,7 @@ async function initBackgroundBuddySession(systemPrompt?: string, temperature?: n
         opts.systemInstruction = systemPrompt;
       }
       activeBuddySession = await runCreate(opts);
+      activeBuddySessionPrompt = systemPrompt || null;
     } catch (err2) {
       try {
         const opts: any = {};
@@ -235,8 +238,10 @@ async function initBackgroundBuddySession(systemPrompt?: string, temperature?: n
           opts.systemInstruction = systemPrompt;
         }
         activeBuddySession = await runCreate(opts);
+        activeBuddySessionPrompt = systemPrompt || null;
       } catch (err3) {
         activeBuddySession = await runCreate({});
+        activeBuddySessionPrompt = null;
       }
     }
   }
@@ -274,6 +279,7 @@ function destroyBackgroundBuddySession() {
     }
     activeBuddySession = null;
   }
+  activeBuddySessionPrompt = null;
 }
 
 // Dual-Pass Guardrails: 안전 세션을 상시 유지하며 재사용하여 판별 지연을 최소화합니다.

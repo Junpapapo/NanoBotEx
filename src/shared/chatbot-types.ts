@@ -8,6 +8,7 @@ export interface Message {
   isMenu?: boolean;
   isConfirm?: boolean;
   confirmText?: string;
+  isBuddySystemMsg?: boolean;
 }
 
 export interface QuickMenuItem {
@@ -82,6 +83,8 @@ export interface UserSettings {
   // 채팅창 글자 크기 & 폰트
   nano_chat_font_size?: "small" | "medium" | "large";
   nano_chat_font?: "sans" | "inter" | "noto" | "mono";
+  // 세션 최대 유지 시간 (분), 0 = 비활성화
+  nano_session_timeout_minutes?: number;
 }
 
 export interface Skill {
@@ -147,6 +150,7 @@ export interface BuddySettings {
   buddy_tts_rate?: number;         // TTS 재생 속도 (0.5 ~ 2.0, 기본: 1.0)
   buddy_tts_pitch?: number;        // TTS 음성 높낮이 (0.5 ~ 2.0, 기본: 1.0)
   buddy_recovery_hash?: string;    // 마스터 복구 키 해시값
+  buddy_temperature?: number;      // 버디 고유 답변 창의성 (Temperature: 0.0 ~ 2.0)
 }
 
 /** 버디 대화 데이터 (암호화된 상태로 저장) */

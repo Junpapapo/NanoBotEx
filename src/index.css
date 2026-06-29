@@ -68,3 +68,9 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0.9;
 }
 
+/* 스트리밍 답변 중 타이핑 커서 깜박임 */
+@keyframes nano-caret-blink {
+  0%, 100% { opacity: 0.7; }
+  45%       { opacity: 0.7; }
+  55%       { opacity: 0;   }
+}

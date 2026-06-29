@@ -601,6 +601,14 @@ function PopupApp() {
   const [settings, setSettings, isSettingsLoaded] =
     useChromeStorage<UserSettings>("user_settings", DEFAULT_SETTINGS);
 
+  if (!isSettingsLoaded || !settings) {
+    return (
+      <div className="flex items-center justify-center w-[360px] h-[550px] bg-[#070b19]">
+        <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <I18nProvider
       settings={settings}

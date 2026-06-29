@@ -426,32 +426,35 @@ export function SystemSidebar({
           </div>
         )}
 
-        {/* 답변 길이 조절 3단 슬라이더 */}
-        <div className="w-full flex flex-col items-center gap-1 mb-2 shrink-0">
-          <span className="text-[7.5px] font-bold text-slate-500 tracking-wider">
-            {t("common.sidebarLength", "답변 길이")} ({settings.nano_ai_context_level === "minimal" ? "S" : settings.nano_ai_context_level === "detailed" ? "L" : "M"})
-          </span>
-          <input
-            type="range"
-            min="0"
-            max="2"
-            step="1"
-            value={
-              settings.nano_ai_context_level === "minimal" 
-                ? 0 
-                : settings.nano_ai_context_level === "detailed" 
-                  ? 2 
-                  : 1
-            }
-            onChange={(e) => {
-              const idx = parseInt(e.target.value);
-              const levels: ("minimal" | "standard" | "detailed")[] = ["minimal", "standard", "detailed"];
-              updateSettings({ nano_ai_context_level: levels[idx] });
-            }}
-            className="w-12 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-500 [&::-moz-range-thumb]:w-2 [&::-moz-range-thumb]:h-2 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-indigo-500"
-            style={{ outline: "none" }}
-          />
-        </div>
+        {/* 답변 길이 조절 3단 슬라이더 (일반 나노봇 모드일 때만 적용) */}
+        {activeMode === "bot" && (
+          <div className="w-full flex flex-col items-center gap-1 mb-2 shrink-0">
+            <span className="text-[7.5px] font-bold text-slate-500 tracking-wider">
+              {t("common.sidebarLength", "답변 길이")} ({settings.nano_ai_context_level === "minimal" ? "S" : settings.nano_ai_context_level === "detailed" ? "L" : "M"})
+            </span>
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="1"
+              value={
+                settings.nano_ai_context_level === "minimal" 
+                  ? 0 
+                  : settings.nano_ai_context_level === "detailed" 
+                    ? 2 
+                    : 1
+              }
+              onChange={(e) => {
+                const idx = parseInt(e.target.value);
+                const levels: ("minimal" | "standard" | "detailed")[] = ["minimal", "standard", "detailed"];
+                updateSettings({ nano_ai_context_level: levels[idx] });
+              }}
+              className="w-12 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-500 [&::-moz-range-thumb]:w-2 [&::-moz-range-thumb]:h-2 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-indigo-500"
+              style={{ outline: "none" }}
+            />
+          </div>
+        )}
+
 
         <div className="flex gap-2 w-full justify-center">
           {/* 스킬 목록 토글 */}

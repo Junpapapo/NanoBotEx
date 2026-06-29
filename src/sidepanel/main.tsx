@@ -49,6 +49,14 @@ function Main() {
     }));
   };
 
+  if (!isSettingsLoaded || !settings) {
+    return (
+      <div className="flex items-center justify-center w-full h-full min-h-screen bg-[#070b19]">
+        <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <I18nProvider settings={settings} updateSettings={handleUpdateSettings} isSettingsLoaded={isSettingsLoaded}>
       <SidepanelApp 

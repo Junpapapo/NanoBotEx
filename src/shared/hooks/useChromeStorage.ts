@@ -11,7 +11,7 @@ export function useChromeStorage<T>(
   // 최초 1회 저장된 데이터 로드
   useEffect(() => {
     chrome.storage.local.get([key], (result) => {
-      if (result[key] !== undefined) {
+      if (result[key] !== undefined && result[key] !== null) {
         setStoredValue(result[key]);
       }
       isLoadedRef.current = true;
@@ -22,7 +22,12 @@ export function useChromeStorage<T>(
   // 다른 창(사이드패널 <-> 위젯 <-> 팝업)에서 데이터 수정 시 실시간 상태 동기화 리스너
   useEffect(() => {
     const handleStorageChange = (changes: { [key: string]: chrome.storage.StorageChange }, areaName: string) => {
-      if (areaName === "local" && changes[key]) {
+      if (
+        areaName === "local" &&
+        changes[key] &&
+        changes[key].newValue !== undefined &&
+        changes[key].newValue !== null
+      ) {
         setStoredValue(changes[key].newValue);
       }
     };

@@ -139,16 +139,18 @@ export function BotSettingsPanel({ t, theme }: BotSettingsPanelProps) {
       </div>
 
       {/* 저장 버튼 및 피드백 */}
-      <div className={`pt-3 border-t ${theme.borderMuted} flex items-center justify-between gap-3 shrink-0`}>
+      <div className={`pt-3 border-t ${theme.borderMuted} flex flex-col gap-2 shrink-0 w-full`}>
         {saveSuccess && (
-          <span className="text-emerald-400 font-bold text-[10px] animate-pulse">
-            {t("panel.botSettings.saveSynced", "규칙이 실시간 적용되었습니다!")}
-          </span>
+          <div className="flex justify-end pr-1 select-none animate-pulse">
+            <span className="text-emerald-400 font-bold text-[10.5px]">
+              {t("panel.botSettings.saveSynced", "규칙이 실시간 적용되었습니다!")}
+            </span>
+          </div>
         )}
         <button
           type="button"
           onClick={handleSaveRules}
-          className={`flex-1 py-2 rounded-lg ${theme.primary} text-white hover:opacity-95 text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 ${theme.shadow}`}
+          className={`w-full py-2.5 rounded-lg ${theme.primary} text-white hover:opacity-95 text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 ${theme.shadow}`}
         >
           <Save size={13} />
           {t("panel.botSettings.saveBtn", "저장 및 세션 적용")}

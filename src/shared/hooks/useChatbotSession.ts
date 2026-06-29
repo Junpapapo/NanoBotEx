@@ -42,6 +42,7 @@ export function useChatbotSession(
   const abortControllerRef = useRef<AbortController | null>(null);
   const clearHistoryIndexRef = useRef<number>(0);
   const isSystemPromptApplied = useRef<boolean>(false);
+  const lastMessageTimeRef = useRef<number>(Date.now());
 
   // 세션 클리어 기능
   const clearContext = useCallback(() => {
@@ -85,52 +86,66 @@ export function useChatbotSession(
     setCurrentSessionId(null);
   }, [destroySession, currentSessionId, deleteSession, setCurrentSessionId]);
 
+  //이름, 성향, 글로벌/일반 룰(공동 세팅) 및 스타일 지침 통합 빌드
+  const buildPromptWithRules = useCallback((currentSettings: UserSettings) => {
+    const name = currentSettings.nano_ai_avatar_name || "NanoBot";
+    
+    // 1. 정체성 정의 (Identity) - 불필요한 이름 남발 억제 지침 추가
+    let prompt = `[IDENTITY]\n- Your name is "${name}". You are a helpful AI assistant.\n- You must know that your name is "${name}", but do NOT introduce yourself or say your name at the beginning or end of your reply unless the user explicitly asks "who are you?" or "what is your name?".\n- Always answer the user's question directly without repeating greetings or self-introductions.\n- Never identify yourself as a "large language model trained by Google" or "Google's language model".\n\n`;
+
+    // 2. AI 성향 (Persona)
+    if (currentSettings.nano_ai_persona) {
+      prompt += `[AI PERSONA]\n${currentSettings.nano_ai_persona}\n\n`;
+    }
+
+    // 3. 공동 세팅 (Common Settings / Rules)
+    let globalRules = "";
+    let generalRules = "";
+    if (typeof window !== "undefined") {
+      globalRules = localStorage.getItem("nano-ai-global-rules") || "";
+      generalRules = localStorage.getItem("nano-ai-general-rules") || "";
+    }
+
+    if (globalRules.trim() || generalRules.trim()) {
+      prompt += `[COMMON SETTINGS]\n`;
+      if (globalRules.trim()) {
+        prompt += `- Global Rules:\n${globalRules.trim()}\n`;
+      }
+      if (generalRules.trim()) {
+        prompt += `- General Rules:\n${generalRules.trim()}\n`;
+      }
+      prompt += `\n`;
+    }
+
+    // 4. 답변 길이 규칙 (Length Rules)
+    const lengthRule = currentSettings.nano_ai_context_level === "minimal"
+      ? "- [RESPONSE LENGTH RULE]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
+      : currentSettings.nano_ai_context_level === "detailed"
+        ? "- [RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
+        : "- [RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
+
+    prompt += `[STYLE RULES]\n${lengthRule}\n\n`;
+
+    // 5. 언어 강제 지침
+    const currentLocale = currentSettings.nano_locale || "ko";
+    let langRule = "";
+    if (currentLocale === "ko") {
+      langRule = "[RESPONSE LANGUAGE RULE]: Regardless of the language of the prompt instructions above, you MUST write your final response in Korean. (반드시 최종 답변은 한국어로 친절하게 작성하세요.)";
+    } else if (currentLocale === "ja") {
+      langRule = "[RESPONSE LANGUAGE RULE]: Regardless of the language of the prompt instructions above, you MUST write your final response in Japanese. (必ず最終回答は日本語で親切に作成してください。)";
+    } else {
+      langRule = "[RESPONSE LANGUAGE RULE]: Regardless of the language of the prompt instructions above, you MUST write your final response in English.";
+    }
+    prompt += `[LANGUAGE RULE]\n${langRule}\n`;
+
+    return prompt;
+  }, []);
+
   // 세션 초기화 로직
   const initSession = useCallback(async () => {
     await destroySession();
     try {
-      let globalRules = "";
-      let generalRules = "";
-      if (typeof window !== "undefined") {
-        globalRules = localStorage.getItem("nano-ai-global-rules") || "";
-        generalRules = localStorage.getItem("nano-ai-general-rules") || "";
-      }
-
-      let systemPrompt = "";
-      if (globalRules.trim()) {
-        systemPrompt += `[MUST FOLLOW - GLOBAL RULES]\n${globalRules.trim()}\n\n`;
-      }
-      systemPrompt += settingsRef.current.nano_ai_persona;
-
-      // 답변 길이 조절(nano_ai_context_level) 지침 주입
-      const lengthRule = settingsRef.current.nano_ai_context_level === "minimal"
-        ? "\n\n[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
-        : settingsRef.current.nano_ai_context_level === "detailed"
-          ? "\n\n[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
-          : "\n\n[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
-      
-      systemPrompt += lengthRule;
-
-      if (activeSkill) {
-        systemPrompt += `\n\n[ACTIVE SKILL INSTRUCTIONS - ${activeSkill.title}]\n${activeSkill.prompt}`;
-      }
-
-      if (generalRules.trim()) {
-        systemPrompt += `\n\n[GENERAL CONVERSATION RULES]\n${generalRules.trim()}`;
-      }
-
-      // 설정 언어 지침 강제 주입 (스킬 프롬프트가 영어이더라도 사용자 언어설정에 맞춰 대답하도록 함)
-      const currentLocale = settingsRef.current.nano_locale || "ko";
-      let langRule = "";
-      if (currentLocale === "ko") {
-        langRule = "\n\n[RESPONSE LANGUAGE RULE]: Regardless of the language of the prompt instructions above, you MUST write your final response in Korean. (반드시 최종 답변은 한국어로 친절하게 작성하세요.)";
-      } else if (currentLocale === "ja") {
-        langRule = "\n\n[RESPONSE LANGUAGE RULE]: Regardless of the language of the prompt instructions above, you MUST write your final response in Japanese. (必ず最終回答は日本語で親切に作成してください。)";
-      } else {
-        langRule = "\n\n[RESPONSE LANGUAGE RULE]: Regardless of the language of the prompt instructions above, you MUST write your final response in English.";
-      }
-      systemPrompt += langRule;
-
+      const systemPrompt = buildPromptWithRules(settingsRef.current);
       const s = await createSession(systemPrompt, settingsRef.current.nano_ai_temperature);
       isSystemPromptApplied.current = true;
       return s;
@@ -146,7 +161,7 @@ export function useChatbotSession(
         return null;
       }
     }
-  }, [createSession, destroySession, activeSkill]);
+  }, [createSession, destroySession, buildPromptWithRules]);
 
   // AI 모드가 로컬일 경우 세션 기동
   useEffect(() => {
@@ -157,6 +172,16 @@ export function useChatbotSession(
       destroySession();
     };
   }, [initSession, destroySession, isEnabled, settings.api_mode]);
+
+  // 마운트 시 혹은 세션 ID 로드 시 기존 활성화된 세션의 대화 내역 복원
+  useEffect(() => {
+    if (currentSessionId && messages.length === 0 && sessions.length > 0) {
+      const session = sessions.find((s) => s.id === currentSessionId);
+      if (session) {
+        setMessages(session.messages);
+      }
+    }
+  }, [currentSessionId, sessions, messages.length]);
 
   // 스킬 변경 감지 메시지 추가
   useEffect(() => {
@@ -220,6 +245,36 @@ export function useChatbotSession(
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || isSending) return;
 
+    // ──────────────────────────────────────────────
+    // 세션 타임아웃 체크: 마지막 메시지로부터 N분 경과 시 새 세션 자동 시작
+    // ──────────────────────────────────────────────
+    const timeoutMinutes = settingsRef.current.nano_session_timeout_minutes ?? 60;
+    if (timeoutMinutes > 0 && messages.length > 0) {
+      const elapsedMs = Date.now() - lastMessageTimeRef.current;
+      const elapsedMinutes = elapsedMs / 1000 / 60;
+      if (elapsedMinutes >= timeoutMinutes) {
+        // 기존 세션 히스토리 저장 (이미 자동 저장 중이지만 명시적으로 flush)
+        const expiredSessionId = currentSessionId || "session-" + Date.now();
+        saveSession(expiredSessionId, messages, "none");
+        // 새 세션으로 전환
+        setCurrentSessionId(null);
+        setMessages([]);
+        clearHistoryIndexRef.current = 0;
+        // 새 세션 시작 알림 메시지 (다음 render 이후 메시지가 추가되므로 즉시 return 후 재진입 유도 불필요)
+        const noticeId = Math.random().toString(36).substring(7);
+        setMessages([{
+          id: noticeId,
+          role: "assistant",
+          content: t(
+            "session.timeoutNewSession",
+            `⏱️ **이전 대화 세션이 ${timeoutMinutes}분 비활성으로 히스토리에 저장되었습니다.**\n새로운 대화를 시작합니다.`
+          ).replace("{minutes}", String(timeoutMinutes))
+        }]);
+        // 타이머 리셋
+        lastMessageTimeRef.current = Date.now();
+      }
+    }
+
     setIsSending(true);
     isAbortedRef.current = false;
     if (abortControllerRef.current) abortControllerRef.current.abort();
@@ -235,39 +290,46 @@ export function useChatbotSession(
       setMessages((prev) => prev.map((m) => m.id === assistantMessageId ? { ...m, content } : m));
     };
 
+    // ── RAF Throttle: 청크가 매우 빠르게 들어올 때 16ms 단위로 묶어 렌더링 횟수를 줄임
+    let rafId: number | null = null;
+    let latestContent = "";
+    const scheduleContentUpdate = (content: string) => {
+      latestContent = content;
+      if (rafId === null) {
+        rafId = requestAnimationFrame(() => {
+          updateContent(latestContent);
+          rafId = null;
+        });
+      }
+    };
+    const flushFinalContent = (content: string) => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      updateContent(content);
+    };
+
     try {
       const currentSettings = settingsRef.current;
       let promptText = text;
-      const lengthRule = currentSettings.nano_ai_context_level === "minimal"
-        ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
-        : currentSettings.nano_ai_context_level === "detailed"
-          ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
-          : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
 
-      if (currentSettings.api_mode === "local" && !isSystemPromptApplied.current) {
-        let systemRules = "";
-        let globalRules = "";
-        let generalRules = "";
-        if (typeof window !== "undefined") {
-          globalRules = localStorage.getItem("nano-ai-global-rules") || "";
-          generalRules = localStorage.getItem("nano-ai-general-rules") || "";
-        }
-
-        if (globalRules.trim()) {
-          systemRules += `[MUST FOLLOW - GLOBAL RULES]\n${globalRules.trim()}\n\n`;
-        }
-        if (currentSettings.nano_ai_persona) {
-          systemRules += `[AI PERSONA]\n${currentSettings.nano_ai_persona}\n\n`;
-        }
-        systemRules += `${lengthRule}\n\n`;
+      if (currentSettings.api_mode === "local") {
+        // 로컬 모드: 소형 모델의 망각 방지를 위해 매 턴마다 강제 룰 결합
+        const miniRules = buildPromptWithRules(currentSettings);
+        let activeSkillSection = "";
         if (activeSkill) {
-          systemRules += `[ACTIVE SKILL INSTRUCTIONS - ${activeSkill.title}]\n${activeSkill.prompt}\n\n`;
-        } else if (generalRules.trim()) {
-          systemRules += `[GENERAL CONVERSATION RULES]\n${generalRules.trim()}\n\n`;
+          activeSkillSection = `[ACTIVE SKILL INSTRUCTIONS - ${activeSkill.title}]\n${activeSkill.prompt}\n\n`;
         }
         
-        promptText = `${systemRules}[USER QUESTION]\n${text}`;
+        promptText = `[SYSTEM INSTRUCTION]\n${miniRules}${activeSkillSection}\n[USER QUESTION]\n${text}`;
       } else {
+        const lengthRule = currentSettings.nano_ai_context_level === "minimal"
+          ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
+          : currentSettings.nano_ai_context_level === "detailed"
+            ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
+            : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
+
         if (activeSkill) {
           promptText = `${lengthRule}\n\n[AI 스킬 규칙 - ${activeSkill.title}]\n${activeSkill.prompt}\n\n[사용자 입력]\n${text}`;
         } else {
@@ -324,8 +386,9 @@ export function useChatbotSession(
                 accumulated += chunk;
               }
             }
-            updateContent(accumulated);
+            scheduleContentUpdate(accumulated);
           }
+          flushFinalContent(accumulated);
         } else {
           const res = await activeSession.prompt(promptText, { signal: abortControllerRef.current?.signal });
           updateContent(res);
@@ -337,15 +400,16 @@ export function useChatbotSession(
           (chunk) => {
             if (isAbortedRef.current) return;
             accumulated += chunk;
-            updateContent(accumulated);
+            scheduleContentUpdate(accumulated);
           },
-          () => {},
+          () => { flushFinalContent(accumulated); },
           (err) => { throw err; },
           abortControllerRef.current?.signal
         );
       }
 
       setMessages((prev) => prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false } : m));
+      lastMessageTimeRef.current = Date.now();
     } catch (err: any) {
       if (err.name === "AbortError" || isAbortedRef.current) {
         setMessages((prev) => prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false } : m));
@@ -358,7 +422,7 @@ export function useChatbotSession(
       setIsSending(false);
       abortControllerRef.current = null;
     }
-  }, [isSending, aiSession, messages, activeSkill, initSession]);
+  }, [isSending, aiSession, messages, activeSkill, initSession, currentSessionId, saveSession, setCurrentSessionId, t]);
 
   const handleDeleteSession = useCallback((sessionId: string) => {
     deleteSession(sessionId);

@@ -247,6 +247,7 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
           style={{
             fontSize: "var(--nano-chat-font-size, 13px)",
             fontFamily: "var(--nano-chat-font-family, ui-sans-serif, system-ui, sans-serif)",
+            ...(message.isStreaming ? { contain: "content", willChange: "contents" } : {})
           }}
         >
           <div className={`prose max-w-none ${
@@ -310,6 +311,16 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
             >
               {cleanContent}
             </ReactMarkdown>
+            {message.isStreaming && (
+              <span
+                className="inline-block w-[2px] h-[1em] align-middle ml-0.5 rounded-sm"
+                style={{
+                  backgroundColor: "currentColor",
+                  opacity: 0.7,
+                  animation: "nano-caret-blink 0.9s ease-in-out infinite"
+                }}
+              />
+            )}
 
             {message.isWebAnalyzeIntro && onQuickQuestion && (
               <div className={`mt-3 pt-2 border-t border-dashed ${isLight ? "border-slate-200" : "border-white/10"} flex justify-start`}>
