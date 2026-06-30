@@ -80,6 +80,7 @@ export function ChatbotView({
     deleteSession,
     clearContext,
     clearMessages: clearBotMessages,
+    clearAllSessions,
   } = useChatbotSession(true, settings, activeSkill, skills, t);
 
   const [activePanel, setActivePanel] = useState<PanelType>("none");
@@ -538,6 +539,19 @@ export function ChatbotView({
     );
   };
 
+  const handleClearAllSessions = () => {
+    showConfirm(
+      t("dialog.clearAll.title", "대화 기록 전체 삭제"),
+      t(
+        "dialog.clearAll.message",
+        "모든 대화 기록을 지우고 초기화하시겠습니까?",
+      ),
+      () => {
+        clearAllSessions();
+      },
+    );
+  };
+
   const handleQuickQuestion = (text: string) => {
     if (activeMode === "buddy") {
       sendBuddyMessage(text);
@@ -659,6 +673,7 @@ export function ChatbotView({
               currentSessionId={currentSessionId}
               onSelectSession={loadSession}
               onDeleteSession={deleteSession}
+              onClearAllSessions={handleClearAllSessions}
               t={t}
               theme={theme}
             />

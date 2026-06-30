@@ -25,8 +25,7 @@ export function useChromeStorage<T>(
       if (
         areaName === "local" &&
         changes[key] &&
-        changes[key].newValue !== undefined &&
-        changes[key].newValue !== null
+        changes[key].newValue !== undefined
       ) {
         setStoredValue(changes[key].newValue);
       }

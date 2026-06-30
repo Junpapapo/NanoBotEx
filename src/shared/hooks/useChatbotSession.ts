@@ -42,21 +42,10 @@ export function useChatbotSession(
   const abortControllerRef = useRef<AbortController | null>(null);
   const clearHistoryIndexRef = useRef<number>(0);
   const isSystemPromptApplied = useRef<boolean>(false);
-  const lastMessageTimeRef = useRef<number>(Date.now());
+  const lastMessageTimeRef = useRef<number>(0);
+  const lastLoadedSessionIdRef = useRef<string | null>(null);
 
-  // 세션 클리어 기능
-  const clearContext = useCallback(() => {
-    clearHistoryIndexRef.current = messages.length;
-    const assistantMessageId = Math.random().toString(36).substring(7);
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: assistantMessageId,
-        role: "assistant",
-        content: t("session.clearContext", "🧹 **AI의 이전 대화 맥락 기억이 클리어되었습니다.**")
-      }
-    ]);
-  }, [messages.length, t]);
+
 
   // 대화 세션 복원
   const loadSession = useCallback((id: string) => {
@@ -163,6 +152,33 @@ export function useChatbotSession(
     }
   }, [createSession, destroySession, buildPromptWithRules]);
 
+  // 세션 클리어 기능
+  const clearContext = useCallback(async () => {
+    if (currentSessionId && messages.length > 0) {
+      const hasUserMsg = messages.some((m) => m.role === "user");
+      const title = hasUserMsg ? undefined : "(Empty)";
+      saveSession(currentSessionId, messages, "none", title);
+    }
+
+    await destroySession();
+    if (settingsRef.current.api_mode === "local") {
+      await initSession();
+    }
+
+    setCurrentSessionId(null);
+    clearHistoryIndexRef.current = 0;
+    lastLoadedSessionIdRef.current = null;
+
+    const assistantMessageId = Math.random().toString(36).substring(7);
+    setMessages([
+      {
+        id: assistantMessageId,
+        role: "assistant",
+        content: t("session.clearContext", "🧹 **AI의 이전 대화 맥락 기억이 클리어되었습니다.** (이후의 질문은 이전 내용과 연계되지 않고 완전히 새롭게 답변됩니다.)")
+      }
+    ]);
+  }, [currentSessionId, messages, saveSession, setCurrentSessionId, destroySession, initSession, t]);
+
   // AI 모드가 로컬일 경우 세션 기동
   useEffect(() => {
     if (isEnabled && settings.api_mode === "local") {
@@ -175,13 +191,18 @@ export function useChatbotSession(
 
   // 마운트 시 혹은 세션 ID 로드 시 기존 활성화된 세션의 대화 내역 복원
   useEffect(() => {
-    if (currentSessionId && messages.length === 0 && sessions.length > 0) {
-      const session = sessions.find((s) => s.id === currentSessionId);
-      if (session) {
-        setMessages(session.messages);
+    if (currentSessionId && sessions.length > 0) {
+      if (lastLoadedSessionIdRef.current !== currentSessionId) {
+        const session = sessions.find((s) => s.id === currentSessionId);
+        if (session) {
+          setMessages(session.messages);
+          lastLoadedSessionIdRef.current = currentSessionId;
+        }
       }
+    } else if (!currentSessionId) {
+      lastLoadedSessionIdRef.current = null;
     }
-  }, [currentSessionId, sessions, messages.length]);
+  }, [currentSessionId, sessions]);
 
   // 스킬 변경 감지 메시지 추가
   useEffect(() => {
@@ -220,59 +241,55 @@ export function useChatbotSession(
     }
   }, [activeSkill, t]);
 
-  const stopGeneration = useCallback(() => {
-    isAbortedRef.current = true;
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      abortControllerRef.current = null;
-    }
-    setIsSending(false);
-    setMessages((prev) =>
-      prev.map((msg) => (msg.isStreaming ? { ...msg, isStreaming: false } : msg))
-    );
-  }, []);
-
-  // 메시지 갱신 시 백업 보관
-  useEffect(() => {
-    if (messages.length === 0) return;
-    const targetId = currentSessionId || "session-" + Date.now();
-    if (!currentSessionId) {
-      setCurrentSessionId(targetId);
-    }
-    saveSession(targetId, messages, "none");
-  }, [messages, currentSessionId, saveSession, setCurrentSessionId]);
-
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || isSending) return;
 
     // ──────────────────────────────────────────────
     // 세션 타임아웃 체크: 마지막 메시지로부터 N분 경과 시 새 세션 자동 시작
     // ──────────────────────────────────────────────
+    let activeSessionId = currentSessionId;
+    let currentMessages = messages;
+
     const timeoutMinutes = settingsRef.current.nano_session_timeout_minutes ?? 60;
-    if (timeoutMinutes > 0 && messages.length > 0) {
-      const elapsedMs = Date.now() - lastMessageTimeRef.current;
+    if (timeoutMinutes > 0 && currentMessages.length > 0) {
+      const currentSession = sessions.find((s) => s.id === currentSessionId);
+      const lastTime = lastMessageTimeRef.current > 0
+        ? lastMessageTimeRef.current
+        : (currentSession ? currentSession.timestamp : Date.now());
+      const elapsedMs = Date.now() - lastTime;
       const elapsedMinutes = elapsedMs / 1000 / 60;
       if (elapsedMinutes >= timeoutMinutes) {
-        // 기존 세션 히스토리 저장 (이미 자동 저장 중이지만 명시적으로 flush)
+        // 기존 세션 히스토리 저장
         const expiredSessionId = currentSessionId || "session-" + Date.now();
-        saveSession(expiredSessionId, messages, "none");
+        saveSession(expiredSessionId, currentMessages, "none");
         // 새 세션으로 전환
+        activeSessionId = null;
         setCurrentSessionId(null);
+        currentMessages = [];
         setMessages([]);
         clearHistoryIndexRef.current = 0;
-        // 새 세션 시작 알림 메시지 (다음 render 이후 메시지가 추가되므로 즉시 return 후 재진입 유도 불필요)
+        lastLoadedSessionIdRef.current = null;
+        // 새 세션 시작 알림 메시지
         const noticeId = Math.random().toString(36).substring(7);
-        setMessages([{
+        const noticeMsg = {
           id: noticeId,
-          role: "assistant",
+          role: "assistant" as const,
           content: t(
             "session.timeoutNewSession",
-            `⏱️ **이전 대화 세션이 ${timeoutMinutes}분 비활성으로 히스토리에 저장되었습니다.**\n새로운 대화를 시작합니다.`
+            `⏱️ **이전 대화 세션이 {minutes}분 비활성으로 히스토리에 저장되었습니다.**\n새로운 대화를 시작합니다.`
           ).replace("{minutes}", String(timeoutMinutes))
-        }]);
+        };
+        currentMessages = [noticeMsg];
+        setMessages(currentMessages);
         // 타이머 리셋
         lastMessageTimeRef.current = Date.now();
       }
+    }
+
+    // 세션 ID가 없을 시 새 세션 ID 명시적 생성 및 설정
+    if (!activeSessionId) {
+      activeSessionId = "session-" + Date.now();
+      setCurrentSessionId(activeSessionId);
     }
 
     setIsSending(true);
@@ -283,8 +300,14 @@ export function useChatbotSession(
     const userMessageId = Math.random().toString(36).substring(7);
     const assistantMessageId = Math.random().toString(36).substring(7);
 
-    setMessages((prev) => [...prev, { id: userMessageId, role: "user", content: text }]);
-    setMessages((prev) => [...prev, { id: assistantMessageId, role: "assistant", content: "", isStreaming: true }]);
+    const userMsg = { id: userMessageId, role: "user" as const, content: text };
+    const assistantMsg = { id: assistantMessageId, role: "assistant" as const, content: "", isStreaming: true };
+
+    const nextMessages = [...currentMessages, userMsg, assistantMsg];
+    setMessages(nextMessages);
+
+    // 첫 메시지 전송 시점에 즉시 임시 저장 (대화 목록에 방 생성)
+    saveSession(activeSessionId, nextMessages, "none");
 
     const updateContent = (content: string) => {
       setMessages((prev) => prev.map((m) => m.id === assistantMessageId ? { ...m, content } : m));
@@ -308,6 +331,13 @@ export function useChatbotSession(
         rafId = null;
       }
       updateContent(content);
+      
+      // 답변이 끝난 순간 완성된 메시지 상태를 한 번 더 안전하게 세션 스토리지에 동기화 저장합니다.
+      setMessages((prev) => {
+        const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content, isStreaming: false } : m);
+        saveSession(activeSessionId!, finalMsgs, "none");
+        return finalMsgs;
+      });
     };
 
     try {
@@ -345,15 +375,16 @@ export function useChatbotSession(
 
         // unsafe로 판정된 경우 즉시 차단
         if (!isSafe) {
-          updateContent(
-            t(
-              "guardrail.blocked",
-              "🚫 **안전 가이드라인 위반이 감지되었습니다.**\n\n해당 요청은 선정적이거나 위험한 내용을 포함하고 있어 답변을 제공할 수 없습니다.\n일반적인 질문으로 다시 시도해 주세요."
-            )
+          const blockText = t(
+            "guardrail.blocked",
+            "🚫 **안전 가이드라인 위반이 감지되었습니다.**\n\n해당 요청은 선정적이거나 위험한 내용을 포함하고 있어 답변을 제공할 수 없습니다.\n일반적인 질문으로 다시 시도해 주세요."
           );
-          setMessages((prev) =>
-            prev.map((m) => (m.id === assistantMessageId ? { ...m, isStreaming: false } : m))
-          );
+          updateContent(blockText);
+          setMessages((prev) => {
+            const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: blockText, isStreaming: false } : m);
+            saveSession(activeSessionId!, finalMsgs, "none");
+            return finalMsgs;
+          });
           return;
         }
 
@@ -392,11 +423,16 @@ export function useChatbotSession(
         } else {
           const res = await activeSession.prompt(promptText, { signal: abortControllerRef.current?.signal });
           updateContent(res);
+          setMessages((prev) => {
+            const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: res, isStreaming: false } : m);
+            saveSession(activeSessionId!, finalMsgs, "none");
+            return finalMsgs;
+          });
         }
       } else {
         let accumulated = "";
         await ChatbotModel.streamExternalChat(
-          messages.concat({ id: userMessageId, role: "user", content: promptText }),
+          currentMessages.concat({ id: userMessageId, role: "user", content: promptText }),
           (chunk) => {
             if (isAbortedRef.current) return;
             accumulated += chunk;
@@ -408,21 +444,47 @@ export function useChatbotSession(
         );
       }
 
-      setMessages((prev) => prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false } : m));
+      setMessages((prev) => {
+        const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false } : m);
+        saveSession(activeSessionId!, finalMsgs, "none");
+        return finalMsgs;
+      });
       lastMessageTimeRef.current = Date.now();
     } catch (err: any) {
       if (err.name === "AbortError" || isAbortedRef.current) {
-        setMessages((prev) => prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false } : m));
+        setMessages((prev) => {
+          const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false } : m);
+          saveSession(activeSessionId!, finalMsgs, "none");
+          return finalMsgs;
+        });
       } else {
         console.error(err);
         const errMsg = err?.message || String(err);
-        updateContent(`오류가 발생했습니다: ${errMsg}\n\n브라우저 및 온디바이스 설정을 확인해 주세요.`);
+        const errorContent = `오류가 발생했습니다: ${errMsg}\n\n브라우저 및 온디바이스 설정을 확인해 주세요.`;
+        updateContent(errorContent);
+        setMessages((prev) => {
+          const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: errorContent, isStreaming: false } : m);
+          saveSession(activeSessionId!, finalMsgs, "none");
+          return finalMsgs;
+        });
       }
     } finally {
       setIsSending(false);
       abortControllerRef.current = null;
     }
-  }, [isSending, aiSession, messages, activeSkill, initSession, currentSessionId, saveSession, setCurrentSessionId, t]);
+  }, [isSending, aiSession, messages, activeSkill, initSession, currentSessionId, saveSession, setCurrentSessionId, sessions, t]);
+
+  const stopGeneration = useCallback(() => {
+    isAbortedRef.current = true;
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsSending(false);
+    setMessages((prev) =>
+      prev.map((msg) => (msg.isStreaming ? { ...msg, isStreaming: false } : msg))
+    );
+  }, []);
 
   const handleDeleteSession = useCallback((sessionId: string) => {
     deleteSession(sessionId);
