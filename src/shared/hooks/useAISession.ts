@@ -116,6 +116,12 @@ export function useAISession() {
                 return new Promise<IteratorResult<string>>((resolve) => {
                   resolveNext = resolve;
                 });
+              },
+              async return(): Promise<IteratorResult<string>> {
+                try {
+                  port.disconnect();
+                } catch (_) {}
+                return { value: "", done: true };
               }
             };
           }

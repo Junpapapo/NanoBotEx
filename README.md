@@ -42,7 +42,7 @@ A lightweight utility that brings a customized AI assistant directly onto your b
 - **Modern Responsive Design**: Premium dark-mode-first aesthetic with dynamic CSS skin mode (Dark/Light) and customizable theme color accents.
 - **Auto-Focus on Reply**: The text input area automatically regains focus after the AI finishes generating a response, enabling seamless continuous conversation without extra clicks.
 - **Auto Session Recovery**: If the Chrome Service Worker is unloaded due to inactivity (a known Manifest V3 limitation), the AI session is automatically re-initialized before the next message is sent, preventing silent "stuck" states.
-- **Dual-Pass Safety Guardrails**: Before any user message reaches the main AI model, it is evaluated by a dedicated, short-lived safety classifier session. Requests containing sexual, violent, illegal, hateful, or jailbreak-attempt content are blocked immediately and the user is notified with a clear message. The safety classifier is entirely separate from the main conversation session to ensure context integrity.
+- **Dual-Pass Safety Guardrails (Optional)**: Before any user message reaches the main AI model, it can be evaluated by a dedicated, short-lived safety classifier session. Requests containing sexual, violent, illegal, hateful, or jailbreak-attempt content are blocked immediately. This feature is configurable via developer flags (`ENABLE_CHAT_SAFETY` and `ENABLE_BUDDY_SAFETY` in `premium-config.ts`) and is disabled by default to maximize response speed, as the built-in Gemini Nano model already performs primary safety filtering.
 
 ## Setup Requirements
 

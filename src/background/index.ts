@@ -2,6 +2,9 @@ let activeAISession: any = null;
 let activeBuddySession: any = null; // 프라이빗 AI 버디 세션 (메인 세션과 독립)
 let activeBuddySessionPrompt: string | null = null; // 현재 캐싱된 버디 세션의 시스템 프롬프트
 let activeSafetySession: any = null; // Dual-Pass Guardrails 전용 판별 세션 (상시 유지)
+let safetyEvaluationCount = 0; // 안전성 진단 횟수 카운터
+const MAX_SAFETY_EVALUATION_LIMIT = 10; // 세션 재생성을 위한 최대 판별 횟수
+
 
 // 백그라운드 AI 지원 여부 체크 헬퍼
 async function getAIModel() {
@@ -306,6 +309,19 @@ Respond with exactly one word only:
 Do NOT explain. Do NOT add any other words. Output only "YES" or "NO".`;
 
   try {
+    // 세션이 10회 이상 누적되었을 경우 파괴 후 리셋
+    if (activeSafetySession && safetyEvaluationCount >= MAX_SAFETY_EVALUATION_LIMIT) {
+      console.log("[Guardrail] Safety session reached evaluation limit. Re-creating session to clear context history.");
+      try {
+        if (typeof activeSafetySession.destroy === "function") activeSafetySession.destroy();
+        else if (typeof activeSafetySession.close === "function") activeSafetySession.close();
+      } catch (e) {
+        console.warn("[Guardrail] Failed to destroy safety session:", e);
+      }
+      activeSafetySession = null;
+      safetyEvaluationCount = 0;
+    }
+
     // 세션이 없거나 만료된 경우에만 새로 생성 (이후 재사용)
     if (!activeSafetySession) {
       console.log("[Guardrail] Creating persistent safety session...");
@@ -315,20 +331,31 @@ Do NOT explain. Do NOT add any other words. Output only "YES" or "NO".`;
         activeSafetySession = await lm.create({ systemPrompt: SAFETY_SYSTEM_PROMPT });
       }
       console.log("[Guardrail] Safety session ready.");
+      safetyEvaluationCount = 0;
     }
 
     const EVAL_PROMPT = `User input to evaluate:\n"""\n${userInput}\n"""`;
     const result: string = await activeSafetySession.prompt(EVAL_PROMPT);
     const trimmed = result.trim().toUpperCase();
 
-    console.log(`[Guardrail] Safety evaluation result: "${trimmed}" for input: "${userInput.substring(0, 50)}..."`);
+    // 판별 성공 시 횟수 카운트 증가
+    safetyEvaluationCount++;
+
+    console.log(`[Guardrail] Safety evaluation result: "${trimmed}" for input: "${userInput.substring(0, 50)}..." (Count: ${safetyEvaluationCount})`);
 
     // YES이면 위험(unsafe), NO이면 안전
     return !trimmed.startsWith("YES");
   } catch (err) {
     console.warn("[Guardrail] Safety evaluation failed, resetting session and defaulting to safe:", err);
     // 판별 세션 오류 시 세션 초기화 후 통과 (다음 요청에서 재생성)
+    if (activeSafetySession) {
+      try {
+        if (typeof activeSafetySession.destroy === "function") activeSafetySession.destroy();
+        else if (typeof activeSafetySession.close === "function") activeSafetySession.close();
+      } catch (_) {}
+    }
     activeSafetySession = null;
+    safetyEvaluationCount = 0;
     return true;
   }
 }
@@ -336,6 +363,11 @@ Do NOT explain. Do NOT add any other words. Output only "YES" or "NO".`;
 // 스트리밍 포트 통신 수신
 chrome.runtime.onConnect.addListener((port) => {
   if (port.name.startsWith("ai-stream-")) {
+    let isDisconnected = false;
+    port.onDisconnect.addListener(() => {
+      isDisconnected = true;
+    });
+
     port.onMessage.addListener((msg) => {
       if (msg.action === "stream_prompt") {
         if (!activeAISession) {
@@ -348,22 +380,31 @@ chrome.runtime.onConnect.addListener((port) => {
           (async () => {
             try {
               for await (const chunk of stream) {
+                if (isDisconnected) break;
                 port.postMessage({ type: "chunk", chunk });
               }
-              port.postMessage({ type: "done" });
+              if (!isDisconnected) {
+                port.postMessage({ type: "done" });
+              }
             } catch (err: any) {
-              port.postMessage({ type: "error", error: err.message || String(err) });
+              if (!isDisconnected) {
+                port.postMessage({ type: "error", error: err.message || String(err) });
+              }
             }
           })();
         } else {
           // fallback to standard prompt
           activeAISession.prompt(msg.promptText)
             .then((res: string) => {
-              port.postMessage({ type: "chunk", chunk: res });
-              port.postMessage({ type: "done" });
+              if (!isDisconnected) {
+                port.postMessage({ type: "chunk", chunk: res });
+                port.postMessage({ type: "done" });
+              }
             })
             .catch((err: any) => {
-              port.postMessage({ type: "error", error: err.message || String(err) });
+              if (!isDisconnected) {
+                port.postMessage({ type: "error", error: err.message || String(err) });
+              }
             });
         }
       }
@@ -371,6 +412,11 @@ chrome.runtime.onConnect.addListener((port) => {
   }
 
   if (port.name.startsWith("buddy-stream-")) {
+    let isDisconnected = false;
+    port.onDisconnect.addListener(() => {
+      isDisconnected = true;
+    });
+
     port.onMessage.addListener((msg) => {
       if (msg.action === "stream_prompt") {
         if (!activeBuddySession) {
@@ -383,21 +429,30 @@ chrome.runtime.onConnect.addListener((port) => {
           (async () => {
             try {
               for await (const chunk of stream) {
+                if (isDisconnected) break;
                 port.postMessage({ type: "chunk", chunk });
               }
-              port.postMessage({ type: "done" });
+              if (!isDisconnected) {
+                port.postMessage({ type: "done" });
+              }
             } catch (err: any) {
-              port.postMessage({ type: "error", error: err.message || String(err) });
+              if (!isDisconnected) {
+                port.postMessage({ type: "error", error: err.message || String(err) });
+              }
             }
           })();
         } else {
           activeBuddySession.prompt(msg.promptText)
             .then((res: string) => {
-              port.postMessage({ type: "chunk", chunk: res });
-              port.postMessage({ type: "done" });
+              if (!isDisconnected) {
+                port.postMessage({ type: "chunk", chunk: res });
+                port.postMessage({ type: "done" });
+              }
             })
             .catch((err: any) => {
-              port.postMessage({ type: "error", error: err.message || String(err) });
+              if (!isDisconnected) {
+                port.postMessage({ type: "error", error: err.message || String(err) });
+              }
             });
         }
       }

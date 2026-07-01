@@ -4,6 +4,9 @@ import { useSessionHistory } from "./useSessionHistory";
 import { useAISession } from "./useAISession";
 import { ChatbotModel } from "../chatbot-model";
 import { checkSafety } from "../utils/safety-guard";
+import { ENABLE_CHAT_SAFETY } from "../../premium/premium-config";
+
+
 
 export function useChatbotSession(
   isEnabled: boolean,
@@ -369,24 +372,27 @@ export function useChatbotSession(
 
       if (currentSettings.api_mode === "local") {
         // ──────────────────────────────────────────────
-        // Dual-Pass Guardrails: 메인 AI에 전달 전 안전성 선제 판별
+        // Dual-Pass Guardrails: 메인 AI에 전달 전 안전성 선제 판별 (조건부 적용)
         // ──────────────────────────────────────────────
-        const isSafe = await checkSafety(text);
+        if (ENABLE_CHAT_SAFETY) {
+          const isSafe = await checkSafety(text);
 
-        // unsafe로 판정된 경우 즉시 차단
-        if (!isSafe) {
-          const blockText = t(
-            "guardrail.blocked",
-            "🚫 **안전 가이드라인 위반이 감지되었습니다.**\n\n해당 요청은 선정적이거나 위험한 내용을 포함하고 있어 답변을 제공할 수 없습니다.\n일반적인 질문으로 다시 시도해 주세요."
-          );
-          updateContent(blockText);
-          setMessages((prev) => {
-            const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: blockText, isStreaming: false } : m);
-            saveSession(activeSessionId!, finalMsgs, "none");
-            return finalMsgs;
-          });
-          return;
+          // unsafe로 판정된 경우 즉시 차단
+          if (!isSafe) {
+            const blockText = t(
+              "guardrail.blocked",
+              "🚫 **안전 가이드라인 위반이 감지되었습니다.**\n\n해당 요청은 선정적이거나 위험한 내용을 포함하고 있어 답변을 제공할 수 없습니다.\n일반적인 질문으로 다시 시도해 주세요."
+            );
+            updateContent(blockText);
+            setMessages((prev) => {
+              const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: blockText, isStreaming: false } : m);
+              saveSession(activeSessionId!, finalMsgs, "none");
+              return finalMsgs;
+            });
+            return;
+          }
         }
+
 
         // 백그라운드 서비스 워커의 세션 활성 여부 체크
         const isSessionActive = await new Promise<boolean>((resolve) => {
