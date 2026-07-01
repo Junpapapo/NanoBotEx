@@ -73,6 +73,10 @@ export function ChatInput({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
+      // IME 입력기(일본어 한자 변환, 한글 조합 등)가 작동 중일 때는 전송 방지
+      if (e.nativeEvent.isComposing) {
+        return;
+      }
       e.preventDefault();
       handleSend();
     }
