@@ -700,8 +700,42 @@
     },
     "sidebar": {
       "tooltips": {
-        "alarm": "Alarm Reminders"
+        "alarm": "Alarm Reminders",
+        "docViewer": "Doc Viewer"
       }
+    },
+    "docViewer": {
+      "title": "AI Doc Viewer",
+      "empty": "No documents sent to the viewer.\nClick the document icon on chatbot answers or memos!",
+      "tabPreview": "Preview",
+      "tabRaw": "Edit",
+      "tabHistory": "History",
+      "downloadMd": "Markdown",
+      "downloadHtml": "HTML",
+      "downloadTxt": "TXT",
+      "printPdf": "PDF",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "historyEmpty": "No recent document history.",
+      "historyClear": "Clear All",
+      "titlePlaceholder": "Untitled Document",
+      "saveBtn": "Save",
+      "sendShort": "To Viewer",
+      "sentShort": "Sent",
+      "clearHistoryTitle": "Clear History",
+      "clearHistoryMessage": "Are you sure you want to clear all recently viewed document history?",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "aiRefine": "AI Refine & Clean",
+      "aiRefining": "Refining...",
+      "aiNotSupported": "Local AI Unsupported",
+      "aiUndo": "Undo",
+      "aiRefineSuccess": "Refined!",
+      "aiRefineSuccessToastTitle": "✨ AI Document Refined",
+      "aiRefineSuccessToastMessage": "The title and content have been refined and organized.",
+      "saveToMemo": "Save to Memo",
+      "memoSavedToastTitle": "📝 Memo Saved",
+      "memoSavedToastMessage": "The document has been successfully saved to your Memos."
     }
   }
 }

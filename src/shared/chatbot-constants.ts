@@ -254,6 +254,82 @@ export const THEME_PALETTES: Record<string, any> = {
       avatarBorder: "border-violet-100",
       bgHeader: "bg-violet-50/90"
     }
+  },
+  beige: {
+    name: "크림 Yellow",
+    colorCode: "#fef08a",
+    dark: {
+      primary: "bg-yellow-500",
+      border: "border-yellow-500/35",
+      text: "text-yellow-400",
+      textHover: "hover:text-yellow-300",
+      bgHover: "hover:bg-yellow-500/10",
+      bgMuted: "bg-yellow-500/20",
+      shadow: "shadow-[0_0_8px_rgba(254,240,138,0.4)]",
+      gradient: "from-yellow-500 to-yellow-400",
+      focusBorder: "focus:border-yellow-500/80",
+      glow: "shadow-[0_0_20px_rgba(254,240,138,0.15)]",
+      leftPanelGlow: "shadow-[0_0_40px_rgba(254,240,138,0.25)] border-yellow-500/35",
+      bookmarksHover: "hover:border-yellow-500/50 hover:bg-yellow-500/10",
+      scrollGlow: "bg-[#fef08a]/20 text-[#fef9c3] border-[#fef08a]/40",
+      avatarBorder: "border-yellow-400/20",
+      bgHeader: "bg-[#14140c]/95"
+    },
+    light: {
+      primary: "bg-yellow-500",
+      border: "border-yellow-200",
+      text: "text-yellow-650",
+      textHover: "hover:text-yellow-700",
+      bgHover: "hover:bg-yellow-50/80",
+      bgMuted: "bg-yellow-50",
+      shadow: "shadow-[0_2px_8px_rgba(254,240,138,0.15)]",
+      gradient: "from-yellow-500 to-yellow-600",
+      focusBorder: "focus:border-yellow-500/80",
+      glow: "shadow-[0_4px_12px_rgba(254,240,138,0.06)]",
+      leftPanelGlow: "shadow-[0_4px_25px_rgba(254,240,138,0.08)] border-yellow-100",
+      bookmarksHover: "hover:border-yellow-400 hover:bg-yellow-50/50",
+      scrollGlow: "bg-[#fef08a]/10 text-[#854d0e] border-[#fef08a]/20",
+      avatarBorder: "border-yellow-200",
+      bgHeader: "bg-yellow-50/90"
+    }
+  },
+  charcoal: {
+    name: "스틸 Charcoal",
+    colorCode: "#64748b",
+    dark: {
+      primary: "bg-slate-600",
+      border: "border-slate-500/35",
+      text: "text-slate-400",
+      textHover: "hover:text-slate-350",
+      bgHover: "hover:bg-slate-500/10",
+      bgMuted: "bg-slate-500/20",
+      shadow: "shadow-[0_0_8px_rgba(100,116,139,0.4)]",
+      gradient: "from-slate-600 to-slate-500",
+      focusBorder: "focus:border-slate-500/80",
+      glow: "shadow-[0_0_20px_rgba(100,116,139,0.15)]",
+      leftPanelGlow: "shadow-[0_0_40px_rgba(100,116,139,0.25)] border-slate-500/35",
+      bookmarksHover: "hover:border-slate-500/50 hover:bg-slate-500/10",
+      scrollGlow: "bg-[#64748b]/20 text-[#cbd5e1] border-[#64748b]/40",
+      avatarBorder: "border-slate-400/20",
+      bgHeader: "bg-[#0f1115]/95"
+    },
+    light: {
+      primary: "bg-slate-600",
+      border: "border-slate-200",
+      text: "text-slate-600",
+      textHover: "hover:text-slate-700",
+      bgHover: "hover:bg-slate-50/80",
+      bgMuted: "bg-slate-50",
+      shadow: "shadow-[0_2px_8px_rgba(100,116,139,0.15)]",
+      gradient: "from-slate-600 to-slate-500",
+      focusBorder: "focus:border-slate-400/80",
+      glow: "shadow-[0_4px_12px_rgba(100,116,139,0.06)]",
+      leftPanelGlow: "shadow-[0_4px_25px_rgba(100,116,139,0.08)] border-slate-100",
+      bookmarksHover: "hover:border-slate-300 hover:bg-slate-50/50",
+      scrollGlow: "bg-[#64748b]/10 text-[#334155] border-[#64748b]/20",
+      avatarBorder: "border-slate-100",
+      bgHeader: "bg-slate-100/90"
+    }
   }
 };
 

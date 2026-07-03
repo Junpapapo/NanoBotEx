@@ -47,6 +47,7 @@ export function useChatbotSession(
   const isSystemPromptApplied = useRef<boolean>(false);
   const lastMessageTimeRef = useRef<number>(0);
   const lastLoadedSessionIdRef = useRef<string | null>(null);
+  const isInitialMountRef = useRef<boolean>(true);
 
 
 
@@ -198,14 +199,34 @@ export function useChatbotSession(
       if (lastLoadedSessionIdRef.current !== currentSessionId) {
         const session = sessions.find((s) => s.id === currentSessionId);
         if (session) {
+          // 최초 앱 기동(마운트) 시 복원할 세션의 타임아웃 검사 (단발성 뺄셈 계산)
+          if (isInitialMountRef.current) {
+            isInitialMountRef.current = false;
+            const timeoutMinutes = settingsRef.current.nano_session_timeout_minutes ?? 60;
+            if (timeoutMinutes > 0 && session.messages.length > 0) {
+              const elapsedMs = Date.now() - session.timestamp;
+              const elapsedMinutes = elapsedMs / 1000 / 60;
+              if (elapsedMinutes >= timeoutMinutes) {
+                console.log(`[Session Timeout on Mount] Session ${session.id} expired. Starting new session.`);
+                setCurrentSessionId(null);
+                setMessages([]);
+                lastLoadedSessionIdRef.current = null;
+                return;
+              }
+            }
+          }
+
           setMessages(session.messages);
           lastLoadedSessionIdRef.current = currentSessionId;
         }
       }
     } else if (!currentSessionId) {
       lastLoadedSessionIdRef.current = null;
+      if (isInitialMountRef.current) {
+        isInitialMountRef.current = false;
+      }
     }
-  }, [currentSessionId, sessions]);
+  }, [currentSessionId, sessions, setCurrentSessionId]);
 
   // 스킬 변경 감지 메시지 추가
   useEffect(() => {

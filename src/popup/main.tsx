@@ -71,7 +71,7 @@ function PopupContent({
   const [testStatus, setTestStatus] = useState<
     "idle" | "testing" | "success" | "fail"
   >("idle");
-  const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
   const [showShieldModal, setShowShieldModal] = useState<boolean>(false);
 
   const handleOpenHelp = () => {
@@ -255,6 +255,157 @@ function PopupContent({
           </div>
         </div>
       )}
+
+      {/* Settings 모달 오버레이 */}
+      {showSettingsModal && (
+        <div
+          className="absolute inset-0 z-[200] flex items-center justify-center rounded-xl"
+          style={{
+            backdropFilter: "blur(6px)",
+            backgroundColor: "rgba(0,0,0,0.65)",
+          }}
+          onClick={() => setShowSettingsModal(false)}
+        >
+          <div
+            className={`relative mx-4 w-full max-w-[290px] rounded-2xl border ${theme.borderMuted} ${theme.bgSub} p-5 flex flex-col gap-4 shadow-2xl animate-in zoom-in-95 duration-200`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 헤더 */}
+            <div className="flex items-center justify-between">
+              <h2 className={`text-xs font-black tracking-wider uppercase flex items-center gap-2 ${theme.textMain}`}>
+                <SettingsIcon size={14} className={theme.textMain} />
+                {t("popup.settings.title", "Preferences")}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowSettingsModal(false)}
+                className={`w-6 h-6 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:${theme.bgHover} transition cursor-pointer text-xs font-bold`}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* 바디 (설정 항목들) */}
+            <div className="flex flex-col gap-3.5">
+              {/* 1. 언어 선택 */}
+              <div className="flex items-center justify-between text-xs py-0.5">
+                <span className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}>
+                  {t("settings.language", "언어")}
+                </span>
+                <select
+                  value={settings.nano_locale || "ko"}
+                  onChange={(e) => updateSettingField("nano_locale", e.target.value)}
+                  className={`text-[10px] font-extrabold ${isLight ? "bg-white border-slate-200 text-slate-700" : "bg-slate-950 border border-white/[0.08] text-slate-200"} rounded-lg px-2.5 py-1.5 outline-none cursor-pointer hover:border-indigo-500/50 transition-colors`}
+                >
+                  <option value="ko">한국어</option>
+                  <option value="en">English</option>
+                  <option value="ja">日本語</option>
+                </select>
+              </div>
+
+              {/* 2. 화면 스타일 모드 */}
+              <div className="flex items-center justify-between text-xs py-0.5">
+                <span className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}>
+                  {t("panel.settings.skinMode", "화면 모드")}
+                </span>
+                <div className={`flex ${isLight ? "bg-slate-100 border-slate-200" : "bg-slate-950 border border-white/[0.08]"} p-1 rounded-2xl border select-none`}>
+                  <button
+                    type="button"
+                    onClick={() => updateSettingField("nano_skin_mode", "dark")}
+                    className={`px-4.5 py-2.5 rounded-xl text-[11px] font-extrabold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      settings.nano_skin_mode !== "light"
+                        ? `${theme.primary} text-white shadow-md scale-[1.02]`
+                        : `${theme.textSub} hover:${theme.textMain}`
+                    }`}
+                  >
+                    <Moon size={13} />
+                    Dark
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updateSettingField("nano_skin_mode", "light")}
+                    className={`px-4.5 py-2.5 rounded-xl text-[11px] font-extrabold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      settings.nano_skin_mode === "light"
+                        ? `${theme.primary} text-white shadow-md scale-[1.02]`
+                        : `${theme.textSub} hover:${theme.textMain}`
+                    }`}
+                  >
+                    <Sun size={13} />
+                    Light
+                  </button>
+                </div>
+              </div>
+
+              {/* 3. 테마 컬러 칩 */}
+              <div className="flex flex-col gap-1.5 text-xs py-0.5">
+                <span className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}>
+                  {t("panel.settings.theme", "테마 설정")}
+                </span>
+                <div className="flex items-center gap-1.5 justify-between">
+                  {Object.entries(THEME_PALETTES).map(([key, val]) => {
+                    const isSelected = settings.nano_theme_color === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => updateSettingField("nano_theme_color", key)}
+                        className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer hover:scale-110 border ${
+                          isSelected
+                            ? isLight
+                              ? "border-slate-800 bg-slate-100 shadow-md"
+                              : "border-white bg-slate-900 shadow-md"
+                            : isLight
+                              ? "border-slate-200 bg-white hover:border-slate-350"
+                              : "border-white/[0.08] bg-slate-950 hover:border-white/[0.2]"
+                        }`}
+                        title={val.name}
+                      >
+                        <span
+                          className="w-4.5 h-4.5 rounded-md block shadow-inner"
+                          style={{ backgroundColor: val.colorCode }}
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* 구분선 */}
+            <div className={`border-t ${isLight ? "border-slate-100" : "border-white/[0.04]"} my-1`} />
+
+            {/* 피드백 링크들 */}
+            <div className="flex flex-col gap-2">
+              <a
+                href="https://github.com/Junpapapo/NanoBotEx/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center justify-between px-3 py-2 rounded-xl text-[10px] font-bold ${theme.textSub} hover:${theme.textMain} hover:${theme.bgHover} transition-all duration-200 border ${theme.borderMuted} hover:translate-x-0.5`}
+              >
+                <div className="flex items-center gap-2">
+                  <Bug size={11} className="text-rose-400" />
+                  <span>Report Bug / Feature Request</span>
+                </div>
+                <ExternalLink size={9} className="opacity-50" />
+              </a>
+              <a
+                href="https://github.com/Junpapapo/NanoBotEx/discussions"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center justify-between px-3 py-2 rounded-xl text-[10px] font-bold ${theme.textSub} hover:${theme.textMain} hover:${theme.bgHover} transition-all duration-200 border ${theme.borderMuted} hover:translate-x-0.5`}
+              >
+                <div className="flex items-center gap-2">
+                  <MessageSquare size={11} className="text-indigo-400" />
+                  <span>Quick Feedback</span>
+                </div>
+                <ExternalLink size={9} className="opacity-50" />
+              </a>
+            </div>
+
+
+          </div>
+        </div>
+      )}
       {/* 팝업 상단 타이틀 */}
       <div
         className={`flex items-center justify-between pb-3 border-b ${theme.borderMuted} mb-3 relative`}
@@ -327,56 +478,15 @@ function PopupContent({
             <HelpCircle size={13} />
           </button>
 
-          {/* 설정 메뉴 아이콘 및 드롭다운 */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowMenu(!showMenu)}
-              className={`p-1 rounded hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer flex items-center justify-center`}
-              title="Support Options"
-            >
-              <SettingsIcon size={13} />
-            </button>
-
-            {showMenu && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setShowMenu(false)}
-                />
-                <div
-                  className={`absolute right-0 mt-1.5 w-[210px] rounded-lg border ${theme.borderMuted} ${theme.bgSub} py-1 shadow-2xl z-50 animate-in fade-in slide-in-from-top-1 duration-150`}
-                >
-                  <a
-                    href="https://github.com/Junpapapo/NanoBotEx/issues"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setShowMenu(false)}
-                    className={`flex items-center justify-between px-3 py-2 text-[10.5px] font-bold ${theme.textSub} hover:${theme.textMain} hover:${theme.bgHover} transition-colors`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Bug size={12} className="text-rose-400" />
-                      <span>Report Bug / Feature Request</span>
-                    </div>
-                    <ExternalLink size={10} className="opacity-50" />
-                  </a>
-                  <a
-                    href="https://github.com/Junpapapo/NanoBotEx/discussions"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setShowMenu(false)}
-                    className={`flex items-center justify-between px-3 py-2 text-[10.5px] font-bold ${theme.textSub} hover:${theme.textMain} hover:${theme.bgHover} transition-colors border-t ${isLight ? "border-slate-100" : "border-white/[0.04]"}`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <MessageSquare size={12} className="text-indigo-400" />
-                      <span>Quick Feedback</span>
-                    </div>
-                    <ExternalLink size={10} className="opacity-50" />
-                  </a>
-                </div>
-              </>
-            )}
-          </div>
+          {/* 설정 모달 호출 아이콘 */}
+          <button
+            type="button"
+            onClick={() => setShowSettingsModal(true)}
+            className={`p-1 rounded hover:${theme.bgHover} ${theme.textSub} hover:${theme.textMain} transition cursor-pointer flex items-center justify-center`}
+            title="Settings"
+          >
+            <SettingsIcon size={13} />
+          </button>
         </div>
       </div>
 
@@ -500,99 +610,7 @@ function PopupContent({
         </button>
       </div>
 
-      {/* 하단 Preferences 세팅 슬롯 */}
-      <div className="flex flex-col gap-2.5 pt-2">
-        {/* 1. 언어 선택 */}
-        <div className="flex items-center justify-between text-xs">
-          <span
-            className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}
-          >
-            {t("settings.language", "언어")}
-          </span>
-          <select
-            value={settings.nano_locale || "ko"}
-            onChange={(e) => updateSettingField("nano_locale", e.target.value)}
-            className={`text-[10px] font-extrabold ${isLight ? "bg-white border-slate-200 text-slate-700" : "bg-slate-950 border border-white/[0.08] text-slate-200"} rounded-lg px-2.5 py-1.5 outline-none cursor-pointer`}
-          >
-            <option value="ko">한국어</option>
-            <option value="en">English</option>
-            <option value="ja">日本語</option>
-          </select>
-        </div>
 
-        {/* 2. 화면 스타일 모드 (다크/라이트) */}
-        <div className="flex items-center justify-between text-xs">
-          <span
-            className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}
-          >
-            {t("panel.settings.skinMode", "화면 모드")}
-          </span>
-          <div
-            className={`flex ${isLight ? "bg-slate-100 border-slate-200" : "bg-slate-950 border border-white/[0.08]"} p-0.5 rounded-lg border select-none`}
-          >
-            <button
-              type="button"
-              onClick={() => updateSettingField("nano_skin_mode", "dark")}
-              className={`px-2.5 py-1 rounded-md text-[9px] font-bold flex items-center gap-1 transition cursor-pointer ${
-                settings.nano_skin_mode !== "light"
-                  ? `${theme.primary} text-white shadow-sm`
-                  : `${theme.textSub} hover:${theme.textMain}`
-              }`}
-            >
-              <Moon size={9.5} />
-              Dark
-            </button>
-            <button
-              type="button"
-              onClick={() => updateSettingField("nano_skin_mode", "light")}
-              className={`px-2.5 py-1 rounded-md text-[9px] font-bold flex items-center gap-1 transition cursor-pointer ${
-                settings.nano_skin_mode === "light"
-                  ? `${theme.primary} text-white shadow-sm`
-                  : `${theme.textSub} hover:${theme.textMain}`
-              }`}
-            >
-              <Sun size={9.5} />
-              Light
-            </button>
-          </div>
-        </div>
-
-        {/* 3. 테마 컬러 칩 */}
-        <div className="flex items-center justify-between text-xs">
-          <span
-            className={`text-[10px] font-bold ${theme.textSub} uppercase tracking-wider select-none`}
-          >
-            {t("panel.settings.theme", "테마 설정")}
-          </span>
-          <div className="flex items-center gap-2">
-            {Object.entries(THEME_PALETTES).map(([key, val]) => {
-              const isSelected = settings.nano_theme_color === key;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => updateSettingField("nano_theme_color", key)}
-                  className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer hover:scale-110 border ${
-                    isSelected
-                      ? isLight
-                        ? "border-slate-800 bg-slate-100 shadow-md"
-                        : "border-white bg-slate-900 shadow-md"
-                      : isLight
-                        ? "border-slate-200 bg-white hover:border-slate-350"
-                        : "border-white/[0.08] bg-slate-950 hover:border-white/[0.2]"
-                  }`}
-                  title={val.name}
-                >
-                  <span
-                    className="w-4.5 h-4.5 rounded-md block shadow-inner"
-                    style={{ backgroundColor: val.colorCode }}
-                  />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

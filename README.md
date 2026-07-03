@@ -31,6 +31,15 @@ A lightweight utility that brings a customized AI assistant directly onto your b
   - Set schedule reminders directly from memo panels or AI chat conversations with a ⏰ icon.
   - Features system OS notifications via background service worker alarms, paired with interactive in-app toast alerts when the sidepanel is active.
   - Dedicated alarm management subpanel for listing, toggling, and deleting scheduled alarms.
+- **AI Document Viewer & Editor**:
+  - **On-Device Refinement**: Supplement lacking details and polish formatting using local Gemini Nano, with automatic layout/context structuring.
+  - **Interactive Markdown & HTML Preview**: Seamlessly render standard markdown formatting, custom styling, tables, blockquotes, and HTML snippets.
+  - **Shared Editor Sync**: Full double-sided state sync preventing content loss or reverting upon layout re-rendering.
+  - **Multi-Format Export**: One-click download as Markdown (.md), HTML (.html), Text (.txt), or print to PDF with customizable font sizing (S / M / L).
+  - **Integrated History Bar**: Stores up to 15 refined documents locally for instant recovery.
+- **Upgraded Memo Sync**:
+  - **Dual-Mode Editor (View/Edit)**: Read memos as clean parsed markdown by default. Click the memo body to instantly trigger interactive editing with auto-focus, and auto-restore to the visual preview on blur.
+  - **Instant Save-to-Memo**: Relays active documents straight to your memo vault with one-click synchronization.
 - **Active Browser Integration**:
   - **Inline Selection Drag & Action**: Drag text on any web page to evoke a floating Quick Action tooltip (Summarize/Translate) which automatically triggers processing.
   - **1-Click Active Tab Summarization**: Click the document icon in the chat header to scrape and summarize the active tab in 3 lines.

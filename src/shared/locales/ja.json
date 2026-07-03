@@ -707,8 +707,42 @@
     },
     "sidebar": {
       "tooltips": {
-        "alarm": "アラーム通知"
+        "alarm": "アラーム通知",
+        "docViewer": "文書ビューアー"
       }
+    },
+    "docViewer": {
+      "title": "AI 文書ビューアー",
+      "empty": "ビューアーに送信された文書がありません。\nチャットボットの回答やメモの文書アイコンを押してみてください！",
+      "tabPreview": "プレビュー",
+      "tabRaw": "テキスト編集",
+      "tabHistory": "最近の文書",
+      "downloadMd": "Markdown",
+      "downloadHtml": "HTML",
+      "downloadTxt": "TXT",
+      "printPdf": "PDF",
+      "copy": "コピー",
+      "copied": "コピーしました！",
+      "historyEmpty": "最近の閲覧履歴がありません。",
+      "historyClear": "すべて削除",
+      "titlePlaceholder": "無題の文書",
+      "saveBtn": "保存",
+      "sendShort": "ビューアー送付",
+      "sentShort": "送信完了",
+      "clearHistoryTitle": "履歴の全削除",
+      "clearHistoryMessage": "最近閲覧したドキュメント履歴をすべて削除しますか？",
+      "delete": "削除",
+      "cancel": "キャンセル",
+      "aiRefine": "AI編集・整理",
+      "aiRefining": "整理中...",
+      "aiNotSupported": "ローカルAI未対応",
+      "aiUndo": "元に戻す",
+      "aiRefineSuccess": "整理完了！",
+      "aiRefineSuccessToastTitle": "✨ AI文書の整理完了",
+      "aiRefineSuccessToastMessage": "提供されたタイトルと本文をきれいに整理しました。",
+      "saveToMemo": "メモ保存",
+      "memoSavedToastTitle": "📝 メモ保存完了",
+      "memoSavedToastMessage": "ドキュメントの内容がメモ帳に新しいメモとして保存されました。"
     }
   }
 }

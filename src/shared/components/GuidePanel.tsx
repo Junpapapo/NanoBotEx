@@ -24,7 +24,7 @@ export function GuidePanel({
 
   const tabs = isBuddy
     ? (["buddy_reset", "buddy_crypto", "buddy_personality"] as const)
-    : (["flags", "api", "check", "api_settings"] as const);
+    : (["flags", "api", "check", "api_settings", "doc_viewer"] as const);
 
   return (
     <div className="flex flex-col h-full bg-transparent text-inherit p-4 overflow-y-auto custom-scrollbar">
@@ -62,11 +62,13 @@ export function GuidePanel({
                   ? "🔍 Local Check"
                   : tab === "api_settings"
                     ? "🌐 External API"
-                    : tab === "buddy_reset"
-                      ? "🗑️ Reset Chats & Memories"
-                      : tab === "buddy_crypto"
-                        ? "🔒 AES-256 Encryption"
-                        : "🎨 Personality Config"}
+                    : tab === "doc_viewer"
+                      ? "📄 AI Doc Viewer"
+                      : tab === "buddy_reset"
+                        ? "🗑️ Reset Chats & Memories"
+                        : tab === "buddy_crypto"
+                          ? "🔒 AES-256 Encryption"
+                          : "🎨 Personality Config"}
           </button>
         ))}
       </div>
@@ -187,6 +189,36 @@ console.log(response);`}
               <p>
                 3. All requests are sent directly from your browser, operating
                 securely.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isBuddy && activeTab === "doc_viewer" && (
+          <div className="space-y-3">
+            <p className={`font-semibold ${theme.textMain}`}>
+              📄 AI Document Viewer & Editor Guide
+            </p>
+            <p>
+              Manage, edit, and organize generated or saved documents with powerful on-device assistance.
+            </p>
+            <div
+              className={`p-3 ${theme.bgInput} rounded-lg border ${theme.borderMuted} space-y-2`}
+            >
+              <p>
+                • <strong>Send to Viewer (👁️)</strong>: Click the eye icon next to chatbot answers or saved memos to load them into the Document Viewer.
+              </p>
+              <p>
+                • <strong>AI Refine & Clean (✨)</strong>: Click the top-right Sparkles button. The local AI will analyze the text, generate a fresh title, and format the markdown layout automatically.
+              </p>
+              <p>
+                • <strong>Save to Memo (📝)</strong>: Quickly save your refined documents straight to the Memo Panel as a new record.
+              </p>
+              <p>
+                • <strong>Export Options</strong>: One-click export to Markdown (.md), HTML (.html), Text (.txt), or print to PDF with customizable font sizing (S / M / L).
+              </p>
+              <p>
+                • <strong>Memo Dual-Mode</strong>: Memos are displayed in clean markdown preview mode by default. Click on the text to edit, and click outside (blur) to instantly return to preview mode.
               </p>
             </div>
           </div>

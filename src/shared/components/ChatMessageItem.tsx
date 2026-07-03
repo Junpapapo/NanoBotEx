@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import { getThemePalette } from "../chatbot-constants";
-import { Check, CheckSquare, FileText, Globe, Bell } from "lucide-react";
+import { Check, CheckSquare, FileText, Globe, Bell, Eye } from "lucide-react";
 
 interface ChatMessageItemProps {
   message: Message;
@@ -19,9 +19,10 @@ interface ChatMessageItemProps {
   quickMenuItems?: QuickMenuItem[];
   onConfirmAction?: (confirmed: boolean) => void;
   onOpenAlarm?: (title: string) => void;
+  onSendToViewer?: (title: string, content: string) => void;
 }
 
-export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t, quickMenuItems, onConfirmAction, onOpenAlarm }: ChatMessageItemProps) {
+export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t, quickMenuItems, onConfirmAction, onOpenAlarm, onSendToViewer }: ChatMessageItemProps) {
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
   const isUser = message.role === "user";
   const isLight = settings.nano_skin_mode === "light";
@@ -231,6 +232,24 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
                     title="이 내용을 알람으로 예약"
                   >
                     <Bell size={10} />
+                  </button>
+                )}
+                {onSendToViewer && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const snippet = cleanContent.trim();
+                      const title = snippet.split("\n")[0].replace(/[#*`_-]/g, "").trim().substring(0, 50) || "AI 답변 문서";
+                      onSendToViewer(title, cleanContent);
+                    }}
+                    className={`p-0.5 rounded transition-all cursor-pointer flex items-center justify-center ${
+                      isLight
+                        ? "hover:bg-slate-200/60 text-slate-400 hover:text-slate-700"
+                        : "hover:bg-white/10 text-slate-400 hover:text-white"
+                    }`}
+                    title={t ? t("docViewer.sendShort", "뷰어 전송") : "뷰어 전송"}
+                  >
+                    <Eye size={10} />
                   </button>
                 )}
               </div>

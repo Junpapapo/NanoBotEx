@@ -20,6 +20,7 @@ interface ChatMessageListProps {
   onConfirmAction?: (confirmed: boolean) => void;
   buddySettings?: BuddySettings;
   onOpenAlarm?: (title: string) => void;
+  onSendToViewer?: (title: string, content: string) => void;
 }
 
 export function ChatMessageList({
@@ -34,7 +35,8 @@ export function ChatMessageList({
   quickMenuItems,
   onConfirmAction,
   buddySettings,
-  onOpenAlarm
+  onOpenAlarm,
+  onSendToViewer
 }: ChatMessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
@@ -169,6 +171,7 @@ export function ChatMessageList({
                 quickMenuItems={quickMenuItems}
                 onConfirmAction={onConfirmAction}
                 onOpenAlarm={onOpenAlarm}
+                onSendToViewer={onSendToViewer}
               />
             </motion.div>
           ))}

@@ -103,7 +103,7 @@ export function AlarmPanel({
   const historyAlarms = alarms.filter(a => a.triggered);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden text-xs pl-5 pr-4 pt-7 pb-4">
+    <div className="flex flex-col h-full overflow-hidden text-xs pl-4 pr-3.5 pt-7 pb-4">
       {/* 타이틀 영역 - absolute 닫기 단추와 겹치지 않게 여백 조정 */}
       <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] shrink-0 mb-3 pr-8">
         <div className="flex items-center gap-1.5">
@@ -139,7 +139,7 @@ export function AlarmPanel({
                 className="w-full px-2.5 py-1.5 bg-slate-900 border border-white/10 rounded-md text-white placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500"
               />
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-2">
               <input
                 type="date"
                 lang={locale}
@@ -151,7 +151,7 @@ export function AlarmPanel({
                   } catch (err) {}
                 }}
                 style={{ colorScheme: "dark" }}
-                className="w-full px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[9.5px] hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
+                className="flex-1 min-w-[110px] px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[9.5px] hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
               />
               <input
                 type="time"
@@ -164,7 +164,7 @@ export function AlarmPanel({
                   } catch (err) {}
                 }}
                 style={{ colorScheme: "dark" }}
-                className="w-full px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[9.5px] hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
+                className="flex-1 min-w-[90px] px-2 py-1 bg-slate-900 border border-white/10 rounded-md text-white text-[9.5px] hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer transition-all"
               />
             </div>
             {errorMsg && <p className="text-[10px] text-rose-400">{errorMsg}</p>}

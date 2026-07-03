@@ -129,6 +129,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return;
   }
 
+  if (message.action === "refine_document_ai") {
+    refineDocumentAI(message.systemPrompt, message.promptText)
+      .then((res) => sendResponse({ success: true, result: res }))
+      .catch((err) => sendResponse({ success: false, error: err.message || String(err) }));
+    return true;
+  }
+
   if (message.action === "evaluate_safety") {
     evaluateInputSafety(message.userInput)
       .then((isSafe) => sendResponse({ success: true, safe: isSafe }))
@@ -156,6 +163,31 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 });
+
+async function refineDocumentAI(systemPrompt: string, promptText: string) {
+  const lm = await getAIModel();
+  if (!lm) throw new Error("Local AI is not available in background context");
+
+  let tempSession: any = null;
+  try {
+    const opts: any = {};
+    if (systemPrompt) {
+      opts.systemPrompt = systemPrompt;
+      opts.systemInstruction = systemPrompt;
+    }
+    tempSession = await lm.create(opts);
+    const result = await tempSession.prompt(promptText);
+    return result;
+  } finally {
+    if (tempSession) {
+      try {
+        tempSession.destroy();
+      } catch (e) {
+        console.warn("Failed to destroy temporary session:", e);
+      }
+    }
+  }
+}
 
 async function initBackgroundAISession(systemPrompt?: string, temperature?: number) {
   destroyBackgroundSession();

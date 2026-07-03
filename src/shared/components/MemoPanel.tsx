@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from "react";
-import { Plus, Trash2, CheckSquare, ChevronLeft, ChevronRight, CalendarDays, Bell } from "lucide-react";
+import React, { useState, useMemo, useEffect } from "react";
+import { Plus, Trash2, CheckSquare, ChevronLeft, ChevronRight, CalendarDays, Bell, Eye } from "lucide-react";
 import { useChromeStorage } from "../hooks/useChromeStorage";
+import { MarkdownViewer } from "./tools/MarkdownViewer";
 
 interface Note {
   id: string;
@@ -177,8 +178,11 @@ function MiniCalendar({ selectedDate, onSelectDate, todoDates, doneDates, theme,
   );
 }
 
-export function MemoPanel({ locale, t, theme, onOpenAlarm }: { locale: string; t: any; theme: any; onOpenAlarm?: (title: string) => void }) {
+export function MemoPanel({ locale, t, theme, onOpenAlarm, onSendToViewer }: { locale: string; t: any; theme: any; onOpenAlarm?: (title: string) => void; onSendToViewer?: (title: string, content: string) => void }) {
   const [activeTab, setActiveTab] = useState<"memo" | "todo">("memo");
+
+  // 편집 모드 상태
+  const [isEditing, setIsEditing] = useState(false);
 
   // 메모 상태
   const [notes, setNotes] = useChromeStorage<Note[]>("nanobot-tool-notes", [
@@ -190,6 +194,11 @@ export function MemoPanel({ locale, t, theme, onOpenAlarm }: { locale: string; t
     }
   ]);
   const [activeNoteId, setActiveNoteId] = useChromeStorage<string | null>("nanobot-tool-active-note-id", "note-1");
+
+  // 활성 메모가 바뀌면 항상 미리보기(뷰어) 모드로 시작
+  useEffect(() => {
+    setIsEditing(false);
+  }, [activeNoteId]);
 
   // To-Do 상태
   const [todos, setTodos] = useChromeStorage<TodoItem[]>("nanobot-tool-todos", []);
@@ -386,6 +395,15 @@ export function MemoPanel({ locale, t, theme, onOpenAlarm }: { locale: string; t
                         <Bell className="h-3 w-3" />
                       </button>
                     )}
+                    {onSendToViewer && activeNote && (
+                      <button
+                        onClick={() => onSendToViewer(activeNote.title || t("tools.memo.unnamedMemo", "기본 메모"), activeNote.content)}
+                        className={`p-1 rounded ${theme.bgInput} hover:bg-indigo-500/20 text-slate-400 hover:text-indigo-400 border ${theme.borderMuted} transition cursor-pointer`}
+                        title={t("docViewer.sendShort", "뷰어 전송")}
+                      >
+                        <Eye className="h-3 w-3" />
+                      </button>
+                    )}
                     <button
                       onClick={handleDeleteNote}
                       disabled={notes.length <= 1}
@@ -395,12 +413,29 @@ export function MemoPanel({ locale, t, theme, onOpenAlarm }: { locale: string; t
                       <Trash2 className="h-3 w-3" />
                     </button>
                   </div>
-                  <textarea
-                    value={activeNote.content}
-                    onChange={e => handleUpdateContent(e.target.value)}
-                    className={`flex-1 bg-transparent resize-none focus:outline-none text-xs leading-relaxed ${theme.textMain} custom-scrollbar`}
-                    placeholder={t("tools.memo.memoContentPlaceholder", "여기에 메모를 입력하세요...")}
-                  />
+                  {isEditing ? (
+                    <textarea
+                      value={activeNote.content}
+                      onChange={e => handleUpdateContent(e.target.value)}
+                      onBlur={() => setIsEditing(false)}
+                      autoFocus
+                      className={`flex-1 bg-transparent resize-none focus:outline-none text-xs leading-relaxed ${theme.textMain} custom-scrollbar`}
+                      placeholder={t("tools.memo.memoContentPlaceholder", "여기에 메모를 입력하세요...")}
+                    />
+                  ) : (
+                    <div
+                      onClick={() => setIsEditing(true)}
+                      className={`flex-1 overflow-y-auto custom-scrollbar prose prose-sm dark:prose-invert max-w-none text-xs break-all selection:bg-indigo-500/30 cursor-pointer hover:bg-slate-500/5 p-2 rounded transition-colors`}
+                    >
+                      {activeNote.content ? (
+                        <MarkdownViewer content={activeNote.content} />
+                      ) : (
+                        <span className="text-slate-500 italic">
+                          {t("tools.memo.clickToEdit", "클릭하여 메모를 작성하세요...")}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className={`flex-1 flex items-center justify-center text-xs ${theme.textSub}`}>

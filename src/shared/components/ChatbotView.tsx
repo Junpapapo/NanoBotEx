@@ -22,6 +22,7 @@ import { DiagnosticsPanel } from "./tools/DiagnosticsPanel";
 import { BotSettingsPanel } from "./tools/BotSettingsPanel";
 import { SettingsPanel } from "./tools/SettingsPanel";
 import { ALL_AVATARS } from "./tools/settings-panel/avatar-list";
+import { DocViewerPanel } from "./tools/DocViewerPanel";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Maximize2, Minimize2 } from "lucide-react";
 import { ENABLE_PREMIUM } from "../../premium/premium-config";
@@ -85,6 +86,14 @@ export function ChatbotView({
 
   const [activePanel, setActivePanel] = useState<PanelType>("none");
   const [activeMode, setActiveMode] = useState<"bot" | "buddy">("bot");
+
+  // 문서 뷰어 활성 문서 상태
+  const [activeDoc, setActiveDoc] = useState<{ title: string; content: string } | null>(null);
+
+  const handleSendToViewer = (title: string, content: string) => {
+    setActiveDoc({ title, content });
+    setActivePanel("doc-viewer");
+  };
 
   const [buddySettings] = useChromeStorage<BuddySettings>(
     "buddy_settings",
@@ -684,6 +693,16 @@ export function ChatbotView({
               t={t}
               theme={theme}
               onOpenAlarm={(title) => handleOpenAlarmDialog(title, "memo")}
+              onSendToViewer={handleSendToViewer}
+            />
+          )}
+          {activePanel === "doc-viewer" && (
+            <DocViewerPanel
+              activeDoc={activeDoc}
+              setActiveDoc={setActiveDoc}
+              theme={theme}
+              t={t}
+              locale={locale}
             />
           )}
           {activePanel === "alarm" && (
@@ -860,6 +879,7 @@ export function ChatbotView({
                 setActivePanel("guide");
               }}
               onOpenAlarm={(title) => handleOpenAlarmDialog(title, "chat")}
+              onSendToViewer={handleSendToViewer}
               t={t}
             />
 

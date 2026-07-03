@@ -700,8 +700,42 @@
     },
     "sidebar": {
       "tooltips": {
-        "alarm": "알람 알리미"
+        "alarm": "알람 알리미",
+        "docViewer": "문서 뷰어"
       }
+    },
+    "docViewer": {
+      "title": "AI 문서 뷰어",
+      "empty": "뷰어로 전송된 문서가 없습니다.\n챗봇 답변이나 메모장의 문서 아이콘을 눌러보세요!",
+      "tabPreview": "미리보기",
+      "tabRaw": "텍스트 편집",
+      "tabHistory": "최근 문서",
+      "downloadMd": "Markdown",
+      "downloadHtml": "HTML",
+      "downloadTxt": "TXT",
+      "printPdf": "PDF",
+      "copy": "복사",
+      "copied": "복사 완료!",
+      "historyEmpty": "최근 열람 기록이 없습니다.",
+      "historyClear": "전체 삭제",
+      "titlePlaceholder": "제목 없는 문서",
+      "saveBtn": "저장",
+      "sendShort": "뷰어 전송",
+      "sentShort": "전송 완료",
+      "clearHistoryTitle": "히스토리 전체 삭제",
+      "clearHistoryMessage": "최근 열람 문서 히스토리를 모두 삭제하시겠습니까?",
+      "delete": "삭제",
+      "cancel": "취소",
+      "aiRefine": "AI 편집 및 정리",
+      "aiRefining": "정리 중...",
+      "aiNotSupported": "로컬 AI 미지원",
+      "aiUndo": "되돌리기",
+      "aiRefineSuccess": "정리 완료!",
+      "aiRefineSuccessToastTitle": "✨ AI 문서 편집 완료",
+      "aiRefineSuccessToastMessage": "제공된 타이틀과 본문을 깔끔하게 정리했습니다.",
+      "saveToMemo": "메모 저장",
+      "memoSavedToastTitle": "📝 메모 저장 완료",
+      "memoSavedToastMessage": "문서 내용이 메모장에 새로운 메모로 저장되었습니다."
     }
   }
 }

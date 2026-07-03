@@ -42,7 +42,8 @@ export type PanelType =
   | "bot-settings"
   | "buddy-settings"
   | "buddy-diary"
-  | "alarm";
+  | "alarm"
+  | "doc-viewer";
 
 interface SystemSidebarProps {
   activePanel: PanelType;
@@ -273,6 +274,20 @@ export function SystemSidebar({
           title={t("sidebar.tooltips.alarm", "알람 알리미")}
         >
           <Bell size={12} />
+        </button>
+
+        {/* 문서 뷰어 */}
+        <button
+          type="button"
+          onClick={() => handleTabToggle("doc-viewer")}
+          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
+            activePanel === "doc-viewer"
+              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
+              : btnMutedClass
+          }`}
+          title={t("sidebar.tooltips.docViewer", "문서 뷰어")}
+        >
+          <FileText size={12} />
         </button>
       </div>
 
