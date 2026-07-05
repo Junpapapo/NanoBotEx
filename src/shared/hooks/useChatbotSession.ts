@@ -5,6 +5,7 @@ import { useAISession } from "./useAISession";
 import { ChatbotModel } from "../chatbot-model";
 import { checkSafety } from "../utils/safety-guard";
 import { ENABLE_CHAT_SAFETY } from "../../premium/premium-config";
+import { ALL_TEMPORAL_KEYWORDS } from "../chatbot-constants";
 
 export const performWebSearch = async (keyword: string): Promise<{ results: SearchResult[]; tabId: number }> => {
   let tempTabId = 0;
@@ -163,7 +164,8 @@ export function useChatbotSession(
   settings: UserSettings,
   activeSkill: Skill | null,
   skills: Skill[],
-  t: (key: string, def: string) => string
+  t: (key: string, def: string) => string,
+  setActiveSkill?: (skill: Skill | null) => void
 ) {
   const settingsRef = useRef<UserSettings>(settings);
   useEffect(() => {
@@ -198,6 +200,7 @@ export function useChatbotSession(
   const lastMessageTimeRef = useRef<number>(0);
   const lastLoadedSessionIdRef = useRef<string | null>(null);
   const isInitialMountRef = useRef<boolean>(true);
+  const isBypassingDeactivationNoticeRef = useRef<boolean>(false);
 
 
 
@@ -230,14 +233,16 @@ export function useChatbotSession(
   }, [destroySession, currentSessionId, deleteSession, setCurrentSessionId]);
 
   //이름, 성향, 글로벌/일반 룰(공동 세팅) 및 스타일 지침 통합 빌드
-  const buildPromptWithRules = useCallback((currentSettings: UserSettings) => {
+  const buildPromptWithRules = useCallback((currentSettings: UserSettings, activeSkill: Skill | null) => {
     const name = currentSettings.nano_ai_avatar_name || "NanoBot";
     
     // 1. 정체성 정의 (Identity) - 불필요한 이름 남발 억제 지침 추가
     let prompt = `[IDENTITY]\n- Your name is "${name}". You are a helpful AI assistant.\n- You must know that your name is "${name}", but do NOT introduce yourself or say your name at the beginning or end of your reply unless the user explicitly asks "who are you?" or "what is your name?".\n- Always answer the user's question directly without repeating greetings or self-introductions.\n- Never identify yourself as a "large language model trained by Google" or "Google's language model".\n\n`;
 
     // 2. AI 성향 (Persona)
-    if (currentSettings.nano_ai_persona) {
+    if (activeSkill) {
+      prompt += `[AI PERSONA (SKILL: ${activeSkill.title})]\n${activeSkill.prompt}\n\n`;
+    } else if (currentSettings.nano_ai_persona) {
       prompt += `[AI PERSONA]\n${currentSettings.nano_ai_persona}\n\n`;
     }
 
@@ -288,7 +293,7 @@ export function useChatbotSession(
   const initSession = useCallback(async () => {
     await destroySession();
     try {
-      const systemPrompt = buildPromptWithRules(settingsRef.current);
+      const systemPrompt = buildPromptWithRules(settingsRef.current, activeSkill);
       const s = await createSession(systemPrompt, settingsRef.current.nano_ai_temperature);
       isSystemPromptApplied.current = true;
       return s;
@@ -304,7 +309,7 @@ export function useChatbotSession(
         return null;
       }
     }
-  }, [createSession, destroySession, buildPromptWithRules]);
+  }, [createSession, destroySession, buildPromptWithRules, activeSkill]);
 
   // 세션 클리어 기능
   const clearContext = useCallback(async () => {
@@ -389,6 +394,11 @@ export function useChatbotSession(
     prevActiveSkillRef.current = activeSkill;
     if (prev?.id === activeSkill?.id) return;
 
+    if (isBypassingDeactivationNoticeRef.current) {
+      isBypassingDeactivationNoticeRef.current = false;
+      return;
+    }
+
     const assistantMessageId = Math.random().toString(36).substring(7);
     if (activeSkill) {
       setMessages((prevMsgs) => [
@@ -417,6 +427,12 @@ export function useChatbotSession(
 
   const sendMessage = useCallback(async (text: string, skipWebSearch?: boolean) => {
     if (!text.trim() || isSending) return;
+
+    const currentActiveSkill = activeSkill;
+    if (activeSkill && setActiveSkill) {
+      isBypassingDeactivationNoticeRef.current = true;
+      setActiveSkill(null);
+    }
 
     let searchResults: SearchResult[] = [];
     let searchTabId: number | undefined = undefined;
@@ -527,7 +543,7 @@ export function useChatbotSession(
       const currentMode = currentSettings.nano_web_search_mode || (currentSettings.nano_web_search_enabled !== undefined ? (currentSettings.nano_web_search_enabled ? "force" : "off") : "auto");
       console.log("[NanoBot] Web search mode in sendMessage:", currentMode);
       
-      const shouldSkipSearch = skipWebSearch || text.startsWith("scraped-direct:");
+      const shouldSkipSearch = skipWebSearch || text.startsWith("scraped-direct:") || !!currentActiveSkill;
       let isSearchActive = false;
 
       if (!shouldSkipSearch && currentMode !== "off") {
@@ -537,14 +553,10 @@ export function useChatbotSession(
           // URL 정규식 감지
           const isUrl = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/i.test(text.trim());
           
-          // 실시간성 키워드 감지 (휴리스틱)
-          const temporalKeywords = [
-            "오늘", "어제", "내일", "날씨", "주가", "뉴스", "최근", "최신", 
-            "환율", "결과", "순위", "현재", "지금", "트렌드", "이슈", "대통령", "경기",
-            "today", "yesterday", "tomorrow", "weather", "stock", "news", "recent",
-            "latest", "exchange rate", "result", "rank", "current", "now", "trend"
-          ];
-          const hasTemporalKeyword = temporalKeywords.some(keyword => text.toLowerCase().includes(keyword));
+          // 실시간성 키워드 감지 (휴리스틱 - 다국어 대응 통합 단어 사전 적용)
+          const hasTemporalKeyword = ALL_TEMPORAL_KEYWORDS.some(keyword => 
+            text.toLowerCase().includes(keyword.toLowerCase())
+          );
           
           if (isUrl || hasTemporalKeyword) {
             isSearchActive = true;
@@ -574,12 +586,8 @@ export function useChatbotSession(
           .join("\n\n");
 
         if (currentSettings.api_mode === "local") {
-          const miniRules = buildPromptWithRules(currentSettings);
-          let activeSkillSection = "";
-          if (activeSkill) {
-            activeSkillSection = `[ACTIVE SKILL INSTRUCTIONS - ${activeSkill.title}]\n${activeSkill.prompt}\n\n`;
-          }
-          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}${activeSkillSection}\n[WEB SEARCH RESULT]\n${searchContext}\n\n[USER QUESTION]\n${text}\n\n(참고: 제공된 [WEB SEARCH RESULT]의 신뢰성 높은 최신 정보를 분석해서 한국어로 친절하게 답변하세요.)`;
+          const miniRules = buildPromptWithRules(currentSettings, currentActiveSkill);
+          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}\n[WEB SEARCH RESULT]\n${searchContext}\n\n[USER QUESTION]\n${text}\n\n(참고: 제공된 [WEB SEARCH RESULT]의 신뢰성 높은 최신 정보를 분석해서 한국어로 친절하게 답변하세요.)`;
         } else {
           const lengthRule = currentSettings.nano_ai_context_level === "minimal"
             ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
@@ -587,23 +595,13 @@ export function useChatbotSession(
               ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
               : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
 
-          let activeSkillSection = "";
-          if (activeSkill) {
-            activeSkillSection = `[AI 스킬 규칙 - ${activeSkill.title}]\n${activeSkill.prompt}\n\n`;
-          }
-
-          promptText = `${lengthRule}\n\n${activeSkillSection}[웹 검색 결과]\n${searchContext}\n\n[USER QUESTION]\n${text}\n\n(참고: 제공된 [웹 검색 결과]의 신뢰성 높은 내용을 분석해서 친절한 한국어로 답변하세요.)`;
+          promptText = `${lengthRule}\n\n[웹 검색 결과]\n${searchContext}\n\n[USER QUESTION]\n${text}\n\n(참고: 제공된 [웹 검색 결과]의 신뢰성 높은 내용을 분석해서 친절한 한국어로 답변하세요.)`;
         }
       } else {
         if (currentSettings.api_mode === "local") {
           // 로컬 모드: 소형 모델의 망각 방지를 위해 매 턴마다 강제 룰 결합
-          const miniRules = buildPromptWithRules(currentSettings);
-          let activeSkillSection = "";
-          if (activeSkill) {
-            activeSkillSection = `[ACTIVE SKILL INSTRUCTIONS - ${activeSkill.title}]\n${activeSkill.prompt}\n\n`;
-          }
-          
-          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}${activeSkillSection}\n[USER QUESTION]\n${text}`;
+          const miniRules = buildPromptWithRules(currentSettings, currentActiveSkill);
+          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}\n[USER QUESTION]\n${text}`;
         } else {
           const lengthRule = currentSettings.nano_ai_context_level === "minimal"
             ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
@@ -611,11 +609,7 @@ export function useChatbotSession(
               ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
               : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
 
-          if (activeSkill) {
-            promptText = `${lengthRule}\n\n[AI 스킬 규칙 - ${activeSkill.title}]\n${activeSkill.prompt}\n\n[사용자 입력]\n${text}`;
-          } else {
-            promptText = `${lengthRule}\n\n[USER QUESTION]\n${text}`;
-          }
+          promptText = `${lengthRule}\n\n[USER QUESTION]\n${text}`;
         }
       }
 
@@ -710,7 +704,8 @@ export function useChatbotSession(
           },
           () => { flushFinalContent(accumulated); },
           (err) => { throw err; },
-          abortControllerRef.current?.signal
+          abortControllerRef.current?.signal,
+          currentActiveSkill
         );
       }
 
@@ -742,7 +737,7 @@ export function useChatbotSession(
       setIsSending(false);
       abortControllerRef.current = null;
     }
-  }, [isSending, aiSession, messages, activeSkill, initSession, currentSessionId, saveSession, setCurrentSessionId, sessions, t]);
+  }, [isSending, aiSession, messages, activeSkill, initSession, currentSessionId, saveSession, setCurrentSessionId, sessions, t, setActiveSkill]);
 
   const stopGeneration = useCallback(() => {
     isAbortedRef.current = true;

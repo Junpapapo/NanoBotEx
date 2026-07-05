@@ -1,4 +1,4 @@
-import { Message, UserSettings } from "./chatbot-types";
+import { Message, UserSettings, Skill } from "./chatbot-types";
 import { DEFAULT_SETTINGS } from "./chatbot-constants";
 
 export class ChatbotModel {
@@ -32,7 +32,8 @@ export class ChatbotModel {
     onChunk: (text: string) => void,
     onDone: () => void,
     onError: (err: any) => void,
-    signal?: AbortSignal
+    signal?: AbortSignal,
+    activeSkill?: Skill | null
   ): Promise<void> {
     try {
       const settings = await this.loadSettings();
@@ -51,7 +52,9 @@ export class ChatbotModel {
       const name = settings.nano_ai_avatar_name || "NanoBot";
       let systemPrompt = `[IDENTITY]\n- Your name is "${name}". You are a helpful AI assistant.\n- You must know that your name is "${name}", but do NOT introduce yourself or say your name at the beginning or end of your reply unless the user explicitly asks "who are you?" or "what is your name?".\n- Always answer the user's question directly without repeating greetings or self-introductions.\n- Never identify yourself as a "large language model trained by Google" or "Google's language model".\n\n`;
 
-      if (settings.nano_ai_persona) {
+      if (activeSkill) {
+        systemPrompt += `[AI PERSONA (SKILL: ${activeSkill.title})]\n${activeSkill.prompt}\n\n`;
+      } else if (settings.nano_ai_persona) {
         systemPrompt += `[AI PERSONA]\n${settings.nano_ai_persona}\n\n`;
       }
 
@@ -147,6 +150,7 @@ export class ChatbotModel {
         console.log("Chat aborted.");
       } else {
         onError(e);
+        throw e;
       }
     }
   }

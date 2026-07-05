@@ -136,15 +136,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.action === "destroy_ai_session") {
-    destroyBackgroundSession();
-    sendResponse({ success: true });
-    return;
+    destroyBackgroundSession()
+      .then(() => sendResponse({ success: true }))
+      .catch(() => sendResponse({ success: true }));
+    return true;
   }
 
   if (message.action === "destroy_buddy_session") {
-    destroyBackgroundBuddySession();
-    sendResponse({ success: true });
-    return;
+    destroyBackgroundBuddySession()
+      .then(() => sendResponse({ success: true }))
+      .catch(() => sendResponse({ success: true }));
+    return true;
   }
 
   if (message.action === "refine_document_ai") {
@@ -208,7 +210,7 @@ async function refineDocumentAI(systemPrompt: string, promptText: string) {
 }
 
 async function initBackgroundAISession(systemPrompt?: string, temperature?: number) {
-  destroyBackgroundSession();
+  await destroyBackgroundSession();
   const lm = await getAIModel();
   if (!lm) throw new Error("Local AI is not available in background context");
 
@@ -253,7 +255,7 @@ async function initBackgroundAISession(systemPrompt?: string, temperature?: numb
 
 async function initBackgroundBuddySession(systemPrompt?: string, temperature?: number) {
   console.log("[Background] Creating new buddy session.");
-  destroyBackgroundBuddySession();
+  await destroyBackgroundBuddySession();
   const lm = await getAIModel();
   if (!lm) throw new Error("Local AI is not available in background context");
 
@@ -300,11 +302,14 @@ async function initBackgroundBuddySession(systemPrompt?: string, temperature?: n
   }
 }
 
-function destroyBackgroundSession() {
+async function destroyBackgroundSession() {
   if (activeAISession) {
     try {
-      if (typeof activeAISession.destroy === "function") activeAISession.destroy();
-      else if (typeof activeAISession.close === "function") activeAISession.close();
+      if (typeof activeAISession.destroy === "function") {
+        await activeAISession.destroy();
+      } else if (typeof activeAISession.close === "function") {
+        await activeAISession.close();
+      }
     } catch (e) {
       console.warn("Failed to destroy bg session:", e);
     }
@@ -313,8 +318,11 @@ function destroyBackgroundSession() {
   // 안전 판별 세션도 함께 정리
   if (activeSafetySession) {
     try {
-      if (typeof activeSafetySession.destroy === "function") activeSafetySession.destroy();
-      else if (typeof activeSafetySession.close === "function") activeSafetySession.close();
+      if (typeof activeSafetySession.destroy === "function") {
+        await activeSafetySession.destroy();
+      } else if (typeof activeSafetySession.close === "function") {
+        await activeSafetySession.close();
+      }
     } catch (e) {
       console.warn("Failed to destroy safety session:", e);
     }
@@ -322,11 +330,14 @@ function destroyBackgroundSession() {
   }
 }
 
-function destroyBackgroundBuddySession() {
+async function destroyBackgroundBuddySession() {
   if (activeBuddySession) {
     try {
-      if (typeof activeBuddySession.destroy === "function") activeBuddySession.destroy();
-      else if (typeof activeBuddySession.close === "function") activeBuddySession.close();
+      if (typeof activeBuddySession.destroy === "function") {
+        await activeBuddySession.destroy();
+      } else if (typeof activeBuddySession.close === "function") {
+        await activeBuddySession.close();
+      }
     } catch (e) {
       console.warn("Failed to destroy buddy session:", e);
     }

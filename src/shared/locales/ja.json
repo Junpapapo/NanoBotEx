@@ -745,5 +745,30 @@
       "memoSavedToastTitle": "📝 メモ保存完了",
       "memoSavedToastMessage": "ドキュメントの内容がメモ帳に新しいメモとして保存されました。"
     }
+  },
+  "promptRunner": {
+    "title": "プロンプトランナー",
+    "inputPlaceholder": "プロンプトに渡す詳細な内容または本文データを入力してください...",
+    "runBtn": "実行",
+    "stopBtn": "中断",
+    "outputPlaceholder": "ここに実行結果が表示されます。",
+    "sendToMemo": "メモに送信",
+    "sendToViewer": "AIビューアーに送信",
+    "copy": "コピー",
+    "copied": "コピー完了！",
+    "sentToMemoSuccess": "📝 メモに保存完了！",
+    "sentToViewerSuccess": "📄 AIビューアーに送信完了！",
+    "emptyContentWarning": "入力欄に内容を入力してください。",
+    "promptInstruction": "指示事項",
+    "promptDescription": "詳細説明",
+    "showInfoBar": "プロンプト要約情報",
+    "inputText": "本文入力",
+    "result": "実行結果",
+    "fallbackNotice": "💡 ローカルオンデバイスAIを使用できないため、自動的にクラウドAPIモードに切り替えて実行します...\n\n",
+    "clear": "内容クリア",
+    "selectPrompt": "右側から実行するプロンプト（スキル）を選択してください。",
+    "sessionInitFailed": "ローカルAIセッションを初期化できません。設定を確認してください。",
+    "localAiFailedPrefix": "ローカルオンデバイスAIがタスクを完了できませんでした",
+    "detailReason": "詳細原因"
   }
 }

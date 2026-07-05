@@ -73,6 +73,7 @@ export function useAISession() {
         const port = chrome.runtime.connect({ name: portName });
 
         let resolveNext: ((v: IteratorResult<string>) => void) | null = null;
+        let rejectNext: ((err: any) => void) | null = null;
         const queue: string[] = [];
         let done = false;
         let error: any = null;
@@ -82,6 +83,7 @@ export function useAISession() {
             if (resolveNext) {
               resolveNext({ value: msg.chunk, done: false });
               resolveNext = null;
+              rejectNext = null;
             } else {
               queue.push(msg.chunk);
             }
@@ -90,10 +92,15 @@ export function useAISession() {
             if (resolveNext) {
               resolveNext({ value: "", done: true });
               resolveNext = null;
+              rejectNext = null;
             }
           } else if (msg.type === "error") {
             error = new Error(msg.error);
-            if (resolveNext) {
+            if (rejectNext) {
+              rejectNext(error);
+              rejectNext = null;
+              resolveNext = null;
+            } else if (resolveNext) {
               resolveNext({ value: "", done: true });
               resolveNext = null;
             }
@@ -113,8 +120,9 @@ export function useAISession() {
                 if (done) {
                   return { value: "", done: true };
                 }
-                return new Promise<IteratorResult<string>>((resolve) => {
+                return new Promise<IteratorResult<string>>((resolve, reject) => {
                   resolveNext = resolve;
+                  rejectNext = reject;
                 });
               },
               async return(): Promise<IteratorResult<string>> {

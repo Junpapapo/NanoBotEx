@@ -557,6 +557,11 @@ Constraints:
 
     const fs = getFontSizeStyles(printFontSize);
 
+    const isThemeLight = theme.isLight;
+    const btnContainerBg = isThemeLight ? "#f1f5f9" : "#1e293b";
+    const btnContainerBorder = isThemeLight ? "#e2e8f0" : "#334155";
+    const btnTextColor = isThemeLight ? "#475569" : "#cbd5e1";
+
     printWindow.document.write(`
       <html>
         <head>
@@ -638,7 +643,13 @@ Constraints:
           </style>
         </head>
         <body>
-          <div id="nanobot-print-pdf-trigger-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+          <div id="nanobot-print-pdf-trigger-container" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 20px; font-family: sans-serif;">
+            <span style="font-size: 11px; font-weight: bold; color: #888;">Font Size:</span>
+            <div style="display: flex; border: 1px solid ${btnContainerBorder}; border-radius: 6px; overflow: hidden; background: ${btnContainerBg}; padding: 2px; gap: 2px;">
+              <button id="fs-btn-s" style="padding: 4px 10px; background: transparent; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold; color: ${btnTextColor}; transition: all 0.2s; font-family: sans-serif;">S</button>
+              <button id="fs-btn-m" style="padding: 4px 10px; background: transparent; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold; color: ${btnTextColor}; transition: all 0.2s; font-family: sans-serif;">M</button>
+              <button id="fs-btn-l" style="padding: 4px 10px; background: transparent; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold; color: ${btnTextColor}; transition: all 0.2s; font-family: sans-serif;">L</button>
+            </div>
             <button id="nanobot-print-pdf-trigger" style="padding: 8px 16px; background: #6366f1; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; font-family: sans-serif; transition: background 0.2s;">
               Print / Save PDF
             </button>
@@ -666,6 +677,83 @@ Constraints:
         printButton.style.background = "#6366f1";
       });
     }
+
+    // 폰트 크기 변경 헬퍼 함수
+    const updatePrintWindowFontSize = (size: "S" | "M" | "L") => {
+      const fsStyles = getFontSizeStyles(size);
+      const doc = printWindow.document;
+
+      doc.body.style.fontSize = fsStyles.body;
+
+      const h1s = doc.querySelectorAll("h1");
+      h1s.forEach((el: any) => { el.style.fontSize = fsStyles.h1; });
+
+      const h2s = doc.querySelectorAll("h2");
+      h2s.forEach((el: any) => { el.style.fontSize = fsStyles.h2; });
+
+      const h3s = doc.querySelectorAll("h3");
+      h3s.forEach((el: any) => { el.style.fontSize = fsStyles.h3; });
+
+      const codes = doc.querySelectorAll("code");
+      codes.forEach((el: any) => { el.style.fontSize = fsStyles.other; });
+
+      const pres = doc.querySelectorAll("pre");
+      pres.forEach((el: any) => { el.style.fontSize = fsStyles.other; });
+
+      const tables = doc.querySelectorAll("table");
+      tables.forEach((el: any) => { el.style.fontSize = fsStyles.other; });
+
+      // 단추 활성화 상태 스타일링 업데이트
+      const btnS = doc.getElementById("fs-btn-s");
+      const btnM = doc.getElementById("fs-btn-m");
+      const btnL = doc.getElementById("fs-btn-l");
+
+      if (btnS && btnM && btnL) {
+        [btnS, btnM, btnL].forEach((btn: any) => {
+          btn.style.background = "transparent";
+          btn.style.color = btnTextColor;
+        });
+
+        const activeBtn = size === "S" ? btnS : size === "M" ? btnM : btnL;
+        activeBtn.style.background = "#6366f1";
+        activeBtn.style.color = "white";
+      }
+    };
+
+    const btnS = printWindow.document.getElementById("fs-btn-s");
+    const btnM = printWindow.document.getElementById("fs-btn-m");
+    const btnL = printWindow.document.getElementById("fs-btn-l");
+
+    if (btnS) {
+      btnS.addEventListener("click", () => updatePrintWindowFontSize("S"));
+      btnS.addEventListener("mouseover", () => {
+        if (btnS.style.background !== "rgb(99, 102, 241)") btnS.style.background = isThemeLight ? "#e2e8f0" : "#334155";
+      });
+      btnS.addEventListener("mouseout", () => {
+        if (btnS.style.background !== "rgb(99, 102, 241)") btnS.style.background = "transparent";
+      });
+    }
+    if (btnM) {
+      btnM.addEventListener("click", () => updatePrintWindowFontSize("M"));
+      btnM.addEventListener("mouseover", () => {
+        if (btnM.style.background !== "rgb(99, 102, 241)") btnM.style.background = isThemeLight ? "#e2e8f0" : "#334155";
+      });
+      btnM.addEventListener("mouseout", () => {
+        if (btnM.style.background !== "rgb(99, 102, 241)") btnM.style.background = "transparent";
+      });
+    }
+    if (btnL) {
+      btnL.addEventListener("click", () => updatePrintWindowFontSize("L"));
+      btnL.addEventListener("mouseover", () => {
+        if (btnL.style.background !== "rgb(99, 102, 241)") btnL.style.background = isThemeLight ? "#e2e8f0" : "#334155";
+      });
+      btnL.addEventListener("mouseout", () => {
+        if (btnL.style.background !== "rgb(99, 102, 241)") btnL.style.background = "transparent";
+      });
+    }
+
+    // 팝업 생성 시점의 부모 설정값으로 초기화 적용
+    updatePrintWindowFontSize(printFontSize);
   };
 
   const isLight = theme.isLight;
@@ -794,8 +882,20 @@ Constraints:
         {activeTab === "preview" && (
           <div className="h-full">
             {docContent ? (
-              <div className="prose prose-sm dark:prose-invert max-w-none text-xs break-all selection:bg-indigo-500/30">
-                <MarkdownViewer content={docContent} />
+              <div 
+                className="prose prose-sm dark:prose-invert max-w-none break-all selection:bg-indigo-500/30"
+                style={{ fontSize: getFontSizeStyles(printFontSize).body }}
+              >
+                <style dangerouslySetInnerHTML={{ __html: `
+                  #nanobot-doc-preview h1 { font-size: ${getFontSizeStyles(printFontSize).h1} !important; }
+                  #nanobot-doc-preview h2 { font-size: ${getFontSizeStyles(printFontSize).h2} !important; }
+                  #nanobot-doc-preview h3 { font-size: ${getFontSizeStyles(printFontSize).h3} !important; }
+                  #nanobot-doc-preview code, #nanobot-doc-preview pre { font-size: ${getFontSizeStyles(printFontSize).other} !important; }
+                  #nanobot-doc-preview table { font-size: ${getFontSizeStyles(printFontSize).other} !important; }
+                `}} />
+                <div id="nanobot-doc-preview">
+                  <MarkdownViewer content={docContent} />
+                </div>
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-center text-slate-500 py-12 px-4">
@@ -823,11 +923,12 @@ Constraints:
                 setPrevDocBeforeRefine(null);
               }}
               placeholder="여기에 문서를 자유롭게 입력하거나 편집하세요... (마크다운 지원)"
-              className={`flex-1 w-full text-xs p-3 rounded border outline-none resize-none font-mono transition-all custom-scrollbar ${
+              className={`flex-1 w-full p-3 rounded border outline-none resize-none font-mono transition-all custom-scrollbar ${
                 isLight
                   ? "bg-slate-50 border-slate-200 focus:bg-white focus:border-indigo-400 text-slate-800"
                   : "bg-slate-900 border-white/[0.06] focus:bg-slate-950 focus:border-indigo-500 text-white"
               }`}
+              style={{ fontSize: getFontSizeStyles(printFontSize).body }}
             />
             <button
               onClick={handleSaveEdit}

@@ -26,7 +26,7 @@ import {
   BookOpen,
   Bell
 } from "lucide-react";
-import { UserSettings, ScenarioType, BuddySettings } from "../chatbot-types";
+import { UserSettings, ScenarioType, BuddySettings, Skill } from "../chatbot-types";
 import { ENABLE_PREMIUM } from "../../premium/premium-config";
 
 export type PanelType = 
@@ -43,7 +43,8 @@ export type PanelType =
   | "buddy-settings"
   | "buddy-diary"
   | "alarm"
-  | "doc-viewer";
+  | "doc-viewer"
+  | "prompt-runner";
 
 interface SystemSidebarProps {
   activePanel: PanelType;
@@ -57,6 +58,8 @@ interface SystemSidebarProps {
   setIsBookmarksBarOpen: (open: boolean) => void;
   theme: any;
   setCopiedPrompt: (prompt: string) => void;
+  onSelectSkill: (skill: Skill) => void;
+  activeSkill?: Skill | null;
   t: any;
   settings: UserSettings;
   updateSettings: (settings: Partial<UserSettings>) => void;
@@ -79,6 +82,8 @@ export function SystemSidebar({
   setIsBookmarksBarOpen,
   theme,
   setCopiedPrompt,
+  onSelectSkill,
+  activeSkill,
   t,
   settings,
   updateSettings,
@@ -89,6 +94,61 @@ export function SystemSidebar({
   onTriggerQuickQuestion
 }: SystemSidebarProps) {
   const isLight = settings.nano_skin_mode === "light";
+
+  const getSystemSkill = (type: string): Skill => {
+    switch (type) {
+      case "summary":
+        return {
+          id: "sys_summarize",
+          title: t("sidebar.tooltips.textSummary", "텍스트 요약"),
+          description: t("sidebar.descriptions.textSummary", "입력한 본문의 핵심 내용을 깔끔하게 요약합니다."),
+          prompt: "Please summarize the following text to make it easy to read at a glance. Do NOT output any introductory, conversational, or concluding text (such as \"Here is the summary:\" or \"I hope this helps\"). Output ONLY the final summarized text directly.\n\n",
+          icon: "FileText"
+        };
+      case "keyPoints":
+        return {
+          id: "sys_keyPoints",
+          title: t("sidebar.tooltips.keyPoints", "핵심요약"),
+          description: t("sidebar.descriptions.keyPoints", "입력한 본문의 핵심 3가지 요점을 정리합니다."),
+          prompt: "Please summarize the key 3 points of the following text in a clear, bulleted list. Do NOT output any introductory, conversational, or concluding text. Output ONLY the 3 bullet points directly.\n\n",
+          icon: "ListChecks"
+        };
+      case "grammar":
+        return {
+          id: "sys_grammar",
+          title: t("sidebar.tooltips.grammarCheck", "맞춤법 교정"),
+          description: t("sidebar.descriptions.grammarCheck", "입력한 텍스트의 오탈자, 띄어쓰기, 문법 오류를 교정합니다."),
+          prompt: "Please correct any spelling, spacing, and grammatical errors in the following text. Do NOT output any explanation, introductory, conversational, or concluding text. Output ONLY the corrected text directly.\n\n",
+          icon: "SpellCheck"
+        };
+      case "business":
+        return {
+          id: "sys_business",
+          title: t("sidebar.tooltips.businessTone", "비즈니스 어조"),
+          description: t("sidebar.descriptions.businessTone", "격식 있고 공손한 비즈니스 메일/메시지 어조로 변환합니다."),
+          prompt: "Please rewrite the following text into a formal and polite business email/message tone. Do NOT output any greetings to the user, introductory remarks, or conversational filler. Output ONLY the rewritten email/message body directly.\n\n",
+          icon: "Mail"
+        };
+      case "explain":
+        return {
+          id: "sys_explain",
+          title: t("sidebar.tooltips.detailedExplain", "상세 설명"),
+          description: t("sidebar.descriptions.detailedExplain", "코드나 어려운 텍스트의 동작 원리 및 뜻을 친절하게 설명합니다."),
+          prompt: "Please explain the meaning and detailed operation process of the following text or code in a friendly, clear manner. Structure your explanation logically. Do NOT add conversational introductory or concluding filler. Start explaining the content immediately.\n\n",
+          icon: "HelpCircle"
+        };
+      case "brainstorming":
+        return {
+          id: "sys_brainstorming",
+          title: t("sidebar.tooltips.brainstorming", "아이디어 발상"),
+          description: t("sidebar.descriptions.brainstorming", "지정된 주제에 관해 5가지의 독창적이고 유용한 아이디어를 브레인스토밍합니다."),
+          prompt: "Please brainstorm 5 creative and useful ideas for the following topic. Do NOT output any conversational filler or introductions. Output ONLY the 5 brainstormed ideas directly in a list.\n\n",
+          icon: "Lightbulb"
+        };
+      default:
+        return { id: "", title: "", description: "", prompt: "", icon: "Sparkles" };
+    }
+  };
 
   const btnMutedClass = isLight
     ? `bg-white border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 shadow-sm ${theme.bookmarksHover}`
@@ -301,8 +361,12 @@ export function SystemSidebar({
         {/* 프롬프트 스킬 카피 버튼 6종 */}
         <button
           type="button"
-          onClick={() => setCopiedPrompt("[Summarize] Please summarize the following text to make it easy to read at a glance:\n\n")}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${btnMutedClass}`}
+          onClick={() => onSelectSkill(getSystemSkill("summary"))}
+          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
+            activePanel === "prompt-runner" && activeSkill?.id === "sys_summarize"
+              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
+              : btnMutedClass
+          }`}
           title={t("sidebar.tooltips.textSummary", "텍스트 요약")}
         >
           <FileText size={11} />
@@ -310,8 +374,12 @@ export function SystemSidebar({
 
         <button
           type="button"
-          onClick={() => setCopiedPrompt("[Key Points] Please summarize the key 3 points of the following text:\n\n")}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${btnMutedClass}`}
+          onClick={() => onSelectSkill(getSystemSkill("keyPoints"))}
+          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
+            activePanel === "prompt-runner" && activeSkill?.id === "sys_keyPoints"
+              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
+              : btnMutedClass
+          }`}
           title={t("sidebar.tooltips.keyPoints", "핵심요약")}
         >
           <ListChecks size={11} />
@@ -319,8 +387,12 @@ export function SystemSidebar({
 
         <button
           type="button"
-          onClick={() => setCopiedPrompt("[Grammar Correction] Please correct any spelling, spacing, and grammatical errors in the following text:\n\n")}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${btnMutedClass}`}
+          onClick={() => onSelectSkill(getSystemSkill("grammar"))}
+          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
+            activePanel === "prompt-runner" && activeSkill?.id === "sys_grammar"
+              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
+              : btnMutedClass
+          }`}
           title={t("sidebar.tooltips.grammarCheck", "맞춤법 교정")}
         >
           <SpellCheck size={11} />
@@ -328,8 +400,12 @@ export function SystemSidebar({
 
         <button
           type="button"
-          onClick={() => setCopiedPrompt("[Business Tone] Please rewrite the following text into a formal and polite business email/message tone:\n\n")}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${btnMutedClass}`}
+          onClick={() => onSelectSkill(getSystemSkill("business"))}
+          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
+            activePanel === "prompt-runner" && activeSkill?.id === "sys_business"
+              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
+              : btnMutedClass
+          }`}
           title={t("sidebar.tooltips.businessTone", "비즈니스 어조")}
         >
           <Mail size={11} />
@@ -337,8 +413,12 @@ export function SystemSidebar({
 
         <button
           type="button"
-          onClick={() => setCopiedPrompt("[Explain Details] Please explain the meaning and detailed operation process of the following text or code in a friendly manner:\n\n")}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${btnMutedClass}`}
+          onClick={() => onSelectSkill(getSystemSkill("explain"))}
+          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
+            activePanel === "prompt-runner" && activeSkill?.id === "sys_explain"
+              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
+              : btnMutedClass
+          }`}
           title={t("sidebar.tooltips.detailedExplain", "상세 설명")}
         >
           <HelpCircle size={11} />
@@ -346,8 +426,12 @@ export function SystemSidebar({
 
         <button
           type="button"
-          onClick={() => setCopiedPrompt("[Brainstorming] Please brainstorm 5 creative and useful ideas for the following topic:\n\n")}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${btnMutedClass}`}
+          onClick={() => onSelectSkill(getSystemSkill("brainstorming"))}
+          className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
+            activePanel === "prompt-runner" && activeSkill?.id === "sys_brainstorming"
+              ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
+              : btnMutedClass
+          }`}
           title={t("sidebar.tooltips.brainstorming", "아이디어 발상")}
         >
           <Lightbulb size={11} />

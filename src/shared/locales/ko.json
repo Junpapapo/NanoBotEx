@@ -738,5 +738,31 @@
       "memoSavedToastTitle": "📝 메모 저장 완료",
       "memoSavedToastMessage": "문서 내용이 메모장에 새로운 메모로 저장되었습니다."
     }
+  },
+  "promptRunner": {
+    "title": "프롬프트 실행기",
+    "inputPlaceholder": "프롬프트에 전달할 세부 내용 또는 본문 데이터를 입력하세요...",
+    "runBtn": "실행하기",
+    "stopBtn": "중단",
+    "outputPlaceholder": "여기에 실행 결과가 표시됩니다.",
+    "sendToMemo": "메모로 전송",
+    "sendToViewer": "AI 뷰어로 전송",
+    "copy": "복사",
+    "copied": "복사 완료!",
+    "sentToMemoSuccess": "📝 메모에 저장 완료!",
+    "sentToViewerSuccess": "📄 AI 뷰어로 전송 완료!",
+    "emptyContentWarning": "입력창에 내용을 작성해 주세요.",
+    "promptInstruction": "지시 사항",
+    "promptDescription": "상세 설명",
+    "showInfoBar": "프롬프트 요약 정보",
+    "inputText": "본문 입력",
+    "result": "실행 결과",
+    "fallbackNotice": "💡 로컬 온디바이스 AI를 사용할 수 없어 클라우드 API 모드로 자동 전환하여 실행합니다...\n\n",
+    "clear": "내용 지우기",
+    "selectPrompt": "오른쪽에서 실행할 프롬프트(스킬)를 선택해 주세요.",
+    "sessionInitFailed": "로컬 AI 세션을 초기화할 수 없습니다. 설정을 확인하세요.",
+    "localAiFailedPrefix": "로컬 온디바이스 AI가 작업을 완료하지 못했습니다",
+    "detailReason": "상세 원인"
   }
 }
+

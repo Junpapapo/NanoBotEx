@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import { getThemePalette } from "../chatbot-constants";
-import { Check, CheckSquare, FileText, Globe, Bell, Eye } from "lucide-react";
+import { Check, CheckSquare, FileText, Globe, Bell, Eye, Copy } from "lucide-react";
 
 interface ChatMessageItemProps {
   message: Message;
@@ -29,6 +29,14 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
 
   const [todoSaved, setTodoSaved] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (copied) return;
+    navigator.clipboard.writeText(cleanContent);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   const handleSwitchToSearchTab = (tabId?: number, queryText?: string) => {
     const fallbackUrl = message.sources && message.sources[0]?.url && !message.sources[0].url.startsWith("chrome://")
@@ -218,6 +226,24 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
 
             {!message.isStreaming && cleanContent && (
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className={`p-0.5 rounded transition-all cursor-pointer flex items-center justify-center ${
+                    isLight
+                      ? "hover:bg-slate-200/60 text-slate-400 hover:text-slate-700"
+                      : "hover:bg-white/10 text-slate-400 hover:text-white"
+                  } ${
+                    copied ? "text-emerald-500 hover:text-emerald-600" : ""
+                  }`}
+                  title={t ? t("common.copy", "복사하기") : "복사하기"}
+                >
+                  {copied ? (
+                    <Check size={10} className="text-emerald-400 animate-in zoom-in duration-200" />
+                  ) : (
+                    <Copy size={10} />
+                  )}
+                </button>
                 <button
                   type="button"
                   onClick={handleSaveToTodo}

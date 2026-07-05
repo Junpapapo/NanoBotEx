@@ -20,3 +20,11 @@ This document specifies the mandatory collaboration protocols, communication rul
 * **Proactive Brainstorming**: Treat the pairing process as a collaborative brainstorm. Actively suggest structured options, improvements, and architectural solutions before code edits.
 * **Goal-Driven Execution**: State a brief step-by-step verification plan before editing. Always check the build status synchronously (e.g. `npx tsc --noEmit` or `npm run build` inside `frontend/`) before final delivery.
 * **Symmetric Git Lifecycle**: Commit and push changes safely only after successful automated build verifications.
+
+---
+
+## 2. 개발 및 유지보수 가이드 (Maintenance Guidelines)
+* **실시간성 검색 키워드 감지 (다국어 사전 확장)**:
+  * `AUTO` 검색 모드에서 실시간 검색 필요 여부를 판단하기 위한 키워드 사전(`TEMPORAL_KEYWORDS_MAP` in [chatbot-constants.ts](file:///c:/00_Workspace/00_Module_Dev/NanoBotEx/src/shared/chatbot-constants.ts))은 성능(0ms Latency) 및 오프라인/보안 지원을 위해 로컬 다국어 사전 방식으로 구현되어 있습니다.
+  * **새로운 다국어 로컬라이징(언어) 지원이 추가될 경우**, 반드시 해당 언어에 대한 실시간성 핵심 키워드 목록도 `TEMPORAL_KEYWORDS_MAP`에 추가로 등록해 주어야 합니다.
+

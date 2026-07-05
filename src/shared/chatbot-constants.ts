@@ -445,4 +445,54 @@ Korean Stocks: 30
   }
 ];
 
+// AUTO 검색 모드 판단을 위한 실시간성 다국어 키워드 매핑 테이블
+export const TEMPORAL_KEYWORDS_MAP: Record<string, string[]> = {
+  ko: [
+    // 시간/시점
+    "오늘", "어제", "내일", "최근", "최신", "현재", "지금", "방금", "이번주", "이번달", "올해", "시간", "시각", "일정", "실시간",
+    // 날씨/재난/교통
+    "날씨", "지진", "태풍", "교통", "사고", 
+    // 경제/금융
+    "주가", "환율", "비트코인", "코인", "금리", "가상화폐", "시세", "가격",
+    // 뉴스/이슈
+    "뉴스", "기사", "트렌드", "이슈", "대통령", "속보", "논란", "사건", "업데이트",
+    // 스포츠/결과
+    "결과", "순위", "경기", "야구", "축구", "스포츠", "스코어", "올림픽", "월드컵", "생중계",
+    // 엔터테인먼트/문화
+    "차트", "개봉", "상영작", "예매", "콘서트", "컴백", "라이브"
+  ],
+  en: [
+    // 시간/시점
+    "today", "yesterday", "tomorrow", "recent", "latest", "current", "now", "just now", "this week", "this month", "this year", "time", "schedule", "real-time",
+    // 날씨/재난/교통
+    "weather", "earthquake", "typhoon", "hurricane", "traffic", "accident",
+    // 경제/금융
+    "stock", "exchange rate", "bitcoin", "crypto", "interest rate", "price",
+    // 뉴스/이슈
+    "news", "trend", "issue", "president", "breaking news", "update", "scandal",
+    // 스포츠/결과
+    "result", "rank", "match", "game", "score", "sports", "baseball", "soccer", "olympics", "world cup", "live stream",
+    // 엔터테인먼트/문화
+    "chart", "release", "movies", "tickets", "concert", "live"
+  ],
+  ja: [
+    // 시간/시점
+    "今日", "昨日", "明日", "最近", "最新", "現在", "今", "先ほど", "今週", "今月", "今年", "時間", "予定", "スケジュール", "リアルタイム",
+    // 날씨/재난/교통
+    "天気", "地震", "台風", "交通", "事故",
+    // 경제/금융
+    "株価", "為替", "ビットコイン", "仮想通貨", "金利", "価格", "相場",
+    // 뉴스/이슈
+    "ニュース", "記事", "トレンド", "イシュー", "大統領", "速報", "炎上", "事件", "アップデート",
+    // 스포츠/결과
+    "結果", "順位", "試合", "スポーツ", "スコア", "野球", "サッカー", "オリンピック", "ワールドカップ", "生中継",
+    // 엔터테인먼트/문화
+    "チャート", "公開", "上映", "チケット", "コンサート", "ライブ"
+  ]
+};
+
+// 3개 국어 통합 매핑 배열로 평탄화 (다국어 혼용 입력 대응)
+export const ALL_TEMPORAL_KEYWORDS = Object.values(TEMPORAL_KEYWORDS_MAP).flat();
+
+
 

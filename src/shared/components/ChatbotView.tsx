@@ -23,6 +23,7 @@ import { BotSettingsPanel } from "./tools/BotSettingsPanel";
 import { SettingsPanel } from "./tools/SettingsPanel";
 import { ALL_AVATARS } from "./tools/settings-panel/avatar-list";
 import { DocViewerPanel } from "./tools/DocViewerPanel";
+import { PromptRunnerPanel } from "./tools/PromptRunnerPanel";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Maximize2, Minimize2 } from "lucide-react";
 import { ENABLE_PREMIUM } from "../../premium/premium-config";
@@ -82,9 +83,29 @@ export function ChatbotView({
     clearContext,
     clearMessages: clearBotMessages,
     clearAllSessions,
-  } = useChatbotSession(true, settings, activeSkill, skills, t);
+  } = useChatbotSession(true, settings, activeSkill, skills, t, setActiveSkill);
 
   const [activePanel, setActivePanel] = useState<PanelType>("none");
+  const [activeSystemSkill, setActiveSystemSkill] = useState<Skill | null>(null);
+  
+  const handleSetActivePanel = (panel: PanelType) => {
+    setActivePanel(panel);
+    if (panel !== "prompt-runner" && activeSystemSkill) {
+      setActiveSystemSkill(null);
+    }
+  };
+
+  const handleSelectSystemSkill = (skill: Skill | null) => {
+    setActiveSystemSkill(skill);
+    if (skill) {
+      setActivePanel("prompt-runner");
+    } else {
+      if (activePanel === "prompt-runner") {
+        setActivePanel("none");
+      }
+    }
+  };
+
   const [activeMode, setActiveMode] = useState<"bot" | "buddy">("bot");
 
   // 문서 뷰어 활성 문서 상태
@@ -92,7 +113,7 @@ export function ChatbotView({
 
   const handleSendToViewer = (title: string, content: string) => {
     setActiveDoc({ title, content });
-    setActivePanel("doc-viewer");
+    handleSetActivePanel("doc-viewer");
   };
 
   const [buddySettings] = useChromeStorage<BuddySettings>(
@@ -479,6 +500,8 @@ export function ChatbotView({
     updateSettings,
   ]);
 
+
+
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
   const [showSkillIconPicker, setShowSkillIconPicker] =
     useState<boolean>(false);
@@ -757,8 +780,19 @@ export function ChatbotView({
             <BuddyDiaryPanel
               theme={theme}
               t={t}
-              onClose={() => setActivePanel("none")}
+              onClose={() => handleSetActivePanel("none")}
               onTriggerQuickQuestion={handleQuickQuestion}
+            />
+          )}
+          {activePanel === "prompt-runner" && (
+            <PromptRunnerPanel
+              activeSkill={activeSystemSkill}
+              setActiveSkill={handleSelectSystemSkill}
+              settings={settings}
+              t={t}
+              theme={theme}
+              onSendToViewer={handleSendToViewer}
+              onClose={() => handleSetActivePanel("none")}
             />
           )}
 
@@ -767,7 +801,7 @@ export function ChatbotView({
               {/* 닫기 단추 */}
               <button
                 onClick={() => {
-                  setActivePanel("none");
+                  handleSetActivePanel("none");
                 }}
                 className={`p-1 ${theme.textSub} hover:${theme.textMain} ${theme.bgHover} rounded transition-colors cursor-pointer`}
                 title={t("common.close", "닫기")}
@@ -861,7 +895,7 @@ export function ChatbotView({
             t={t}
             onOpenGuideSection={(section) => {
               setGuideSection(section);
-              setActivePanel("guide");
+              handleSetActivePanel("guide");
             }}
             onConfirmAction={handleBuddyConfirmAction}
             buddySaveState={buddySaveState}
@@ -876,7 +910,7 @@ export function ChatbotView({
               onQuickQuestion={handleQuickQuestion}
               onOpenGuideSection={(section) => {
                 setGuideSection(section);
-                setActivePanel("guide");
+                handleSetActivePanel("guide");
               }}
               onOpenAlarm={(title) => handleOpenAlarmDialog(title, "chat")}
               onSendToViewer={handleSendToViewer}
@@ -933,7 +967,7 @@ export function ChatbotView({
       {isRightMenuOpen && (
         <SystemSidebar
           activePanel={activePanel}
-          setActivePanel={setActivePanel}
+          setActivePanel={handleSetActivePanel}
           onClearContext={clearContext}
           onResetConversation={handleResetChat}
           isSending={isSending}
@@ -943,6 +977,8 @@ export function ChatbotView({
           setIsBookmarksBarOpen={setIsBookmarksBarOpen}
           theme={theme}
           setCopiedPrompt={handleSetCopiedPrompt}
+          onSelectSkill={handleSelectSystemSkill}
+          activeSkill={activeSystemSkill}
           t={t}
           settings={settings}
           updateSettings={updateSettings}

@@ -738,5 +738,31 @@
       "memoSavedToastTitle": "📝 Memo Saved",
       "memoSavedToastMessage": "The document has been successfully saved to your Memos."
     }
+  },
+  "promptRunner": {
+    "title": "Prompt Runner",
+    "inputPlaceholder": "Enter detailed content or raw text to pass to the prompt...",
+    "runBtn": "Run",
+    "stopBtn": "Stop",
+    "outputPlaceholder": "Execution results will be displayed here.",
+    "sendToMemo": "To Memo",
+    "sendToViewer": "To Viewer",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "sentToMemoSuccess": "📝 Saved to Memo!",
+    "sentToViewerSuccess": "📄 Sent to AI Viewer!",
+    "emptyContentWarning": "Please write something in the input box.",
+    "promptInstruction": "Prompt Instruction",
+    "promptDescription": "Description",
+    "showInfoBar": "Prompt Summary Info",
+    "inputText": "Input Content",
+    "result": "Result",
+    "fallbackNotice": "💡 Local AI is unavailable. Automatically switching to Cloud API mode...\n\n",
+    "clear": "Clear Content",
+    "selectPrompt": "Please select a prompt (skill) to execute on the right.",
+    "sessionInitFailed": "Failed to initialize Local AI session. Please check your settings.",
+    "localAiFailedPrefix": "Local on-device AI failed to complete the task",
+    "detailReason": "Detail Reason"
   }
 }
+
