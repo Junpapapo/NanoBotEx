@@ -8,12 +8,47 @@ interface MarkdownViewerProps {
   content: string;
 }
 
+// 텍스트 본문 내의 원시 URL을 마크다운 링크 포맷 [URL](URL)로 변환해주는 헬퍼
+const linkifyRawUrls = (text: string): string => {
+  if (!text) return "";
+  // 이미 존재하는 마크다운 링크 [text](url) 구조는 그대로 두고, 단독으로 존재하는 raw URL만 마크다운 링크로 변환
+  const markdownLinkOrUrlRegex = /(\[.*?\]\(.*?\))|(?<!href=")(https?:\/\/[^\s<]+)/gi;
+  return text.replace(markdownLinkOrUrlRegex, (match, p1) => {
+    if (p1) return p1; // 이미 마크다운 링크 포맷인 경우 원본 유지
+    return `[${match}](${match})`;
+  });
+};
+
 export function MarkdownViewer({ content }: MarkdownViewerProps) {
+  const processedContent = React.useMemo(() => linkifyRawUrls(content), [content]);
+
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkBreaks]}
       rehypePlugins={[rehypeRaw]}
       components={{
+        a: ({ href, children, ...props }) => {
+          const handleLinkClick = (e: React.MouseEvent) => {
+            e.preventDefault();
+            if (href) {
+              if (typeof chrome !== "undefined" && chrome.tabs) {
+                chrome.tabs.create({ url: href });
+              } else {
+                window.open(href, "_blank");
+              }
+            }
+          };
+          return (
+            <a
+              href={href}
+              onClick={handleLinkClick}
+              className="text-indigo-400 hover:text-indigo-300 underline font-bold cursor-pointer break-all"
+              {...props}
+            >
+              {children}
+            </a>
+          );
+        },
         pre: ({ node, ...props }) => (
           <pre
             className="bg-slate-500/10 p-3 rounded-lg overflow-x-auto text-[11px] font-mono border border-white/[0.05]"
@@ -60,7 +95,7 @@ export function MarkdownViewer({ content }: MarkdownViewerProps) {
         ),
       }}
     >
-      {content}
+      {processedContent}
     </ReactMarkdown>
   );
 }

@@ -30,6 +30,40 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
   const [todoSaved, setTodoSaved] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
 
+  const handleSwitchToSearchTab = (tabId?: number, queryText?: string) => {
+    const fallbackUrl = message.sources && message.sources[0]?.url && !message.sources[0].url.startsWith("chrome://")
+      ? message.sources[0].url
+      : `https://www.google.com/search?q=${encodeURIComponent(queryText || "")}`;
+
+    if (typeof chrome !== "undefined" && chrome.tabs && tabId) {
+      chrome.tabs.get(tabId, (tab) => {
+        if (chrome.runtime.lastError || !tab) {
+          chrome.tabs.create({ url: fallbackUrl });
+        } else {
+          chrome.tabs.update(tabId, { active: true });
+          if (tab.windowId) {
+            chrome.windows.update(tab.windowId, { focused: true });
+          }
+        }
+      });
+    } else {
+      if (typeof chrome !== "undefined" && chrome.tabs) {
+        chrome.tabs.create({ url: fallbackUrl });
+      } else {
+        window.open(fallbackUrl, "_blank");
+      }
+    }
+  };
+
+  const handleSourceClick = (e: React.MouseEvent, url: string) => {
+    e.preventDefault();
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+      chrome.tabs.create({ url });
+    } else {
+      window.open(url, "_blank");
+    }
+  };
+
   const chartRegex = /\[CHART:(bar|line|pie)\]\s*(\{.*?\})/g;
   let cleanContent = message.content;
   if (isUser && cleanContent.startsWith("scraped-direct:")) {
@@ -407,6 +441,48 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
             </div>
           )}
         </div>
+
+        {message.sources && message.sources.length > 0 && (
+          <div className="mt-2 flex flex-col gap-1.5 pl-1 w-full animate-in fade-in duration-300">
+            <div className={`text-[10px] font-bold ${theme.textSub} flex items-center justify-between select-none`}>
+              <div className="flex items-center gap-1">
+                <Globe size={10} className="text-emerald-500 animate-pulse" />
+                <span>{t ? t("chatbot.sources.title", "참고 출처") : "참고 출처"}</span>
+              </div>
+              {(message.searchTabId || (message.sources && message.sources[0]?.url)) && (
+                <button
+                  type="button"
+                  onClick={() => handleSwitchToSearchTab(message.searchTabId, message.searchQuery)}
+                  className={`flex items-center gap-0.5 text-[9px] hover:underline cursor-pointer font-bold ${
+                    isLight ? "text-indigo-600 hover:text-indigo-700" : "text-indigo-400 hover:text-indigo-300"
+                  }`}
+                >
+                  {t ? t("chatbot.sources.switchToTab", "실시간 검색 결과로 이동 ↗") : "실시간 검색 결과로 이동 ↗"}
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-1.5 w-full">
+              {message.sources.map((src, i) => (
+                <a
+                  key={i}
+                  href={src.url}
+                  onClick={(e) => handleSourceClick(e, src.url)}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[10px] font-medium transition-all max-w-[200px] truncate shadow-sm cursor-pointer ${
+                    isLight
+                      ? "bg-slate-50 border-slate-200 hover:bg-slate-100 text-slate-700 hover:border-slate-350"
+                      : "bg-slate-900 border-white/[0.06] hover:bg-white/[0.04] text-slate-350 hover:border-white/[0.12]"
+                  }`}
+                  title={`${src.title}\n${src.url}`}
+                >
+                  <span className="w-3.5 h-3.5 rounded bg-slate-200/50 dark:bg-slate-800/80 flex items-center justify-center text-[8.5px] flex-shrink-0 text-slate-500 font-bold">
+                    {i + 1}
+                  </span>
+                  <span className="truncate">{src.title}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

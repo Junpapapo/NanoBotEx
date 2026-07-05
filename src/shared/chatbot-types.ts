@@ -1,3 +1,9 @@
+export interface SearchResult {
+  title: string;
+  url: string;
+  snippet: string;
+}
+
 export interface Message {
   id: string;
   role: "user" | "assistant" | "system";
@@ -9,6 +15,9 @@ export interface Message {
   isConfirm?: boolean;
   confirmText?: string;
   isBuddySystemMsg?: boolean;
+  sources?: SearchResult[];
+  searchTabId?: number;
+  searchQuery?: string;
 }
 
 export interface QuickMenuItem {
@@ -85,6 +94,8 @@ export interface UserSettings {
   nano_chat_font?: "sans" | "inter" | "noto" | "mono";
   // 세션 최대 유지 시간 (분), 0 = 비활성화
   nano_session_timeout_minutes?: number;
+  nano_web_search_enabled?: boolean;
+  nano_web_search_mode?: "off" | "auto" | "force";
 }
 
 export interface Skill {

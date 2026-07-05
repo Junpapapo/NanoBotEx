@@ -157,9 +157,9 @@ export function ChatbotView({
 
     if (activeMode === "buddy") {
       setActiveMode("bot");
-      sendMessage(prompt);
+      sendMessage(prompt, true);
     } else {
-      sendMessage(prompt);
+      sendMessage(prompt, true);
     }
   };
 
@@ -308,9 +308,9 @@ export function ChatbotView({
 
           if (activeMode === "buddy") {
             setActiveMode("bot");
-            sendMessage(prompt);
+            sendMessage(prompt, true);
           } else {
-            sendMessage(prompt);
+            sendMessage(prompt, true);
           }
         },
       );
@@ -891,6 +891,7 @@ export function ChatbotView({
               t={t}
               externalText={promptToInject}
               onClearExternalText={() => setPromptToInject("")}
+              updateSettings={updateSettings}
             />
           </>
         )}

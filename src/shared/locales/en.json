@@ -9,7 +9,8 @@
     "status": {
       "writing": "Generating...",
       "localReady": "Local AI Ready",
-      "fallbackActive": "Backend Fallback Active"
+      "fallbackActive": "Backend Fallback Active",
+      "searching": "🔍 Fetching real-time search results..."
     },
     "dragMenu": {
       "send": "Send",

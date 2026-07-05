@@ -9,7 +9,8 @@
     "status": {
       "writing": "답변을 작성하는 중...",
       "localReady": "로컬 AI 준비됨",
-      "fallbackActive": "백엔드 폴백 작동 중"
+      "fallbackActive": "백엔드 폴백 작동 중",
+      "searching": "🔍 실시간 검색 결과를 가져오는 중입니다..."
     },
     "dragMenu": {
       "send": "연동",

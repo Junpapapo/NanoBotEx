@@ -24,7 +24,7 @@ export function GuidePanel({
 
   const tabs = isBuddy
     ? (["buddy_reset", "buddy_crypto", "buddy_personality"] as const)
-    : (["flags", "api", "check", "api_settings", "doc_viewer"] as const);
+    : (["flags", "api", "check", "api_settings", "doc_viewer", "web_search"] as const);
 
   return (
     <div className="flex flex-col h-full bg-transparent text-inherit p-4 overflow-y-auto custom-scrollbar">
@@ -64,7 +64,9 @@ export function GuidePanel({
                     ? "🌐 External API"
                     : tab === "doc_viewer"
                       ? "📄 AI Doc Viewer"
-                      : tab === "buddy_reset"
+                      : tab === "web_search"
+                        ? "🌐 Real-Time Search"
+                        : tab === "buddy_reset"
                         ? "🗑️ Reset Chats & Memories"
                         : tab === "buddy_crypto"
                           ? "🔒 AES-256 Encryption"
@@ -219,6 +221,36 @@ console.log(response);`}
               </p>
               <p>
                 • <strong>Memo Dual-Mode</strong>: Memos are displayed in clean markdown preview mode by default. Click on the text to edit, and click outside (blur) to instantly return to preview mode.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isBuddy && activeTab === "web_search" && (
+          <div className="space-y-3">
+            <p className={`font-semibold ${theme.textMain}`}>
+              🌐 Real-Time Web Search Guide
+            </p>
+            <p>
+              Enhance the chatbot's capabilities by fetching and summarizing live information directly from the web.
+            </p>
+            <div
+              className={`p-3 ${theme.bgInput} rounded-lg border ${theme.borderMuted} space-y-2`}
+            >
+              <p>
+                • <strong>Enable Web Search (🌐)</strong>: Click the globe icon at the bottom-right of the chat input window to toggle real-time search.
+              </p>
+              <p>
+                • <strong>Automatic Navigation & Scraping</strong>: When enabled, sending a message automatically updates the active tab's URL to Google Search and safely extracts the page text (bypassing bot filters).
+              </p>
+              <p>
+                • <strong>Smart Summarization</strong>: The local AI reviews the live search results, extracts the most relevant information (such as real-time stock prices or news), and answers accurately with index numbers.
+              </p>
+              <p>
+                • <strong>One-Click Return (↗)</strong>: Click the `[Go to Google Search Result ↗]` button at the bottom of the assistant's response to quickly switch back to your search result page.
+              </p>
+              <p className="text-amber-500 font-semibold">
+                💡 Note: High-priority system actions like Drag-to-Summarize, Page Summary, and Active Site Analysis will automatically bypass web search to avoid unnecessary tab redirection.
               </p>
             </div>
           </div>

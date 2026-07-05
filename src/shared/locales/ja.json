@@ -9,7 +9,8 @@
     "status": {
       "writing": "返答を生成中...",
       "localReady": "ローカル AI 準備完了",
-      "fallbackActive": "バックエンドフォールバック稼働中"
+      "fallbackActive": "バックエンドフォールバック稼働中",
+      "searching": "🔍 リアルタイム検索結果を取得しています..."
     },
     "dragMenu": {
       "send": "送信",

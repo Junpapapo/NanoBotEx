@@ -32,6 +32,24 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "create_search_tab") {
+    const keyword = message.keyword || "";
+    const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(keyword)}`;
+    
+    try {
+      chrome.tabs.create({
+        url: googleSearchUrl,
+        active: false
+      }, (newTab) => {
+        sendResponse({ success: true, tabId: newTab?.id || 0 });
+      });
+    } catch (err) {
+      console.error("Failed to create tab in background:", err);
+      sendResponse({ success: false, tabId: 0 });
+    }
+    return true; // asynchronous response key
+  }
+
   if (message.action === "open_sidepanel") {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tabId = tabs[0]?.id;

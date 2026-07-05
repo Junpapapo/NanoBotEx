@@ -1,12 +1,162 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Message, UserSettings, Skill } from "../chatbot-types";
+import { Message, UserSettings, Skill, SearchResult } from "../chatbot-types";
 import { useSessionHistory } from "./useSessionHistory";
 import { useAISession } from "./useAISession";
 import { ChatbotModel } from "../chatbot-model";
 import { checkSafety } from "../utils/safety-guard";
 import { ENABLE_CHAT_SAFETY } from "../../premium/premium-config";
 
+export const performWebSearch = async (keyword: string): Promise<{ results: SearchResult[]; tabId: number }> => {
+  let tempTabId = 0;
+  let originalTabId = 0;
+  const results: SearchResult[] = [];
+  console.log("[NanoBot] performWebSearch start. Keyword:", keyword);
+  
+  try {
+    if (typeof chrome !== "undefined" && chrome.tabs && chrome.scripting) {
+      const [currentTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (currentTab && currentTab.id) {
+        originalTabId = currentTab.id;
+      }
 
+      const trimmedKeyword = keyword.trim();
+      const isUrl = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/i.test(trimmedKeyword);
+
+      if (isUrl) {
+        // ──────────────────────────────────────────────
+        // 1. 직접 URL 입력 시: 해당 사이트로 백그라운드 직접 탭 생성하여 스크래핑
+        // ──────────────────────────────────────────────
+        const url = trimmedKeyword.startsWith("http") ? trimmedKeyword : `https://${trimmedKeyword}`;
+        console.log("[NanoBot] Directly scraping URL:", url);
+        const tempTab = await chrome.tabs.create({ url, active: false });
+        tempTabId = tempTab.id || 0;
+      } else {
+        // ──────────────────────────────────────────────
+        // 2. 검색어인 경우: 브라우저 기본 검색엔진 활용 (chrome.search.query)
+        // ──────────────────────────────────────────────
+        console.log("[NanoBot] Querying browser default search engine for keyword:", trimmedKeyword);
+
+        if (chrome.search && chrome.search.query) {
+          // 새 탭이 열릴 때 ID 가로채기를 위한 리스너 등록
+          const tabCreatedPromise = new Promise<number>((resolve) => {
+            const listener = (tab: chrome.tabs.Tab) => {
+              chrome.tabs.onCreated.removeListener(listener);
+              resolve(tab.id || 0);
+            };
+            chrome.tabs.onCreated.addListener(listener);
+            
+            // 3초 타임아웃
+            setTimeout(() => {
+              chrome.tabs.onCreated.removeListener(listener);
+              resolve(0);
+            }, 3000);
+          });
+
+          // 기본 검색엔진 쿼리 실행 (브라우저 설정 연동)
+          await chrome.search.query({ text: trimmedKeyword, disposition: "NEW_TAB" });
+          tempTabId = await tabCreatedPromise;
+
+          // 사용자가 기존에 보던 원본 탭으로 포커스를 신속하게 복원하여 화면 튐 차단
+          if (tempTabId && originalTabId) {
+            await chrome.tabs.update(originalTabId, { active: true });
+            console.log("[NanoBot] Successfully restored focus to original tab:", originalTabId);
+          }
+        } else {
+          // chrome.search API 미지원 시 구글 검색을 백그라운드로 대체 실행 (폴백)
+          const fallbackUrl = `https://www.google.com/search?q=${encodeURIComponent(trimmedKeyword)}`;
+          console.log("[NanoBot] chrome.search API not available. Falling back to Google in background:", fallbackUrl);
+          const tempTab = await chrome.tabs.create({ url: fallbackUrl, active: false });
+          tempTabId = tempTab.id || 0;
+        }
+      }
+
+      if (tempTabId) {
+        // 3. 탭 로딩 상태 대기 (최대 7초)
+        const tabInfo = await chrome.tabs.get(tempTabId);
+        if (tabInfo.status !== "complete") {
+          await new Promise<void>((resolve) => {
+            const listener = (updatedTabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
+              if (updatedTabId === tempTabId && changeInfo.status === "complete") {
+                chrome.tabs.onUpdated.removeListener(listener);
+                resolve();
+              }
+            };
+            chrome.tabs.onUpdated.addListener(listener);
+            
+            setTimeout(() => {
+              chrome.tabs.onUpdated.removeListener(listener);
+              resolve();
+            }, 7000);
+          });
+        }
+
+        // 4. 범용 DOM 파서를 통한 핵심 텍스트 스크래핑 (광고/메뉴 등 제외)
+        const finalTabInfo = await chrome.tabs.get(tempTabId);
+        const actualSearchUrl = finalTabInfo.url || (isUrl ? (trimmedKeyword.startsWith("http") ? trimmedKeyword : `https://${trimmedKeyword}`) : `https://www.google.com/search?q=${encodeURIComponent(trimmedKeyword)}`);
+
+        const execResults = await chrome.scripting.executeScript({
+          target: { tabId: tempTabId },
+          func: () => {
+            // 광고, 헤더, 푸터, 네비게이션 요소 일체 삭제하여 스크래핑 효율화
+            const excludeSelectors = [
+              "nav", "footer", "header", "aside", ".ads", "#ads", 
+              ".ad-unit", "#header", "#footer", ".navigation", ".menu", ".sidebar"
+            ];
+            excludeSelectors.forEach(sel => {
+              try {
+                document.querySelectorAll(sel).forEach(el => el.remove());
+              } catch (e) {}
+            });
+
+            // 일반 페이지의 article이나 main 콘텐츠가 있다면 우선 타겟팅
+            const articleEl = document.querySelector("article") || document.querySelector("main") || document.querySelector("#content");
+            if (articleEl && articleEl.innerText.trim().length > 200) {
+              return articleEl.innerText;
+            }
+
+            return document.body.innerText;
+          }
+        });
+
+        if (execResults && execResults[0] && typeof execResults[0].result === "string") {
+          const rawText = execResults[0].result;
+          const cleanedText = rawText
+            .replace(/\s+/g, " ")
+            .trim()
+            .substring(0, 3500); // 3,500자 컨텍스트 한도 준수
+          
+          if (cleanedText) {
+            results.push({
+              title: isUrl ? `웹 사이트 직접 수집: "${trimmedKeyword}"` : `실시간 기본 검색 결과: "${trimmedKeyword}"`,
+              url: isUrl ? (trimmedKeyword.startsWith("http") ? trimmedKeyword : `https://${trimmedKeyword}`) : actualSearchUrl,
+              snippet: cleanedText
+            });
+          }
+        }
+      }
+    }
+  } catch (tabErr: any) {
+    console.warn("[NanoBot] performWebSearch error:", tabErr);
+    results.push({
+      title: "⚠️ 스크래핑 에러 디버그 정보",
+      url: "chrome://error-details",
+      snippet: `에러 내용: ${tabErr?.message || tabErr}`
+    });
+  } finally {
+    // 5. 사용이 완료된 임시 검색 탭은 반드시 강제 닫기 수행 (메모리 누수 차단)
+    if (tempTabId) {
+      try {
+        await chrome.tabs.remove(tempTabId);
+        console.log("[NanoBot] Safely removed temporary tab:", tempTabId);
+      } catch (removeErr) {
+        console.warn("[NanoBot] Failed to remove temporary tab:", removeErr);
+      }
+    }
+  }
+
+  console.log("[NanoBot] performWebSearch end. Found:", results.length, "results:", results);
+  return { results, tabId: originalTabId };
+};
 
 export function useChatbotSession(
   isEnabled: boolean,
@@ -265,8 +415,11 @@ export function useChatbotSession(
     }
   }, [activeSkill, t]);
 
-  const sendMessage = useCallback(async (text: string) => {
+  const sendMessage = useCallback(async (text: string, skipWebSearch?: boolean) => {
     if (!text.trim() || isSending) return;
+
+    let searchResults: SearchResult[] = [];
+    let searchTabId: number | undefined = undefined;
 
     // ──────────────────────────────────────────────
     // 세션 타임아웃 체크: 마지막 메시지로부터 N분 경과 시 새 세션 자동 시작
@@ -368,28 +521,118 @@ export function useChatbotSession(
       const currentSettings = settingsRef.current;
       let promptText = text;
 
-      if (currentSettings.api_mode === "local") {
-        // 로컬 모드: 소형 모델의 망각 방지를 위해 매 턴마다 강제 룰 결합
-        const miniRules = buildPromptWithRules(currentSettings);
-        let activeSkillSection = "";
-        if (activeSkill) {
-          activeSkillSection = `[ACTIVE SKILL INSTRUCTIONS - ${activeSkill.title}]\n${activeSkill.prompt}\n\n`;
-        }
-        
-        promptText = `[SYSTEM INSTRUCTION]\n${miniRules}${activeSkillSection}\n[USER QUESTION]\n${text}`;
-      } else {
-        const lengthRule = currentSettings.nano_ai_context_level === "minimal"
-          ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
-          : currentSettings.nano_ai_context_level === "detailed"
-            ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
-            : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
+      // ──────────────────────────────────────────────
+      // 웹 검색 토글 활성화 시 검색 수행 및 프롬프트 인젝션
+      // ──────────────────────────────────────────────
+      const currentMode = currentSettings.nano_web_search_mode || (currentSettings.nano_web_search_enabled !== undefined ? (currentSettings.nano_web_search_enabled ? "force" : "off") : "auto");
+      console.log("[NanoBot] Web search mode in sendMessage:", currentMode);
+      
+      const shouldSkipSearch = skipWebSearch || text.startsWith("scraped-direct:");
+      let isSearchActive = false;
 
-        if (activeSkill) {
-          promptText = `${lengthRule}\n\n[AI 스킬 규칙 - ${activeSkill.title}]\n${activeSkill.prompt}\n\n[사용자 입력]\n${text}`;
-        } else {
-          promptText = `${lengthRule}\n\n[USER QUESTION]\n${text}`;
+      if (!shouldSkipSearch && currentMode !== "off") {
+        if (currentMode === "force") {
+          isSearchActive = true;
+        } else if (currentMode === "auto") {
+          // URL 정규식 감지
+          const isUrl = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/i.test(text.trim());
+          
+          // 실시간성 키워드 감지 (휴리스틱)
+          const temporalKeywords = [
+            "오늘", "어제", "내일", "날씨", "주가", "뉴스", "최근", "최신", 
+            "환율", "결과", "순위", "현재", "지금", "트렌드", "이슈", "대통령", "경기",
+            "today", "yesterday", "tomorrow", "weather", "stock", "news", "recent",
+            "latest", "exchange rate", "result", "rank", "current", "now", "trend"
+          ];
+          const hasTemporalKeyword = temporalKeywords.some(keyword => text.toLowerCase().includes(keyword));
+          
+          if (isUrl || hasTemporalKeyword) {
+            isSearchActive = true;
+            console.log("[NanoBot] Auto mode search triggered. Reason:", isUrl ? "URL detected" : "Temporal keyword detected");
+          }
         }
       }
+
+      if (isSearchActive) {
+        console.log("[NanoBot] Web search execution starts. query:", text);
+        updateContent(t("chatbot.status.searching", "🔍 실시간 검색 결과를 가져오는 중입니다..."));
+        try {
+          const searchData = await performWebSearch(text);
+          searchResults = searchData.results;
+          searchTabId = searchData.tabId;
+          console.log("[NanoBot] Scrape success. Count:", searchResults.length, "tabId:", searchTabId);
+        } catch (searchErr) {
+          console.error("[NanoBot] Web search failed:", searchErr);
+        }
+        // 검색 프로세스가 끝나면 대기 문구 비움
+        updateContent("");
+      }
+
+      if (searchResults.length > 0) {
+        const searchContext = searchResults
+          .map((r, i) => `[${i + 1}] ${r.title} (${r.url})\n${r.snippet}`)
+          .join("\n\n");
+
+        if (currentSettings.api_mode === "local") {
+          const miniRules = buildPromptWithRules(currentSettings);
+          let activeSkillSection = "";
+          if (activeSkill) {
+            activeSkillSection = `[ACTIVE SKILL INSTRUCTIONS - ${activeSkill.title}]\n${activeSkill.prompt}\n\n`;
+          }
+          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}${activeSkillSection}\n[WEB SEARCH RESULT]\n${searchContext}\n\n[USER QUESTION]\n${text}\n\n(참고: 제공된 [WEB SEARCH RESULT]의 신뢰성 높은 최신 정보를 분석해서 한국어로 친절하게 답변하세요.)`;
+        } else {
+          const lengthRule = currentSettings.nano_ai_context_level === "minimal"
+            ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
+            : currentSettings.nano_ai_context_level === "detailed"
+              ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
+              : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
+
+          let activeSkillSection = "";
+          if (activeSkill) {
+            activeSkillSection = `[AI 스킬 규칙 - ${activeSkill.title}]\n${activeSkill.prompt}\n\n`;
+          }
+
+          promptText = `${lengthRule}\n\n${activeSkillSection}[웹 검색 결과]\n${searchContext}\n\n[USER QUESTION]\n${text}\n\n(참고: 제공된 [웹 검색 결과]의 신뢰성 높은 내용을 분석해서 친절한 한국어로 답변하세요.)`;
+        }
+      } else {
+        if (currentSettings.api_mode === "local") {
+          // 로컬 모드: 소형 모델의 망각 방지를 위해 매 턴마다 강제 룰 결합
+          const miniRules = buildPromptWithRules(currentSettings);
+          let activeSkillSection = "";
+          if (activeSkill) {
+            activeSkillSection = `[ACTIVE SKILL INSTRUCTIONS - ${activeSkill.title}]\n${activeSkill.prompt}\n\n`;
+          }
+          
+          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}${activeSkillSection}\n[USER QUESTION]\n${text}`;
+        } else {
+          const lengthRule = currentSettings.nano_ai_context_level === "minimal"
+            ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
+            : currentSettings.nano_ai_context_level === "detailed"
+              ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
+              : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
+
+          if (activeSkill) {
+            promptText = `${lengthRule}\n\n[AI 스킬 규칙 - ${activeSkill.title}]\n${activeSkill.prompt}\n\n[사용자 입력]\n${text}`;
+          } else {
+            promptText = `${lengthRule}\n\n[USER QUESTION]\n${text}`;
+          }
+        }
+      }
+
+      const flushFinalContent = (content: string) => {
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        updateContent(content);
+        
+        // 답변이 끝난 순간 완성된 메시지 상태를 한 번 더 안전하게 세션 스토리지에 동기화 저장합니다.
+        setMessages((prev) => {
+          const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content, isStreaming: false, sources: searchResults.length > 0 ? searchResults : undefined, searchTabId, searchQuery: searchResults.length > 0 ? text : undefined } : m);
+          saveSession(activeSessionId!, finalMsgs, "none");
+          return finalMsgs;
+        });
+      };
 
       if (currentSettings.api_mode === "local") {
         // ──────────────────────────────────────────────
@@ -406,7 +649,7 @@ export function useChatbotSession(
             );
             updateContent(blockText);
             setMessages((prev) => {
-              const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: blockText, isStreaming: false } : m);
+              const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: blockText, isStreaming: false, sources: searchResults.length > 0 ? searchResults : undefined, searchTabId, searchQuery: searchResults.length > 0 ? text : undefined } : m);
               saveSession(activeSessionId!, finalMsgs, "none");
               return finalMsgs;
             });
@@ -451,7 +694,7 @@ export function useChatbotSession(
           const res = await activeSession.prompt(promptText, { signal: abortControllerRef.current?.signal });
           updateContent(res);
           setMessages((prev) => {
-            const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: res, isStreaming: false } : m);
+            const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: res, isStreaming: false, sources: searchResults.length > 0 ? searchResults : undefined, searchTabId, searchQuery: searchResults.length > 0 ? text : undefined } : m);
             saveSession(activeSessionId!, finalMsgs, "none");
             return finalMsgs;
           });
@@ -472,7 +715,7 @@ export function useChatbotSession(
       }
 
       setMessages((prev) => {
-        const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false } : m);
+        const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false, sources: searchResults.length > 0 ? searchResults : undefined, searchTabId, searchQuery: searchResults.length > 0 ? text : undefined } : m);
         saveSession(activeSessionId!, finalMsgs, "none");
         return finalMsgs;
       });
@@ -480,7 +723,7 @@ export function useChatbotSession(
     } catch (err: any) {
       if (err.name === "AbortError" || isAbortedRef.current) {
         setMessages((prev) => {
-          const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false } : m);
+          const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, isStreaming: false, sources: searchResults.length > 0 ? searchResults : undefined, searchTabId, searchQuery: searchResults.length > 0 ? text : undefined } : m);
           saveSession(activeSessionId!, finalMsgs, "none");
           return finalMsgs;
         });
@@ -490,7 +733,7 @@ export function useChatbotSession(
         const errorContent = `오류가 발생했습니다: ${errMsg}\n\n브라우저 및 온디바이스 설정을 확인해 주세요.`;
         updateContent(errorContent);
         setMessages((prev) => {
-          const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: errorContent, isStreaming: false } : m);
+          const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: errorContent, isStreaming: false, sources: searchResults.length > 0 ? searchResults : undefined, searchTabId, searchQuery: searchResults.length > 0 ? text : undefined } : m);
           saveSession(activeSessionId!, finalMsgs, "none");
           return finalMsgs;
         });

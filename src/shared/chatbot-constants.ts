@@ -35,6 +35,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   nano_locale: "",
   nano_launcher_mode: "sidepanel", // 기본 기동 모드는 사이드패널
   nano_session_timeout_minutes: 60, // 세션 최대 유지 시간 (분), 0 = 비활성화
+  nano_web_search_mode: "auto",
 };
 
 export interface ThemePalette {

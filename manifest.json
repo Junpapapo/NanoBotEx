@@ -17,11 +17,13 @@
     "activeTab",
     "scripting",
     "alarms",
-    "notifications"
+    "notifications",
+    "tabs"
   ],
   "host_permissions": [
     "https://api.openai.com/*",
-    "https://*.googleapis.com/*"
+    "https://*.googleapis.com/*",
+    "https://*.google.com/*"
   ],
   "content_scripts": [
     {

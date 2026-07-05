@@ -40,6 +40,12 @@ A lightweight utility that brings a customized AI assistant directly onto your b
 - **Upgraded Memo Sync**:
   - **Dual-Mode Editor (View/Edit)**: Read memos as clean parsed markdown by default. Click the memo body to instantly trigger interactive editing with auto-focus, and auto-restore to the visual preview on blur.
   - **Instant Save-to-Memo**: Relays active documents straight to your memo vault with one-click synchronization.
+- **Real-Time Web Search & Summarization**:
+  - **Live Search Toggle (🌐)**: Toggle real-time search with a dedicated globe icon at the bottom-right of the chat input area.
+  - **Dynamic URL Redirection**: Automatically updates the active tab's URL to Google Search and securely scrapes the rendered DOM (bypassing bot filters and CAPTCHAs).
+  - **On-Device Search Summarization**: The local AI analyzes live search content (such as real-time stock prices or news) and answers with reference cards.
+  - **1-Click Search View Return (↗)**: Instantly refocus and jump back to the search page using the `[Go to Google Search Result ↗]` button.
+  - **Intelligent Skip Rules**: System actions like drag-to-summarize, page summary, and active site analysis automatically skip web search to prevent redundant redirection.
 - **Active Browser Integration**:
   - **Inline Selection Drag & Action**: Drag text on any web page to evoke a floating Quick Action tooltip (Summarize/Translate) which automatically triggers processing.
   - **1-Click Active Tab Summarization**: Click the document icon in the chat header to scrape and summarize the active tab in 3 lines.
