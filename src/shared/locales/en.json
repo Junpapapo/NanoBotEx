@@ -787,6 +787,7 @@
       "archiveEmpty": "No saved expressions found.",
       "deleteBtn": "Delete",
       "selectTopic": "Learning Topic",
+      "settingsTitle": "Tutor Settings",
       "topic": {
         "general": "Daily Conversation",
         "travel": "Travel & Life",

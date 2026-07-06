@@ -22,6 +22,7 @@ export function TutorPanel({
   
   const [archiveList, setArchiveList] = useState<any[]>([]);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const [settingsExpanded, setSettingsExpanded] = useState(true);
 
   // 스토리지에서 저장된 아카이브 목록 로드
   useEffect(() => {
@@ -137,119 +138,141 @@ export function TutorPanel({
         {t("tools.tutor.desc", "배우고 싶은 타겟 언어와 연령대를 설정하세요. AI 선생님이 친근한 어조로 수준에 딱 맞는 예문과 설명 카드를 매일 배달합니다.")}
       </p>
 
-      {/* 설정 폼 블록 */}
-      <div className={`flex flex-col gap-4 ${theme.bgSub} p-4 rounded-xl border ${theme.borderMuted}`}>
-        {/* 언어 설정 */}
-        <div className="flex flex-col gap-1.5">
-          <label className={`text-[9px] ${theme.textSub} font-black uppercase tracking-wider block select-none`}>
-            {t("tools.tutor.selectLang", "배우고 싶은 언어")}
-          </label>
-          <select
-            value={currentLang}
-            onChange={(e) => updateSettings({ tutor_lang: e.target.value })}
-            className={`w-full text-xs font-bold py-1.5 px-2 rounded-lg border focus:outline-none transition-all cursor-pointer ${
-              isLight
-                ? "bg-white border-slate-200 text-slate-700 focus:border-emerald-400"
-                : "bg-slate-900 border-white/[0.06] text-slate-200 focus:border-emerald-500"
-            }`}
-          >
-            {learningLanguages.map((l) => (
-              <option key={l.code} value={l.code}>
-                {l.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 학습 주제 설정 */}
-        <div className="flex flex-col gap-1.5">
-          <label className={`text-[9px] ${theme.textSub} font-black uppercase tracking-wider block select-none`}>
-            {t("tools.tutor.selectTopic", "학습 주제")}
-          </label>
-          <select
-            value={currentTopic}
-            onChange={(e) => updateSettings({ tutor_topic: e.target.value })}
-            className={`w-full text-xs font-bold py-1.5 px-2 rounded-lg border focus:outline-none transition-all cursor-pointer ${
-              isLight
-                ? "bg-white border-slate-200 text-slate-700 focus:border-emerald-400"
-                : "bg-slate-900 border-white/[0.06] text-slate-200 focus:border-emerald-500"
-            }`}
-          >
-            {topics.map((tp) => (
-              <option key={tp.id} value={tp.id}>
-                {tp.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 수준/연령 설정 */}
-        <div className="flex flex-col gap-1.5">
-          <label className={`text-[9px] ${theme.textSub} font-black uppercase tracking-wider block select-none`}>
-            {t("tools.tutor.selectLevel", "학습 연령 및 수준")}
-          </label>
-          <div className="flex flex-col gap-2">
-            {levels.map((lvl) => {
-              const active = currentLevel === lvl.id;
-              return (
-                <button
-                  key={lvl.id}
-                  type="button"
-                  onClick={() => updateSettings({ tutor_level: lvl.id })}
-                  className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all cursor-pointer ${
-                    active
-                      ? isLight
-                        ? "bg-emerald-50 border-emerald-300 text-emerald-800 font-extrabold shadow-sm"
-                        : "bg-emerald-950/20 border-emerald-500/40 text-emerald-300 font-extrabold shadow-md"
-                      : isLight
-                        ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-                        : "bg-slate-900 border-white/[0.04] text-slate-400 hover:bg-white/[0.02]"
-                  }`}
-                >
-                  <div className="font-bold flex items-center justify-between">
-                    {lvl.label}
-                    {active && <span className="text-[10px] text-emerald-400">✓</span>}
-                  </div>
-                  <div className={`text-[9.5px] mt-0.5 font-medium ${isLight ? "text-slate-400" : "text-slate-500"}`}>
-                    {lvl.desc}
-                  </div>
-                </button>
-              );
-            })}
+      {/* 설정 폼 블록 (접이식 디자인 적용) */}
+      <div className={`flex flex-col rounded-xl border ${theme.borderMuted} overflow-hidden`}>
+        {/* 접기/펴기 토글 헤더 */}
+        <div 
+          onClick={() => setSettingsExpanded(!settingsExpanded)}
+          className={`flex justify-between items-center p-3 cursor-pointer select-none border-b transition-all ${
+            isLight 
+              ? "bg-slate-50/50 hover:bg-slate-100/50 border-slate-200" 
+              : "bg-slate-900/30 hover:bg-slate-900/60 border-white/[0.04]"
+          }`}
+        >
+          <span className={`text-[10px] font-black uppercase tracking-wider ${theme.textMain}`}>
+            {t("tools.tutor.settingsTitle", "학습 조건 설정")}
+          </span>
+          <div className={theme.textSub}>
+            {settingsExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
           </div>
         </div>
 
-        {/* 난이도 설정 (상/중/하 세그먼트 버튼) */}
-        <div className="flex flex-col gap-1.5">
-          <label className={`text-[9px] ${theme.textSub} font-black uppercase tracking-wider block select-none`}>
-            {t("tools.tutor.selectDifficulty", "학습 난이도")}
-          </label>
-          <div className={`grid grid-cols-3 gap-1 p-1 rounded-lg border ${
-            isLight ? "bg-slate-100/80 border-slate-200" : "bg-slate-900 border-white/[0.04]"
-          }`}>
-            {difficulties.map((diff) => {
-              const active = currentDiff === diff.id;
-              return (
-                <button
-                  key={diff.id}
-                  type="button"
-                  onClick={() => updateSettings({ tutor_difficulty: diff.id as any })}
-                  className={`text-center py-1.5 px-1 rounded-md text-[10px] font-extrabold transition-all cursor-pointer select-none ${
-                    active
-                      ? isLight
-                        ? "bg-white text-emerald-700 shadow-sm border border-slate-200"
-                        : "bg-slate-850 text-emerald-400 shadow border border-emerald-500/20"
-                      : isLight
-                        ? "text-slate-500 hover:text-slate-700"
-                        : "text-slate-400 hover:text-slate-350"
-                  }`}
-                >
-                  {diff.label}
-                </button>
-              );
-            })}
+        {/* 바디 (접힘 상태 연동) */}
+        {settingsExpanded && (
+          <div className={`flex flex-col gap-4 p-4 ${isLight ? "bg-white" : "bg-slate-900/10"}`}>
+            {/* 언어 설정 */}
+            <div className="flex flex-col gap-1.5">
+              <label className={`text-[9px] ${theme.textSub} font-black uppercase tracking-wider block select-none`}>
+                {t("tools.tutor.selectLang", "배우고 싶은 언어")}
+              </label>
+              <select
+                value={currentLang}
+                onChange={(e) => updateSettings({ tutor_lang: e.target.value })}
+                className={`w-full text-xs font-bold py-1.5 px-2 rounded-lg border focus:outline-none transition-all cursor-pointer ${
+                  isLight
+                    ? "bg-white border-slate-200 text-slate-700 focus:border-emerald-400"
+                    : "bg-slate-900 border-white/[0.06] text-slate-200 focus:border-emerald-500"
+                }`}
+              >
+                {learningLanguages.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 학습 주제 설정 */}
+            <div className="flex flex-col gap-1.5">
+              <label className={`text-[9px] ${theme.textSub} font-black uppercase tracking-wider block select-none`}>
+                {t("tools.tutor.selectTopic", "학습 주제")}
+              </label>
+              <select
+                value={currentTopic}
+                onChange={(e) => updateSettings({ tutor_topic: e.target.value })}
+                className={`w-full text-xs font-bold py-1.5 px-2 rounded-lg border focus:outline-none transition-all cursor-pointer ${
+                  isLight
+                    ? "bg-white border-slate-200 text-slate-700 focus:border-emerald-400"
+                    : "bg-slate-900 border-white/[0.06] text-slate-200 focus:border-emerald-500"
+                }`}
+              >
+                {topics.map((tp) => (
+                  <option key={tp.id} value={tp.id}>
+                    {tp.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 수준/연령 설정 */}
+            <div className="flex flex-col gap-1.5">
+              <label className={`text-[9px] ${theme.textSub} font-black uppercase tracking-wider block select-none`}>
+                {t("tools.tutor.selectLevel", "학습 연령 및 수준")}
+              </label>
+              <div className="flex flex-col gap-2">
+                {levels.map((lvl) => {
+                  const active = currentLevel === lvl.id;
+                  return (
+                    <button
+                      key={lvl.id}
+                      type="button"
+                      onClick={() => updateSettings({ tutor_level: lvl.id })}
+                      className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all cursor-pointer ${
+                        active
+                          ? isLight
+                            ? "bg-emerald-50 border-emerald-300 text-emerald-800 font-extrabold shadow-sm"
+                            : "bg-emerald-950/20 border-emerald-500/40 text-emerald-300 font-extrabold shadow-md"
+                          : isLight
+                            ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                            : "bg-slate-900 border-white/[0.04] text-slate-400 hover:bg-white/[0.02]"
+                      }`}
+                    >
+                      <div className="font-bold flex items-center justify-between">
+                        {lvl.label}
+                        {active && <span className="text-[10px] text-emerald-400">✓</span>}
+                      </div>
+                      <div className={`text-[9.5px] mt-0.5 font-medium ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+                        {lvl.desc}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 난이도 설정 (상/중/하 세그먼트 버튼) */}
+            <div className="flex flex-col gap-1.5">
+              <label className={`text-[9px] ${theme.textSub} font-black uppercase tracking-wider block select-none`}>
+                {t("tools.tutor.selectDifficulty", "학습 난이도")}
+              </label>
+              <div className={`grid grid-cols-3 gap-1 p-1 rounded-lg border ${
+                isLight ? "bg-slate-100/80 border-slate-200" : "bg-slate-900 border-white/[0.04]"
+              }`}>
+                {difficulties.map((diff) => {
+                  const active = currentDiff === diff.id;
+                  return (
+                    <button
+                      key={diff.id}
+                      type="button"
+                      onClick={() => updateSettings({ tutor_difficulty: diff.id as any })}
+                      className={`text-center py-1.5 px-1 rounded-md text-[10px] font-extrabold transition-all cursor-pointer select-none ${
+                        active
+                          ? isLight
+                            ? "bg-white text-emerald-700 shadow-sm border border-slate-200"
+                            : "bg-slate-850 text-emerald-400 shadow border border-emerald-500/20"
+                          : isLight
+                            ? "text-slate-500 hover:text-slate-700"
+                            : "text-slate-400 hover:text-slate-350"
+                      }`}
+                    >
+                      {diff.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* 배움 호출 버튼 */}

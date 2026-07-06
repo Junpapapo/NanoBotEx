@@ -786,6 +786,7 @@
       "archiveEmpty": "저장된 배움 표현이 없습니다.",
       "deleteBtn": "삭제",
       "selectTopic": "학습 주제",
+      "settingsTitle": "학습 조건 설정",
       "topic": {
         "general": "일상 회화 (Daily)",
         "travel": "여행 및 생활 (Travel)",

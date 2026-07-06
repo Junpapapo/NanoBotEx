@@ -794,6 +794,7 @@
       "archiveEmpty": "保存された学習フレーズはありません。",
       "deleteBtn": "削除",
       "selectTopic": "学習トピック",
+      "settingsTitle": "学習条件設定",
       "topic": {
         "general": "日常会話 (Daily)",
         "travel": "旅行・生活 (Travel)",
