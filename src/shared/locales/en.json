@@ -783,6 +783,9 @@
       "selectDifficulty": "Target Difficulty",
       "requestButton": "Get Daily Learning Expression 🎓",
       "ttsTitle": "Listen Pronunciation",
+      "archiveTitle": "Saved Expressions",
+      "archiveEmpty": "No saved expressions found.",
+      "deleteBtn": "Delete",
       "lang": {
         "ko": "Korean",
         "en": "English",

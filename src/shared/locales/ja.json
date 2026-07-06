@@ -790,6 +790,9 @@
       "selectDifficulty": "学習難易度",
       "requestButton": "今日の学習フレーズを取得 🎓",
       "ttsTitle": "発音を聞く",
+      "archiveTitle": "マイ単語帳",
+      "archiveEmpty": "保存された学習フレーズはありません。",
+      "deleteBtn": "削除",
       "lang": {
         "ko": "韓国語 (Korean)",
         "en": "英語 (English)",

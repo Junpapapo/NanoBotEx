@@ -110,6 +110,35 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
   const [noteSaved, setNoteSaved] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  React.useEffect(() => {
+    if (message.role === "assistant") {
+      const learnBlock = extractJsonBlock(message.content, '"sentence"', '\\[LEARN_CARD\\]');
+      if (learnBlock) {
+        try {
+          const learnData = cleanAndParseJson(learnBlock.jsonText);
+          if (learnData.sentence && learnData.translation) {
+            if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+              chrome.storage.local.get(["nanobot-tutor-archive"], (result) => {
+                const list = result["nanobot-tutor-archive"] || [];
+                const exists = list.some((item: any) => item.sentence === learnData.sentence);
+                if (!exists) {
+                  const newItem = {
+                    ...learnData,
+                    id: "tutor-card-" + Math.random().toString(36).substring(7),
+                    createdAt: Date.now()
+                  };
+                  chrome.storage.local.set({ "nanobot-tutor-archive": [newItem, ...list] });
+                }
+              });
+            }
+          }
+        } catch (e) {
+          console.warn("Failed to auto-archive learn card in useEffect:", e);
+        }
+      }
+    }
+  }, [message.id, message.content, message.role]);
+
   const handleCopy = () => {
     if (copied) return;
     navigator.clipboard.writeText(cleanContent);

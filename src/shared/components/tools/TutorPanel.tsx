@@ -1,5 +1,5 @@
-import React from "react";
-import { GraduationCap } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { GraduationCap, Volume2, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { UserSettings } from "../../chatbot-types";
 import { getThemePalette } from "../../chatbot-constants";
 
@@ -19,6 +19,73 @@ export function TutorPanel({
   t
 }: TutorPanelProps) {
   const isLight = settings.nano_skin_mode === "light";
+  
+  const [archiveList, setArchiveList] = useState<any[]>([]);
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+
+  // 스토리지에서 저장된 아카이브 목록 로드
+  useEffect(() => {
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      const loadArchive = () => {
+        chrome.storage.local.get(["nanobot-tutor-archive"], (result) => {
+          setArchiveList(result["nanobot-tutor-archive"] || []);
+        });
+      };
+      
+      loadArchive();
+      
+      // 스토리지 변경 감지하여 실시간 업데이트
+      const listener = (changes: any, areaName: string) => {
+        if (areaName === "local" && changes["nanobot-tutor-archive"]) {
+          setArchiveList(changes["nanobot-tutor-archive"].newValue || []);
+        }
+      };
+      chrome.storage.onChanged.addListener(listener);
+      return () => {
+        chrome.storage.onChanged.removeListener(listener);
+      };
+    }
+  }, []);
+
+  // 발음 재생 (TTS)
+  const handlePlayTTS = (e: React.MouseEvent, text: string) => {
+    e.stopPropagation();
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    const lang = settings.tutor_lang || "en";
+    const langCodeMap: Record<string, string> = {
+      en: "en-US",
+      ko: "ko-KR",
+      ja: "ja-JP",
+      zh: "zh-CN",
+      es: "es-ES",
+      fr: "fr-FR",
+      de: "de-DE",
+      vi: "vi-VN"
+    };
+    utterance.lang = langCodeMap[lang] || "en-US";
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // 아카이브 카드 개별 삭제
+  const handleDeleteCard = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      const newList = archiveList.filter((item) => item.id !== id);
+      chrome.storage.local.set({ "nanobot-tutor-archive": newList }, () => {
+        setArchiveList(newList);
+        if (expandedCardId === id) {
+          setExpandedCardId(null);
+        }
+      });
+    }
+  };
+
+  // 아코디언 토글
+  const toggleExpand = (id: string) => {
+    setExpandedCardId(expandedCardId === id ? null : id);
+  };
   
   const learningLanguages = [
     { code: "en", name: t("tools.tutor.lang.en", "영어 (English)") },
@@ -166,6 +233,116 @@ export function TutorPanel({
           <GraduationCap size={15} />
           {t("tools.tutor.requestButton", "오늘의 배움 한마디 받기 🎓")}
         </button>
+      </div>
+
+      {/* 내 단어장 (Saved Expressions) 아카이브 영역 */}
+      <div className="flex flex-col gap-2 pt-2 border-t border-white/[0.04]">
+        <div className="flex justify-between items-center px-1 select-none">
+          <span className={`text-[10px] font-black uppercase tracking-wider ${theme.textSub}`}>
+            {t("tools.tutor.archiveTitle", "내 단어장")} ({archiveList.length})
+          </span>
+        </div>
+
+        {archiveList.length === 0 ? (
+          <div className={`text-center py-6 border border-dashed rounded-xl ${theme.borderMuted} ${theme.textMuted} text-[10px] select-none`}>
+            {t("tools.tutor.archiveEmpty", "저장된 배움 표현이 없습니다.")}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
+            {archiveList.map((item) => {
+              const isExpanded = expandedCardId === item.id;
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => toggleExpand(item.id)}
+                  className={`p-3 rounded-xl border transition-all cursor-pointer select-none flex flex-col gap-2
+                    ${isExpanded
+                      ? isLight
+                        ? "bg-slate-50 border-emerald-300 shadow-sm"
+                        : "bg-slate-900/60 border-emerald-500/30 shadow-md"
+                      : isLight
+                        ? "bg-white border-slate-200 hover:bg-slate-50"
+                        : "bg-slate-900/30 border-white/[0.04] hover:bg-white/[0.01]"
+                    }`}
+                >
+                  {/* 단어 요약 헤더 */}
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex-1 flex flex-col gap-0.5 min-w-0">
+                      <span className="text-[11.5px] font-serif font-black text-emerald-300 leading-snug break-words">
+                        {item.sentence}
+                      </span>
+                      {!isExpanded && (
+                        <span className={`text-[10px] ${theme.textSub} truncate`}>
+                          {item.translation}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* 우측 퀵 버튼군 */}
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={(e) => handlePlayTTS(e, item.sentence)}
+                        className="p-1 rounded text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 active:scale-95 transition-all"
+                        title={t("tools.tutor.ttsTitle", "발음 듣기")}
+                      >
+                        <Volume2 size={12} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => handleDeleteCard(e, item.id)}
+                        className="p-1 rounded text-slate-400 hover:text-red-400 hover:bg-red-500/10 active:scale-95 transition-all"
+                        title={t("tools.tutor.deleteBtn", "삭제")}
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                      <div className="text-slate-500">
+                        {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 아코디언 확장 영역 */}
+                  {isExpanded && (
+                    <div className="flex flex-col gap-2.5 pt-2.5 border-t border-white/[0.04] text-[10px] text-slate-300 leading-relaxed">
+                      {/* 발음 및 뜻 */}
+                      <div className="flex flex-col gap-1">
+                        {item.pronunciation && (
+                          <div className="text-emerald-400 font-medium">
+                            {item.pronunciation}
+                          </div>
+                        )}
+                        <div className="font-semibold text-slate-350">
+                          {item.translation}
+                        </div>
+                      </div>
+
+                      {/* 단어 사전 */}
+                      {item.vocabulary && item.vocabulary.length > 0 && (
+                        <div className="flex flex-col gap-1 bg-black/10 p-2 rounded-lg border border-white/[0.02]">
+                          {item.vocabulary.map((v: any, idx: number) => (
+                            <div key={idx} className="flex gap-1.5 items-start">
+                              <span className="font-bold text-emerald-400 font-mono shrink-0">{v.word}</span>
+                              <span className="text-slate-450 shrink-0">:</span>
+                              <span className="text-slate-400">{v.meaning}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* 튜터의 세부 노트 */}
+                      {item.tutor_note && (
+                        <div className="p-2 rounded bg-slate-950/20 text-[9.5px] text-slate-400 whitespace-pre-line border border-white/[0.01]">
+                          {item.tutor_note}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
