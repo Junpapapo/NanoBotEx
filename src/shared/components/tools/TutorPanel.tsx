@@ -125,7 +125,7 @@ export function TutorPanel({
   ];
 
   return (
-    <div className="flex flex-col h-full bg-transparent text-inherit p-4 overflow-y-auto custom-scrollbar space-y-4">
+    <div className="absolute inset-0 flex flex-col bg-transparent text-inherit p-4 overflow-y-auto custom-scrollbar space-y-4">
       {/* 헤더 */}
       <div className={`flex justify-between items-center select-none border-b ${theme.borderMuted} pb-3 pr-16`}>
         <span className={`text-sm font-bold flex items-center gap-1.5 ${theme.textMain}`}>
@@ -145,8 +145,8 @@ export function TutorPanel({
           onClick={() => setSettingsExpanded(!settingsExpanded)}
           className={`flex justify-between items-center p-3 cursor-pointer select-none border-b transition-all ${
             isLight 
-              ? "bg-slate-50/50 hover:bg-slate-100/50 border-slate-200" 
-              : "bg-slate-900/30 hover:bg-slate-900/60 border-white/[0.04]"
+              ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-emerald-800 font-bold" 
+              : "bg-emerald-950/20 hover:bg-emerald-950/45 border-emerald-500/20 text-emerald-300 font-bold"
           }`}
         >
           <span className={`text-[10px] font-black uppercase tracking-wider ${theme.textMain}`}>
