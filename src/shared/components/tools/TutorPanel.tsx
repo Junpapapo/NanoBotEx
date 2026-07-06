@@ -22,7 +22,7 @@ export function TutorPanel({
   
   const [archiveList, setArchiveList] = useState<any[]>([]);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
-  const [settingsExpanded, setSettingsExpanded] = useState(true);
+  const [settingsExpanded, setSettingsExpanded] = useState(false);
 
   // 스토리지에서 저장된 아카이브 목록 로드
   useEffect(() => {
