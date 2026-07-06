@@ -22,6 +22,66 @@ interface ChatMessageItemProps {
   onSendToViewer?: (title: string, content: string) => void;
 }
 
+// ──────────────────────────────────────────────────────────────────────────
+// 유효하지 않은 줄바꿈 및 백슬래시 에러를 보정하여 안전하게 JSON을 파싱하는 헬퍼 함수
+// ──────────────────────────────────────────────────────────────────────────
+const cleanAndParseJson = (jsonStr: string) => {
+  let cleaned = jsonStr.trim();
+  
+  let inString = false;
+  let escapeActive = false;
+  const chars = [];
+  
+  for (let i = 0; i < cleaned.length; i++) {
+    const char = cleaned[i];
+    
+    if (escapeActive) {
+      if (char === '"' || char === '\\' || char === '/' || char === 'b' || char === 'f' || char === 'n' || char === 'r' || char === 't' || char === 'u') {
+        chars.push('\\');
+        chars.push(char);
+      } else if (char === '\n' || char === '\r') {
+        chars.push('\\');
+        chars.push('n');
+        if (char === '\r' && cleaned[i + 1] === '\n') {
+          i++;
+        }
+      } else {
+        chars.push(char);
+      }
+      escapeActive = false;
+      continue;
+    }
+    
+    if (char === '\\') {
+      escapeActive = true;
+      continue;
+    }
+    
+    if (char === '"') {
+      inString = !inString;
+      chars.push(char);
+      continue;
+    }
+    
+    if (inString && (char === '\n' || char === '\r')) {
+      chars.push('\\');
+      chars.push('n');
+      if (char === '\r' && cleaned[i + 1] === '\n') {
+        i++;
+      }
+    } else {
+      chars.push(char);
+    }
+  }
+  
+  if (escapeActive) {
+    chars.push('\\');
+  }
+  
+  cleaned = chars.join('');
+  return JSON.parse(cleaned);
+};
+
 export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t, quickMenuItems, onConfirmAction, onOpenAlarm, onSendToViewer }: ChatMessageItemProps) {
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
   const isUser = message.role === "user";
@@ -174,7 +234,7 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
   const quoteBlock = extractJsonBlock(cleanContent, '"text"', '\\[QUOTE\\]');
   if (quoteBlock) {
     try {
-      const quoteData = JSON.parse(quoteBlock.jsonText);
+      const quoteData = cleanAndParseJson(quoteBlock.jsonText);
       if (quoteData.text && quoteData.author) {
         quoteCard = (
           <div className="my-4 p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-slate-900/60 to-purple-950/40 border border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.1)] relative overflow-hidden backdrop-blur-md">
@@ -187,7 +247,7 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
               <div className="text-sm font-serif italic text-amber-200/95 leading-relaxed font-bold pr-4">
                 "{quoteData.text}"
               </div>
-              {quoteData.translation && (
+              {quoteData.translation && quoteData.translation !== quoteData.text && (
                 <div className="text-xs font-serif italic text-slate-300/80 leading-relaxed -mt-1 pr-4">
                   ({quoteData.translation})
                 </div>
@@ -216,7 +276,7 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
   const learnBlock = extractJsonBlock(cleanContent, '"sentence"', '\\[LEARN_CARD\\]');
   if (learnBlock) {
     try {
-      const learnData = JSON.parse(learnBlock.jsonText);
+      const learnData = cleanAndParseJson(learnBlock.jsonText);
       if (learnData.sentence && learnData.translation) {
         learnCard = (
           <div className="my-4 p-5 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-slate-900/60 to-teal-950/40 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)] relative overflow-hidden backdrop-blur-md">

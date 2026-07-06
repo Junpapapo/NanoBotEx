@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { 
   Activity, 
   HelpCircle, 
@@ -353,31 +353,33 @@ export function SystemSidebar({
         </button>
 
         {/* 배움 튜터 (2단 버튼 구조) */}
-        <div className="relative group/tutor">
+        <div className={`relative group/tutor ${activeMode === "buddy" ? "opacity-30" : ""}`}>
           <button
             type="button"
+            disabled={activeMode === "buddy"}
             onClick={() => onTriggerQuickQuestion && onTriggerQuickQuestion("__LEARN_TODAY_REQUEST__")}
             className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
               activePanel === "tutor" ? `bg-emerald-500/20 text-emerald-400 border-emerald-500/35 shadow-[0_0_8px_rgba(16,185,129,0.4)]` : `${btnMutedClass} hover:text-emerald-400 hover:border-emerald-500/30`
-            }`}
-            title={t("sidebar.tooltips.tutorRequest", "오늘의 배움 한마디 받기")}
+            } disabled:cursor-not-allowed`}
+            title={activeMode === "buddy" ? t("sidebar.tooltips.tutorDisabled", "버디 모드에서는 오늘의 배움을 사용할 수 없습니다") : t("sidebar.tooltips.tutorRequest", "배움 한마디")}
           >
             <GraduationCap size={12} />
           </button>
           
           <button
             type="button"
+            disabled={activeMode === "buddy"}
             onClick={(e) => {
               e.stopPropagation();
               handleTabToggle("tutor");
             }}
-            className={`absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full flex items-center justify-center border shadow-sm cursor-pointer transition-all z-10
+            className={`absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full flex items-center justify-center border shadow-sm cursor-pointer transition-all z-10 disabled:cursor-not-allowed
               ${
                 activePanel === "tutor"
                   ? "bg-emerald-500 text-white border-emerald-400"
                   : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 border-white/10"
               }`}
-            title={t("sidebar.tooltips.tutorSettings", "배움 튜터 설정")}
+            title={activeMode === "buddy" ? t("sidebar.tooltips.tutorSettingsDisabled", "버디 모드에서는 배움 설정을 사용할 수 없습니다") : t("sidebar.tooltips.tutorSettings", "배움 튜터 설정")}
           >
             <Settings size={8} />
           </button>

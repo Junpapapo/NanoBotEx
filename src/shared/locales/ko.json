@@ -1,4 +1,4 @@
-﻿{
+{
   "chatbot": {
     "closeConfirm": {
       "title": "대화를 완전히 종료하시겠습니까?",
@@ -48,10 +48,6 @@
       "p2": {
         "label": "온디바이스 AI 장점",
         "text": "온디바이스 AI의 주요 장점 3가지는 무엇인가요?"
-      },
-      "p3": {
-        "label": "연동 가이드",
-        "text": "이 프로젝트를 다른 서비스에 어떻게 연동할 수 있어?"
       },
       "p4": {
         "label": "명언 설명",
@@ -431,7 +427,11 @@
       "toggleSkills": "스킬 토글",
       "toggleBookmarks": "BOOKMARKS 즐겨찾기바 토글",
       "toggleHistory": "대화 히스토리 토글",
-      "tutor": "배움 튜터"
+      "tutor": "배움 튜터",
+      "tutorRequest": "배움 한마디",
+      "tutorDisabled": "버디 모드에서는 오늘의 배움을 사용할 수 없습니다",
+      "tutorSettings": "배움 튜터 설정",
+      "tutorSettingsDisabled": "버디 모드에서는 배움 설정을 사용할 수 없습니다"
     }
   },
   "persona": {

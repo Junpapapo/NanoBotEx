@@ -102,12 +102,19 @@ export function ChatbotView({
   };
 
   const handleSelectSystemSkill = (skill: Skill | null) => {
-    setActiveSystemSkill(skill);
-    if (skill) {
-      setActivePanel("prompt-runner");
-    } else {
+    if (skill && activeSystemSkill && activeSystemSkill.id === skill.id) {
+      setActiveSystemSkill(null);
       if (activePanel === "prompt-runner") {
         setActivePanel("none");
+      }
+    } else {
+      setActiveSystemSkill(skill);
+      if (skill) {
+        setActivePanel("prompt-runner");
+      } else {
+        if (activePanel === "prompt-runner") {
+          setActivePanel("none");
+        }
       }
     }
   };

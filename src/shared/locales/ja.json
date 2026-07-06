@@ -49,10 +49,6 @@
         "label": "オンデバイスAIのメリット",
         "text": "オンデバイスAIの主なメリット3つは何ですか？"
       },
-      "p3": {
-        "label": "連携ガイド",
-        "text": "このプロジェクトを他のサービスにどのように連携できますか？"
-      },
       "p4": {
         "label": "名言の説明",
         "text": "ヘッダーに表示されている名言「{quote}」の意味を日本語で親切に説明してください。"
@@ -437,7 +433,12 @@
       "brainstorming": "アイデア出し・ブレスト",
       "toggleSkills": "スキル表示切替",
       "toggleBookmarks": "ブックマークバー表示切替",
-      "toggleHistory": "会話履歴表示切替"
+      "toggleHistory": "会話履歴表示切替",
+      "tutor": "学習チューター",
+      "tutorRequest": "今日の一言",
+      "tutorDisabled": "バディモードでは今日の一言は使用できません",
+      "tutorSettings": "学習チューター設定",
+      "tutorSettingsDisabled": "バディモードでは学習チューター設定は使用できません"
     }
   },
   "persona": {
@@ -789,7 +790,7 @@
       "selectDifficulty": "学習難易度",
       "requestButton": "今日の学習フレーズを取得 🎓",
       "lang": {
-        "ko": "韓国어 (Korean)",
+        "ko": "韓国語 (Korean)",
         "en": "英語 (English)",
         "ja": "日本語 (Japanese)",
         "zh": "中国語 (Chinese)",

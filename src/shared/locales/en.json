@@ -1,4 +1,4 @@
-﻿{
+{
   "chatbot": {
     "closeConfirm": {
       "title": "End this conversation?",
@@ -48,10 +48,6 @@
       "p2": {
         "label": "On-device AI Pros",
         "text": "What are the 3 key advantages of on-device AI?"
-      },
-      "p3": {
-        "label": "Integration Guide",
-        "text": "How can I integrate this project into other services?"
       },
       "p4": {
         "label": "Explain Quote",
@@ -430,7 +426,12 @@
       "brainstorming": "Brainstorm Ideas",
       "toggleSkills": "Toggle Skills",
       "toggleBookmarks": "Toggle Bookmarks",
-      "toggleHistory": "Toggle Chat History"
+      "toggleHistory": "Toggle Chat History",
+      "tutor": "Lingo Tutor",
+      "tutorRequest": "Daily Expression",
+      "tutorDisabled": "Daily Expression is not available in Buddy mode",
+      "tutorSettings": "Lingo Tutor Settings",
+      "tutorSettingsDisabled": "Tutor Settings are not available in Buddy mode"
     }
   },
   "persona": {
@@ -782,14 +783,14 @@
       "selectDifficulty": "Target Difficulty",
       "requestButton": "Get Daily Learning Expression 🎓",
       "lang": {
-        "ko": "Korean (한국어)",
-        "en": "English (영어)",
-        "ja": "Japanese (일본어)",
-        "zh": "Chinese (중국어)",
-        "es": "Spanish (스페인어)",
-        "fr": "French (프랑스어)",
-        "de": "German (독일어)",
-        "vi": "Vietnamese (베트남어)"
+        "ko": "Korean",
+        "en": "English",
+        "ja": "Japanese",
+        "zh": "Chinese",
+        "es": "Spanish",
+        "fr": "French",
+        "de": "German",
+        "vi": "Vietnamese"
       },
       "level": {
         "kids": "Kids",
@@ -800,9 +801,9 @@
         "adultDesc": "Formal expressions, encouraging insights"
       },
       "difficulty": {
-        "beginner": "하 (Beginner)",
-        "intermediate": "중 (Intermediate)",
-        "advanced": "상 (Advanced)"
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
       }
     }
   }
