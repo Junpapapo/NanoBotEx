@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { 
   Activity, 
   HelpCircle, 
@@ -358,9 +358,7 @@ export function SystemSidebar({
             type="button"
             onClick={() => onTriggerQuickQuestion && onTriggerQuickQuestion("__LEARN_TODAY_REQUEST__")}
             className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
-              activePanel === "tutor"
-                ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
-                : "border-emerald-500/20 text-emerald-400 bg-emerald-950/10 hover:bg-emerald-900/20 hover:border-emerald-500/40"
+              activePanel === "tutor" ? `bg-emerald-500/20 text-emerald-400 border-emerald-500/35 shadow-[0_0_8px_rgba(16,185,129,0.4)]` : `${btnMutedClass} hover:text-emerald-400 hover:border-emerald-500/30`
             }`}
             title={t("sidebar.tooltips.tutorRequest", "오늘의 배움 한마디 받기")}
           >
@@ -642,3 +640,4 @@ export function SystemSidebar({
     </div>
   );
 }
+
