@@ -789,6 +789,7 @@
       "selectLevel": "学習レベルと年齢",
       "selectDifficulty": "学習難易度",
       "requestButton": "今日の学習フレーズを取得 🎓",
+      "ttsTitle": "発音を聞く",
       "lang": {
         "ko": "韓国語 (Korean)",
         "en": "英語 (English)",

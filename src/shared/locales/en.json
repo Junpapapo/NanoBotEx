@@ -782,6 +782,7 @@
       "selectLevel": "Target Level/Age",
       "selectDifficulty": "Target Difficulty",
       "requestButton": "Get Daily Learning Expression 🎓",
+      "ttsTitle": "Listen Pronunciation",
       "lang": {
         "ko": "Korean",
         "en": "English",

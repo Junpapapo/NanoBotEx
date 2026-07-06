@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import { getThemePalette } from "../chatbot-constants";
-import { Check, CheckSquare, FileText, Globe, Bell, Eye, Copy, BookOpen } from "lucide-react";
+import { Check, CheckSquare, FileText, Globe, Bell, Eye, Copy, BookOpen, Volume2 } from "lucide-react";
 
 interface ChatMessageItemProps {
   message: Message;
@@ -88,6 +88,25 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
   const isLight = settings.nano_skin_mode === "light";
 
   const [todoSaved, setTodoSaved] = useState(false);
+
+  const handlePlayTTS = (text: string) => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    const lang = settings.tutor_lang || "en";
+    const langCodeMap: Record<string, string> = {
+      en: "en-US",
+      ko: "ko-KR",
+      ja: "ja-JP",
+      zh: "zh-CN",
+      es: "es-ES",
+      fr: "fr-FR",
+      de: "de-DE",
+      vi: "vi-VN"
+    };
+    utterance.lang = langCodeMap[lang] || "en-US";
+    window.speechSynthesis.speak(utterance);
+  };
   const [noteSaved, setNoteSaved] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -288,8 +307,16 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
             <div className="relative z-10 flex flex-col gap-3.5">
               {/* 문장 및 발음 */}
               <div className="flex flex-col gap-1 pr-4">
-                <div className="text-[15px] font-serif font-black text-emerald-200/95 leading-relaxed">
-                  {learnData.sentence}
+                <div className="text-[15px] font-serif font-black text-emerald-200/95 leading-relaxed flex items-center gap-1.5">
+                  <span>{learnData.sentence}</span>
+                  <button
+                    type="button"
+                    onClick={() => handlePlayTTS(learnData.sentence)}
+                    className="p-1 rounded-md text-emerald-400/80 hover:text-emerald-350 hover:bg-emerald-500/10 active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center"
+                    title={t ? t("tools.tutor.ttsTitle", "발음 듣기") : "발음 듣기"}
+                  >
+                    <Volume2 size={13} />
+                  </button>
                 </div>
                 {learnData.pronunciation && (
                   <div className="text-[10px] font-medium text-emerald-400/80 leading-normal">
