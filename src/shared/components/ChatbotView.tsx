@@ -219,6 +219,8 @@ export function ChatbotView({
             prev?.id === message.alarm.id ? null : prev,
           );
         }, 5000);
+      } else if (message.action === "tutor_alarm_triggered") {
+        handleQuickQuestion("__LEARN_TODAY_REQUEST__");
       }
     };
 

@@ -524,6 +524,30 @@ chrome.runtime.onConnect.addListener((port) => {
 // 프리미엄 알람(Reminders) 백그라운드 스케줄러 구현
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   console.log("[Background] Alarm triggered:", alarm.name);
+
+  if (alarm.name === "tutor-daily-alarm") {
+    // 1. OS 푸시 알림 배너 생성
+    if (typeof chrome !== "undefined" && chrome.notifications) {
+      chrome.notifications.create("tutor-daily-alarm-notif", {
+        type: "basic",
+        iconUrl: "/icons/icon128.png",
+        title: "🎓 오늘의 배움 한마디 배달 완료",
+        message: "오늘의 타겟 언어 표현이 도착했습니다! 클릭하여 확인해 보세요.",
+        priority: 2,
+        requireInteraction: true
+      });
+    }
+
+    // 2. 인앱 팝업/사이드패널로 실시간 알림 트리거용 브로드캐스팅
+    if (typeof chrome !== "undefined" && chrome.runtime) {
+      chrome.runtime.sendMessage({
+        action: "tutor_alarm_triggered"
+      }).catch(() => {
+        // 패널이 닫혀 있을 때 생기는 에러 방지
+      });
+    }
+    return;
+  }
   
   if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
     chrome.storage.local.get(["nano_alarms"], (result) => {
@@ -560,4 +584,66 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     });
   }
 });
+
+// 튜터 알람 관리용 스토리지 리스너 및 헬퍼 추가
+if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === "local" && changes.user_settings) {
+      const oldVal = changes.user_settings.oldValue || {};
+      const newVal = changes.user_settings.newValue || {};
+
+      if (
+        oldVal.tutor_alarm_enabled !== newVal.tutor_alarm_enabled ||
+        oldVal.tutor_alarm_time !== newVal.tutor_alarm_time
+      ) {
+        if (newVal.tutor_alarm_enabled && newVal.tutor_alarm_time) {
+          setupTutorAlarm(newVal.tutor_alarm_time);
+        } else {
+          chrome.alarms.clear("tutor-daily-alarm", () => {
+            console.log("[Background] Tutor daily alarm cleared");
+          });
+        }
+      }
+    }
+  });
+}
+
+function setupTutorAlarm(timeStr: string) {
+  if (typeof chrome === "undefined" || !chrome.alarms) return;
+
+  chrome.alarms.clear("tutor-daily-alarm", () => {
+    try {
+      const [hours, minutes] = timeStr.split(":").map(Number);
+      const now = new Date();
+      const targetTime = new Date();
+      targetTime.setHours(hours, minutes, 0, 0);
+
+      if (targetTime.getTime() <= now.getTime()) {
+        targetTime.setDate(targetTime.getDate() + 1);
+      }
+
+      chrome.alarms.create("tutor-daily-alarm", {
+        when: targetTime.getTime(),
+        periodInMinutes: 1440
+      });
+      console.log(`[Background] Tutor daily alarm scheduled for: ${targetTime.toString()}`);
+    } catch (e) {
+      console.error("[Background] Failed to setup tutor alarm:", e);
+    }
+  });
+}
+
+function initializeTutorAlarm() {
+  if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.get(["user_settings"], (result) => {
+      const settings = result.user_settings || {};
+      if (settings.tutor_alarm_enabled && settings.tutor_alarm_time) {
+        setupTutorAlarm(settings.tutor_alarm_time);
+      }
+    });
+  }
+}
+
+// 런타임 시작 시 셋업 실행
+initializeTutorAlarm();
 

@@ -788,6 +788,8 @@
       "deleteBtn": "Delete",
       "selectTopic": "Learning Topic",
       "settingsTitle": "Tutor Settings",
+      "dailyAlarm": "Daily Learn Reminder",
+      "alarmTimeLabel": "Delivery Time",
       "topic": {
         "general": "Daily Conversation",
         "travel": "Travel & Life",

@@ -100,6 +100,8 @@ export interface UserSettings {
   tutor_level?: string;
   tutor_difficulty?: "beginner" | "intermediate" | "advanced";
   tutor_topic?: string;
+  tutor_alarm_enabled?: boolean;
+  tutor_alarm_time?: string;
 }
 
 export interface Skill {

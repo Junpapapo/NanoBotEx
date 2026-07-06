@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GraduationCap, Volume2, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { GraduationCap, Volume2, Trash2, ChevronDown, ChevronUp, Bell } from "lucide-react";
 import { UserSettings } from "../../chatbot-types";
 import { getThemePalette } from "../../chatbot-constants";
 
@@ -273,6 +273,45 @@ export function TutorPanel({
                   })}
                 </div>
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* 데일리 알림 설정 카드 */}
+        <div className={`p-3.5 rounded-xl border ${theme.borderMuted} ${
+          isLight ? "bg-white" : "bg-slate-900/10"
+        } flex flex-col gap-2.5 shrink-0`}>
+          <div className="flex justify-between items-center select-none">
+            <span className={`text-[10px] font-black uppercase tracking-wider ${theme.textMain} flex items-center gap-1.5`}>
+              <Bell size={12} className="text-emerald-400" />
+              {t("tools.tutor.dailyAlarm", "매일 배움 알림 받기")}
+            </span>
+            <label className="relative inline-flex items-center cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={settings.tutor_alarm_enabled || false}
+                onChange={(e) => updateSettings({ tutor_alarm_enabled: e.target.checked })}
+                className="sr-only peer"
+              />
+              <div className="w-7 h-4 bg-slate-700/60 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-350 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500"></div>
+            </label>
+          </div>
+
+          {settings.tutor_alarm_enabled && (
+            <div className="flex items-center justify-between gap-4 pt-1.5 border-t border-white/[0.04] transition-all">
+              <span className={`text-[9.5px] ${theme.textSub}`}>
+                {t("tools.tutor.alarmTimeLabel", "알림 배달 시각")}
+              </span>
+              <input
+                type="time"
+                value={settings.tutor_alarm_time || "09:00"}
+                onChange={(e) => updateSettings({ tutor_alarm_time: e.target.value })}
+                className={`text-center font-extrabold text-[11px] py-1 px-2 rounded-md border focus:outline-none focus:border-emerald-400 transition-all cursor-pointer ${
+                  isLight
+                    ? "bg-slate-50 border-slate-200 text-slate-700"
+                    : "bg-slate-950 border-white/[0.05] text-slate-200"
+                }`}
+              />
             </div>
           )}
         </div>

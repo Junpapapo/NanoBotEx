@@ -795,6 +795,8 @@
       "deleteBtn": "削除",
       "selectTopic": "学習トピック",
       "settingsTitle": "学習条件設定",
+      "dailyAlarm": "毎日の学習リマインダー",
+      "alarmTimeLabel": "通知配信時刻",
       "topic": {
         "general": "日常会話 (Daily)",
         "travel": "旅行・生活 (Travel)",
