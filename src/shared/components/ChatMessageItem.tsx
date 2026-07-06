@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import { getThemePalette } from "../chatbot-constants";
-import { Check, CheckSquare, FileText, Globe, Bell, Eye, Copy } from "lucide-react";
+import { Check, CheckSquare, FileText, Globe, Bell, Eye, Copy, BookOpen } from "lucide-react";
 
 interface ChatMessageItemProps {
   message: Message;
@@ -98,6 +98,175 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
       cleanContent = cleanContent.replace(match[0], "");
     } catch (e) {
       console.warn("Failed to parse chart JSON:", e);
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // JSON 객체의 중첩 괄호( { } ) 짝을 세어 올바르게 잘라내는 헬퍼 함수
+  // ──────────────────────────────────────────────────────────────────────────
+  const extractJsonBlock = (content: string, startKey: string, marker: string): { jsonText: string; rawMatchText: string } | null => {
+    const keyIndex = content.indexOf(startKey);
+    if (keyIndex === -1) return null;
+    
+    const beforeText = content.substring(0, keyIndex);
+    const openBraceIndex = beforeText.lastIndexOf('{');
+    if (openBraceIndex === -1) return null;
+    
+    let braceCount = 0;
+    let closeBraceIndex = -1;
+    let inString = false;
+    let escapeActive = false;
+    
+    for (let i = openBraceIndex; i < content.length; i++) {
+      const char = content[i];
+      if (escapeActive) {
+        escapeActive = false;
+        continue;
+      }
+      if (char === '\\') {
+        escapeActive = true;
+        continue;
+      }
+      if (char === '"') {
+        inString = !inString;
+        continue;
+      }
+      
+      if (!inString) {
+        if (char === '{') {
+          braceCount++;
+        } else if (char === '}') {
+          braceCount--;
+          if (braceCount === 0) {
+            closeBraceIndex = i;
+            break;
+          }
+        }
+      }
+    }
+    
+    if (closeBraceIndex === -1) return null;
+    
+    const jsonText = content.substring(openBraceIndex, closeBraceIndex + 1);
+    
+    let matchStartIndex = openBraceIndex;
+    let matchEndIndex = closeBraceIndex + 1;
+    
+    const prefixSnippet = content.substring(Math.max(0, openBraceIndex - 100), openBraceIndex);
+    const prefixPattern = new RegExp(`(?:${marker})?\\s*(?:\`\`\`json|\`\`\`)?\\s*$`, 'i');
+    const prefixMatch = prefixPattern.exec(prefixSnippet);
+    if (prefixMatch) {
+      matchStartIndex = openBraceIndex - prefixMatch[0].length;
+    }
+    
+    const suffixSnippet = content.substring(closeBraceIndex + 1, Math.min(content.length, closeBraceIndex + 20));
+    const suffixMatch = /^\s*(?:```)/.exec(suffixSnippet);
+    if (suffixMatch) {
+      matchEndIndex = closeBraceIndex + 1 + suffixMatch[0].length;
+    }
+    
+    const rawMatchText = content.substring(matchStartIndex, matchEndIndex);
+    return { jsonText, rawMatchText };
+  };
+
+  // 1. 명언 스페셜 카드 파싱
+  let quoteCard: React.ReactNode | null = null;
+  const quoteBlock = extractJsonBlock(cleanContent, '"text"', '\\[QUOTE\\]');
+  if (quoteBlock) {
+    try {
+      const quoteData = JSON.parse(quoteBlock.jsonText);
+      if (quoteData.text && quoteData.author) {
+        quoteCard = (
+          <div className="my-4 p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-slate-900/60 to-purple-950/40 border border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.1)] relative overflow-hidden backdrop-blur-md">
+            {/* 배경 인용부호 데코레이션 */}
+            <div className="absolute -top-4 -left-2 text-[120px] font-serif text-purple-500/10 pointer-events-none select-none leading-none">
+              “
+            </div>
+            
+            <div className="relative z-10 flex flex-col gap-3">
+              <div className="text-sm font-serif italic text-amber-200/95 leading-relaxed font-bold pr-4">
+                "{quoteData.text}"
+              </div>
+              {quoteData.translation && (
+                <div className="text-xs font-serif italic text-slate-300/80 leading-relaxed -mt-1 pr-4">
+                  ({quoteData.translation})
+                </div>
+              )}
+              <div className="text-right text-xs font-serif text-indigo-400 font-bold flex items-center justify-end gap-1.5">
+                <span className="w-4 h-[1px] bg-indigo-500/50"></span>
+                — {quoteData.author}
+              </div>
+              {quoteData.explanation && (
+                <div className="mt-2 pt-3 border-t border-white/[0.06] text-[11.5px] text-slate-300 leading-relaxed whitespace-pre-line">
+                  {quoteData.explanation}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+        cleanContent = cleanContent.replace(quoteBlock.rawMatchText, "").trim();
+      }
+    } catch (e) {
+      console.warn("Failed to parse quote JSON:", e);
+    }
+  }
+
+  // 2. 배움 스페셜 카드 파싱
+  let learnCard: React.ReactNode | null = null;
+  const learnBlock = extractJsonBlock(cleanContent, '"sentence"', '\\[LEARN_CARD\\]');
+  if (learnBlock) {
+    try {
+      const learnData = JSON.parse(learnBlock.jsonText);
+      if (learnData.sentence && learnData.translation) {
+        learnCard = (
+          <div className="my-4 p-5 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-slate-900/60 to-teal-950/40 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)] relative overflow-hidden backdrop-blur-md">
+            {/* 배경 장식 책 아이콘 */}
+            <div className="absolute -top-6 -left-3 text-emerald-500/5 pointer-events-none select-none">
+              <BookOpen size={130} strokeWidth={1} />
+            </div>
+            
+            <div className="relative z-10 flex flex-col gap-3.5">
+              {/* 문장 및 발음 */}
+              <div className="flex flex-col gap-1 pr-4">
+                <div className="text-[15px] font-serif font-black text-emerald-200/95 leading-relaxed">
+                  {learnData.sentence}
+                </div>
+                {learnData.pronunciation && (
+                  <div className="text-[10px] font-medium text-emerald-400/80 leading-normal">
+                    {learnData.pronunciation}
+                  </div>
+                )}
+                <div className="text-xs font-serif font-semibold text-slate-350/90 leading-relaxed mt-1">
+                  {learnData.translation}
+                </div>
+              </div>
+
+              {/* 단어 칩 리스트 */}
+              {learnData.vocabulary && learnData.vocabulary.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-white/[0.04]">
+                  {learnData.vocabulary.map((v: any, i: number) => (
+                    <div key={i} className="flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-white/[0.05] bg-white/[0.03] text-[9.5px]">
+                      <span className="font-extrabold text-emerald-400 font-mono">{v.word}</span>
+                      <span className="w-[1px] h-2 bg-white/10" />
+                      <span className="text-slate-350">{v.meaning}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* 선생님 코멘트 */}
+              {learnData.tutor_note && (
+                <div className="mt-1.5 p-3 rounded-xl bg-slate-950/40 border border-white/[0.03] text-[11px] text-slate-300 leading-relaxed whitespace-pre-line shadow-inner">
+                  {learnData.tutor_note}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+        cleanContent = cleanContent.replace(learnBlock.rawMatchText, "").trim();
+      }
+    } catch (e) {
+      console.warn("Failed to parse learn JSON:", e);
     }
   }
 
@@ -419,6 +588,10 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
                 {charts}
               </div>
             )}
+
+            {quoteCard}
+
+            {learnCard}
 
             {message.isMenu && quickMenuItems && quickMenuItems.length > 0 && onQuickQuestion && (
               <div className={`mt-3 pt-2.5 border-t border-dashed ${isLight ? "border-slate-200" : "border-white/10"} grid grid-cols-1 gap-1.5`}>

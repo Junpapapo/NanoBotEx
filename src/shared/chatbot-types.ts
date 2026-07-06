@@ -96,6 +96,9 @@ export interface UserSettings {
   nano_session_timeout_minutes?: number;
   nano_web_search_enabled?: boolean;
   nano_web_search_mode?: "off" | "auto" | "force";
+  tutor_lang?: string;
+  tutor_level?: string;
+  tutor_difficulty?: "beginner" | "intermediate" | "advanced";
 }
 
 export interface Skill {

@@ -1,4 +1,4 @@
-{
+﻿{
   "chatbot": {
     "closeConfirm": {
       "title": "대화를 완전히 종료하시겠습니까?",
@@ -52,6 +52,14 @@
       "p3": {
         "label": "연동 가이드",
         "text": "이 프로젝트를 다른 서비스에 어떻게 연동할 수 있어?"
+      },
+      "p4": {
+        "label": "명언 설명",
+        "text": "헤더에 표시된 명언 '{quote}'의 의미를 한국어로 친절하게 설명해 주세요."
+      },
+      "p5": {
+        "label": "오늘의 배움 한마디 🎓",
+        "text": "오늘의 외국어 배움 한마디를 준비해 주세요."
       }
     },
     "setupGuides": {
@@ -422,7 +430,8 @@
       "brainstorming": "참신한 아이디어 브레인스토밍",
       "toggleSkills": "스킬 토글",
       "toggleBookmarks": "BOOKMARKS 즐겨찾기바 토글",
-      "toggleHistory": "대화 히스토리 토글"
+      "toggleHistory": "대화 히스토리 토글",
+      "tutor": "배움 튜터"
     }
   },
   "persona": {
@@ -763,6 +772,40 @@
     "sessionInitFailed": "로컬 AI 세션을 초기화할 수 없습니다. 설정을 확인하세요.",
     "localAiFailedPrefix": "로컬 온디바이스 AI가 작업을 완료하지 못했습니다",
     "detailReason": "상세 원인"
+  },
+  "tools": {
+    "tutor": {
+      "title": "배움 튜터 (Lingo Tutor)",
+      "desc": "배우고 싶은 타겟 언어와 연령대를 설정하세요. AI 선생님이 친근한 어조로 수준에 딱 맞는 예문과 설명 카드를 매일 배달합니다.",
+      "selectLang": "배우고 싶은 언어",
+      "selectLevel": "학습 연령 및 수준",
+      "selectDifficulty": "학습 난이도",
+      "requestButton": "오늘의 배움 한마디 받기 🎓",
+      "lang": {
+        "ko": "한국어 (Korean)",
+        "en": "영어 (English)",
+        "ja": "일본어 (Japanese)",
+        "zh": "중국어 (Chinese)",
+        "es": "스페인어 (Spanish)",
+        "fr": "프랑스어 (French)",
+        "de": "독일어 (German)",
+        "vi": "베트남어 (Vietnamese)"
+      },
+      "level": {
+        "kids": "어린이 (Kids)",
+        "kidsDesc": "동화 느낌, 쉬운 단어, 친근한 이모지",
+        "teens": "청소년 (Teens)",
+        "teensDesc": "트렌디한 슬랭, 일상 취미 소통",
+        "adult": "성인/비즈니스 (Business)",
+        "adultDesc": "격식 회화, 격려와 지적 통찰력"
+      },
+      "difficulty": {
+        "beginner": "하 (Beginner)",
+        "intermediate": "중 (Intermediate)",
+        "advanced": "상 (Advanced)"
+      }
+    }
   }
 }
+
 

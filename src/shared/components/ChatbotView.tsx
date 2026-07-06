@@ -3,7 +3,7 @@ import { UserSettings, Skill } from "../chatbot-types";
 import { useChatbotSession } from "../hooks/useChatbotSession";
 import { getThemePalette, DEFAULT_SKILLS } from "../chatbot-constants";
 import { useChromeStorage } from "../hooks/useChromeStorage";
-import { ChatHeader } from "./ChatHeader";
+import { ChatHeader, FAMOUS_QUOTES } from "./ChatHeader";
 import { ChatMessageList } from "./ChatMessageList";
 import { ChatInput } from "./ChatInput";
 import { GuidePanel } from "./GuidePanel";
@@ -18,6 +18,7 @@ import { SkillEditModal } from "./SkillEditModal";
 import { TranslatorPanel } from "./tools/TranslatorPanel";
 import { ExchangePanel } from "./tools/ExchangePanel";
 import { CalculatorPanel } from "./tools/CalculatorPanel";
+import { TutorPanel } from "./tools/TutorPanel";
 import { DiagnosticsPanel } from "./tools/DiagnosticsPanel";
 import { BotSettingsPanel } from "./tools/BotSettingsPanel";
 import { SettingsPanel } from "./tools/SettingsPanel";
@@ -87,6 +88,11 @@ export function ChatbotView({
 
   const [activePanel, setActivePanel] = useState<PanelType>("none");
   const [activeSystemSkill, setActiveSystemSkill] = useState<Skill | null>(null);
+  
+  const [headerQuote] = useState(() => {
+    const idx = Math.floor(Math.random() * FAMOUS_QUOTES.length);
+    return FAMOUS_QUOTES[idx];
+  });
   
   const handleSetActivePanel = (panel: PanelType) => {
     setActivePanel(panel);
@@ -758,6 +764,15 @@ export function ChatbotView({
           {activePanel === "calculator" && (
             <CalculatorPanel t={t} theme={theme} />
           )}
+          {activePanel === "tutor" && (
+            <TutorPanel
+              settings={settings}
+              updateSettings={updateSettings}
+              onTriggerQuickQuestion={handleQuickQuestion}
+              theme={theme}
+              t={t}
+            />
+          )}
           {activePanel === "diagnostics" && (
             <DiagnosticsPanel t={t} theme={theme} />
           )}
@@ -878,6 +893,7 @@ export function ChatbotView({
           onSummarizePage={activeMode === "buddy" ? undefined : handleSummarizeCurrentPage}
           layoutMode={layoutMode}
           t={t}
+          quote={headerQuote}
         />
 
         {ENABLE_PREMIUM &&
@@ -915,6 +931,7 @@ export function ChatbotView({
               onOpenAlarm={(title) => handleOpenAlarmDialog(title, "chat")}
               onSendToViewer={handleSendToViewer}
               t={t}
+              quote={headerQuote}
             />
 
             <ChatInput

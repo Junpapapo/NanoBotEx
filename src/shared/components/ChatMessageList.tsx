@@ -21,6 +21,7 @@ interface ChatMessageListProps {
   buddySettings?: BuddySettings;
   onOpenAlarm?: (title: string) => void;
   onSendToViewer?: (title: string, content: string) => void;
+  quote?: string;
 }
 
 export function ChatMessageList({
@@ -36,7 +37,8 @@ export function ChatMessageList({
   onConfirmAction,
   buddySettings,
   onOpenAlarm,
-  onSendToViewer
+  onSendToViewer,
+  quote
 }: ChatMessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
@@ -54,7 +56,15 @@ export function ChatMessageList({
   ] : [
     { text: t("chatbot.quickPrompts.p1.text", "Chrome Gemini Nano의 개념을 알려줘."), label: t("chatbot.quickPrompts.p1.label", "Chrome AI란?") },
     { text: t("chatbot.quickPrompts.p2.text", "온디바이스 AI의 주요 장점 3가지는 무엇인가요?"), label: t("chatbot.quickPrompts.p2.label", "온디바이스 AI 장점") },
-    { text: t("chatbot.quickPrompts.p3.text", "이 프로젝트를 다른 서비스에 어떻게 연동할 수 있어?"), label: t("chatbot.quickPrompts.p3.label", "연동 가이드") }
+    { text: t("chatbot.quickPrompts.p3.text", "이 프로젝트를 다른 서비스에 어떻게 연동할 수 있어?"), label: t("chatbot.quickPrompts.p3.label", "연동 가이드") },
+    ...(quote ? [{
+      text: `${t("chatbot.quickPrompts.p4.text", "헤더에 표시된 명언 '{quote}'의 의미를 친절하게 설명해 주세요.").replace("{quote}", quote)} __QUOTE_EXPLAIN_REQUEST__`,
+      label: t("chatbot.quickPrompts.p4.label", "명언 설명")
+    }] : []),
+    {
+      text: "__LEARN_TODAY_REQUEST__",
+      label: t("chatbot.quickPrompts.p5.label", "오늘의 배움 한마디 🎓")
+    }
   ];
 
   const setupGuides = isBuddy ? [

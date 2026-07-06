@@ -1,4 +1,4 @@
-# NanoBot - On-Device AI Chatbot (Chrome Extension)
+﻿# NanoBot - On-Device AI Chatbot (Chrome Extension)
 
 A lightweight utility that brings a customized AI assistant directly onto your browser. This project is built as a Chrome Extension (Manifest V3) and utilizes Google Chrome's experimental on-device AI model (Gemini Nano) or connects directly to external LLM API endpoints.
 
@@ -16,6 +16,11 @@ A lightweight utility that brings a customized AI assistant directly onto your b
   - **Dynamic Avatar Matching**: Choosing a personality preset places its specific dedicated avatar (`buddy-preset-01` to `10.webp`) at the front of the avatar list and auto-selects it.
   - **Custom TTS Parameters**: Presets are pre-configured with customized speech rate and pitch settings to optimize Text-to-Speech alignment.
   - **Calendar-Based Diary**: Write a daily log of conversations and visualize your emotional statistics based on the chatbot personalities you interacted with.
+- **Lingo Tutor (Daily Language Learning 🎓)**:
+  - **Multilingual Learning Support**: Set target language (English, Korean, Japanese, Chinese, Spanish, French, German, Vietnamese) and study customized expressions.
+  - **Age/Difficulty Level Optimization**: Tailor the difficulty (Beginner, Intermediate, Advanced) and assistant's tone (Kids, Teens, Adults) to suit your learning stage.
+  - **Lingo Card UI**: Displays expressions, pronunciations, vocabulary badges, and encouraging teacher notes in a clean emerald-glow card layout.
+  - **2-Tier Smart Icon Control**: Clicking the Cap icon in the sidebar instantly triggers a card, while clicking the small settings cog opens the configurations panel without interrupting your query.
 - **Memos & Global Bookmarks**: 
   - Save quick notes and tasks directly in the panel.
   - Organized with 8 major global shortcuts (GitHub, Hugging Face, Google, ChatGPT, Stack Overflow, YouTube, Reddit, Wikipedia) with automatic legacy migration.

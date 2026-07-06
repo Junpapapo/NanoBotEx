@@ -24,7 +24,8 @@ import {
   MessageSquareOff,
   SlidersHorizontal,
   BookOpen,
-  Bell
+  Bell,
+  GraduationCap
 } from "lucide-react";
 import { UserSettings, ScenarioType, BuddySettings, Skill } from "../chatbot-types";
 import { ENABLE_PREMIUM } from "../../premium/premium-config";
@@ -44,7 +45,8 @@ export type PanelType =
   | "buddy-diary"
   | "alarm"
   | "doc-viewer"
-  | "prompt-runner";
+  | "prompt-runner"
+  | "tutor";
 
 interface SystemSidebarProps {
   activePanel: PanelType;
@@ -349,6 +351,39 @@ export function SystemSidebar({
         >
           <FileText size={12} />
         </button>
+
+        {/* 배움 튜터 (2단 버튼 구조) */}
+        <div className="relative group/tutor">
+          <button
+            type="button"
+            onClick={() => onTriggerQuickQuestion && onTriggerQuickQuestion("__LEARN_TODAY_REQUEST__")}
+            className={`w-7 h-7 rounded-lg flex items-center justify-center border shadow-sm cursor-pointer transition-all ${
+              activePanel === "tutor"
+                ? `${theme.bgMuted} ${theme.text} ${theme.border} ${theme.shadow}`
+                : "border-emerald-500/20 text-emerald-400 bg-emerald-950/10 hover:bg-emerald-900/20 hover:border-emerald-500/40"
+            }`}
+            title={t("sidebar.tooltips.tutorRequest", "오늘의 배움 한마디 받기")}
+          >
+            <GraduationCap size={12} />
+          </button>
+          
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleTabToggle("tutor");
+            }}
+            className={`absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full flex items-center justify-center border shadow-sm cursor-pointer transition-all z-10
+              ${
+                activePanel === "tutor"
+                  ? "bg-emerald-500 text-white border-emerald-400"
+                  : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 border-white/10"
+              }`}
+            title={t("sidebar.tooltips.tutorSettings", "배움 튜터 설정")}
+          >
+            <Settings size={8} />
+          </button>
+        </div>
       </div>
 
       {/* 5. PROMPT 섹션 */}

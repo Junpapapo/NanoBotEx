@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+﻿import { useState, useCallback, useRef, useEffect } from "react";
 import { Message, UserSettings, Skill, SearchResult } from "../chatbot-types";
 import { useSessionHistory } from "./useSessionHistory";
 import { useAISession } from "./useAISession";
@@ -434,6 +434,18 @@ export function useChatbotSession(
       setActiveSkill(null);
     }
 
+    
+    let isQuoteRequest = false;
+    let isLearnRequest = false;
+    let cleanText = text;
+    if (text.endsWith("__QUOTE_EXPLAIN_REQUEST__")) {
+      isQuoteRequest = true;
+      cleanText = text.replace("__QUOTE_EXPLAIN_REQUEST__", "").trim();
+    } else if (text.includes("__LEARN_TODAY_REQUEST__")) {
+      isLearnRequest = true;
+      cleanText = t ? t("chatbot.quickPrompts.p5.text", "오늘의 외국어 배움 한마디를 준비해 주세요.") : "오늘의 외국어 배움 한마디를 준비해 주세요.";
+    }
+
     let searchResults: SearchResult[] = [];
     let searchTabId: number | undefined = undefined;
 
@@ -493,7 +505,7 @@ export function useChatbotSession(
     const userMessageId = Math.random().toString(36).substring(7);
     const assistantMessageId = Math.random().toString(36).substring(7);
 
-    const userMsg = { id: userMessageId, role: "user" as const, content: text };
+    const userMsg = { id: userMessageId, role: "user" as const, content: cleanText };
     const assistantMsg = { id: assistantMessageId, role: "assistant" as const, content: "", isStreaming: true };
 
     const nextMessages = [...currentMessages, userMsg, assistantMsg];
@@ -535,7 +547,7 @@ export function useChatbotSession(
 
     try {
       const currentSettings = settingsRef.current;
-      let promptText = text;
+      let promptText = cleanText;
 
       // ──────────────────────────────────────────────
       // 웹 검색 토글 활성화 시 검색 수행 및 프롬프트 인젝션
@@ -543,7 +555,7 @@ export function useChatbotSession(
       const currentMode = currentSettings.nano_web_search_mode || (currentSettings.nano_web_search_enabled !== undefined ? (currentSettings.nano_web_search_enabled ? "force" : "off") : "auto");
       console.log("[NanoBot] Web search mode in sendMessage:", currentMode);
       
-      const shouldSkipSearch = skipWebSearch || text.startsWith("scraped-direct:") || !!currentActiveSkill;
+      const shouldSkipSearch = skipWebSearch || text.startsWith("scraped-direct:") || !!currentActiveSkill || isLearnRequest;
       let isSearchActive = false;
 
       if (!shouldSkipSearch && currentMode !== "off") {
@@ -587,7 +599,7 @@ export function useChatbotSession(
 
         if (currentSettings.api_mode === "local") {
           const miniRules = buildPromptWithRules(currentSettings, currentActiveSkill);
-          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}\n[WEB SEARCH RESULT]\n${searchContext}\n\n[USER QUESTION]\n${text}\n\n(참고: 제공된 [WEB SEARCH RESULT]의 신뢰성 높은 최신 정보를 분석해서 한국어로 친절하게 답변하세요.)`;
+          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}\n[WEB SEARCH RESULT]\n${searchContext}\n\n[USER QUESTION]\n${cleanText}\n\n(참고: 제공된 [WEB SEARCH RESULT]의 신뢰성 높은 최신 정보를 분석해서 한국어로 친절하게 답변하세요.)`;
         } else {
           const lengthRule = currentSettings.nano_ai_context_level === "minimal"
             ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
@@ -595,13 +607,13 @@ export function useChatbotSession(
               ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
               : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
 
-          promptText = `${lengthRule}\n\n[웹 검색 결과]\n${searchContext}\n\n[USER QUESTION]\n${text}\n\n(참고: 제공된 [웹 검색 결과]의 신뢰성 높은 내용을 분석해서 친절한 한국어로 답변하세요.)`;
+          promptText = `${lengthRule}\n\n[웹 검색 결과]\n${searchContext}\n\n[USER QUESTION]\n${cleanText}\n\n(참고: 제공된 [웹 검색 결과]의 신뢰성 높은 내용을 분석해서 친절한 한국어로 답변하세요.)`;
         }
       } else {
         if (currentSettings.api_mode === "local") {
           // 로컬 모드: 소형 모델의 망각 방지를 위해 매 턴마다 강제 룰 결합
           const miniRules = buildPromptWithRules(currentSettings, currentActiveSkill);
-          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}\n[USER QUESTION]\n${text}`;
+          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}\n[USER QUESTION]\n${cleanText}`;
         } else {
           const lengthRule = currentSettings.nano_ai_context_level === "minimal"
             ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
@@ -609,11 +621,51 @@ export function useChatbotSession(
               ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
               : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
 
-          promptText = `${lengthRule}\n\n[USER QUESTION]\n${text}`;
+          promptText = `${lengthRule}\n\n[USER QUESTION]\n${cleanText}`;
         }
       }
 
-      const flushFinalContent = (content: string) => {
+            if (isQuoteRequest) {
+        promptText = promptText + "\n\n[SYSTEM RULE]: Please respond using the special quote card JSON format below. Ensure the JSON is valid and escaped correctly.\nAlways provide both the original English quote and its translation in the user's language.\nFor the 'explanation' field, do not write long paragraphs. Instead, provide a clear, structured summary in exactly 3 concise bullet points (using -) with newlines (\\n) in between.\n[QUOTE] {\"text\": \"Original English Quote\", \"translation\": \"Translated Quote in user's language (Korean or Japanese)\", \"author\": \"Author Name\", \"explanation\": \"- 핵심 의미: ...\\n- 실천적 교훈: ...\\n- 결론: ...\"}\n(참고: 줄바꿈은 반드시 JSON 내 이스케이프 문자 \\n 을 사용하여 단일 문자열로 표현하세요. [QUOTE] 블록 외에 다른 어떠한 서론, 결론, 혹은 불릿 리스트 텍스트도 절대 출력해서는 안 됩니다. 오직 [QUOTE] 블록 하나만 반환하세요.)";
+      }
+
+      if (isLearnRequest) {
+        const lang = currentSettings.tutor_lang || "en";
+        const level = currentSettings.tutor_level || "adult";
+        const diff = currentSettings.tutor_difficulty || "intermediate";
+        
+        const langNames: Record<string, string> = {
+          ko: "Korean (한국어)",
+          en: "English (영어)",
+          ja: "Japanese (일본어)",
+          zh: "Chinese (중국어)",
+          es: "Spanish (스페인어)",
+          fr: "French (프랑스어)",
+          de: "German (독일어)",
+          vi: "Vietnamese (베트남어)"
+        };
+        
+        const targetLangName = langNames[lang] || "English (영어)";
+        
+        const levelNames: Record<string, string> = {
+          kids: "Kids (easy words, fairy tale vibes, friendly honorifics, emojis)",
+          teens: "Teens (school life, hobbies, internet culture, trendy slangs, casual tone)",
+          adult: "Business/Adults (professional contexts, travel, business mails, formal tutor tone)"
+        };
+        
+        const targetLevelName = levelNames[level] || "Business/Adults";
+
+        const diffGuidelines: Record<string, string> = {
+          beginner: "Use very simple grammar and extremely common, high-frequency words. Focus on basic everyday survival expressions.",
+          intermediate: "Use moderate vocabulary and common idiomatic expressions. Focus on natural daily conversation.",
+          advanced: "Use highly sophisticated, advanced, or academic vocabulary. Focus on complex idioms, professional business terminology, and intellectual or philosophical thoughts. Avoid basic or greeting-level sentences."
+        };
+        
+        const targetDiffInstruction = diffGuidelines[diff] || diffGuidelines.intermediate;
+
+        promptText = promptText + "\n\n[SYSTEM RULE]: Respond ONLY with the special [LEARN_CARD] JSON format below. Do not output any other text, intro, or explanation outside the [LEARN_CARD] block. Absolutely no other sentences are allowed. Ensure the JSON is valid and escaped correctly.\nGenerate an interesting, practical expression to learn for the target language: \"" + targetLangName + "\" tailored for target age/level: \"" + targetLevelName + "\" and difficulty: \"" + diff + " (" + targetDiffInstruction + ")\".\nExplain in the user's interface language (Korean, English, or Japanese based on current session/settings).\n\n[LEARN_CARD] {\n  \"sentence\": \"Original sentence/expression in the target language (e.g. 'Break a leg!')\",\n  \"pronunciation\": \"Phonetic reading/pronunciation guide in the user's native language (e.g. '[브레이크 어 렉]')\",\n  \"translation\": \"Translation of the sentence in the user's language (e.g. '행운을 빌어!')\",\n  \"vocabulary\": [\n    { \"word\": \"word/phrase\", \"meaning\": \"definition\" }\n  ],\n  \"tutor_note\": \"A warm, encouraging explanation in a kind teacher's voice tailored for the age group. Use newlines (\\n) for structured explanation. (e.g. '👨‍🏫 튜터 가이드:\\n이 표현은...')\"\n}\n(참고: 줄바꿈은 반드시 JSON 내 이스케이프 문자 \\n 을 사용하여 단일 문자열로 표현하세요. [LEARN_CARD] 블록 외에 다른 어떠한 서론, 결론 텍스트도 절대 출력해서는 안 됩니다.)";
+      }
+const flushFinalContent = (content: string) => {
         if (rafId !== null) {
           cancelAnimationFrame(rafId);
           rafId = null;
@@ -779,3 +831,4 @@ export function useChatbotSession(
     clearMessages
   };
 }
+

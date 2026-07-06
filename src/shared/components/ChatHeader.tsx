@@ -3,7 +3,7 @@ import { Minus, Maximize2, Minimize2, X, PanelRight, RotateCcw, FileText } from 
 import { UserSettings } from "../chatbot-types";
 import { getThemePalette } from "../chatbot-constants";
 
-const FAMOUS_QUOTES = [
+export const FAMOUS_QUOTES = [
   "Believe you can and you're halfway there.",
   "The only way to do great work is to love what you do.",
   "In the middle of difficulty lies opportunity.",
@@ -13,7 +13,27 @@ const FAMOUS_QUOTES = [
   "Innovation distinguishes between a leader and a follower.",
   "Make each day your masterpiece.",
   "The best way to predict the future is to invent it.",
-  "Dream big and dare to fail."
+  "Dream big and dare to fail.",
+  "The best preparation for tomorrow is doing your best today.",
+  "Nothing is impossible, the word itself says 'I'm possible'!",
+  "Keep your face to the sunshine and you cannot see a shadow.",
+  "It always seems impossible until it's done.",
+  "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+  "You miss 100% of the shots you don't take.",
+  "The only limit to our realization of tomorrow will be our doubts of today.",
+  "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+  "Happiness depends upon ourselves.",
+  "If you tell the truth, you don't have to remember anything.",
+  "Try to be a rainbow in someone's cloud.",
+  "Don't count the days, make the days count.",
+  "The power of imagination makes us infinite.",
+  "Change your thoughts and you change your world.",
+  "It is during our darkest moments that we must focus to see the light.",
+  "Be yourself; everyone else is already taken.",
+  "The purpose of our lives is to be happy.",
+  "Life is what happens when you're busy making other plans.",
+  "Get busy living or get busy dying.",
+  "You only live once, but if you do it right, once is enough."
 ];
 
 interface ChatHeaderProps {
@@ -31,6 +51,7 @@ interface ChatHeaderProps {
   onSummarizePage?: () => void;
   layoutMode: "sidepanel" | "widget";
   t: any;
+  quote?: string;
 }
 
 export function ChatHeader({
@@ -47,14 +68,17 @@ export function ChatHeader({
   onClearScreen,
   onSummarizePage,
   layoutMode,
-  t
+  t,
+  quote
 }: ChatHeaderProps) {
   const theme = getThemePalette(settings.nano_theme_color || "indigo", settings.nano_skin_mode || "dark");
   
-  const [quote] = React.useState(() => {
+  const [internalQuote] = React.useState(() => {
     const idx = Math.floor(Math.random() * FAMOUS_QUOTES.length);
     return FAMOUS_QUOTES[idx];
   });
+
+  const displayQuote = quote || internalQuote;
 
   const getAvatarUrl = (path: string) => {
     if (!path) return "";
@@ -99,9 +123,9 @@ export function ChatHeader({
           <div 
             className="text-[9.5px] font-normal font-serif italic tracking-wide line-clamp-2 whitespace-normal w-full mt-0.5 leading-normal" 
             style={{ color: quoteColor, textShadow: quoteShadow }}
-            title={quote}
+            title={displayQuote}
           >
-            "{quote}"
+            "{displayQuote}"
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-{
+﻿{
   "chatbot": {
     "closeConfirm": {
       "title": "End this conversation?",
@@ -52,6 +52,14 @@
       "p3": {
         "label": "Integration Guide",
         "text": "How can I integrate this project into other services?"
+      },
+      "p4": {
+        "label": "Explain Quote",
+        "text": "Please kindly explain the meaning of the quote '{quote}' displayed in the header in English."
+      },
+      "p5": {
+        "label": "Daily Learning Expression 🎓",
+        "text": "Please prepare a daily learning expression in the target language."
       }
     },
     "setupGuides": {
@@ -702,7 +710,8 @@
     "sidebar": {
       "tooltips": {
         "alarm": "Alarm Reminders",
-        "docViewer": "Doc Viewer"
+        "docViewer": "Doc Viewer",
+        "tutor": "Lingo Tutor"
       }
     },
     "docViewer": {
@@ -763,6 +772,40 @@
     "sessionInitFailed": "Failed to initialize Local AI session. Please check your settings.",
     "localAiFailedPrefix": "Local on-device AI failed to complete the task",
     "detailReason": "Detail Reason"
+  },
+  "tools": {
+    "tutor": {
+      "title": "Lingo Tutor",
+      "desc": "Set your target language and level. The AI teacher will deliver daily expressions tailored to your level in a friendly tone.",
+      "selectLang": "Target Language",
+      "selectLevel": "Target Level/Age",
+      "selectDifficulty": "Target Difficulty",
+      "requestButton": "Get Daily Learning Expression 🎓",
+      "lang": {
+        "ko": "Korean (한국어)",
+        "en": "English (영어)",
+        "ja": "Japanese (일본어)",
+        "zh": "Chinese (중국어)",
+        "es": "Spanish (스페인어)",
+        "fr": "French (프랑스어)",
+        "de": "German (독일어)",
+        "vi": "Vietnamese (베트남어)"
+      },
+      "level": {
+        "kids": "Kids",
+        "kidsDesc": "Fairy tale vibes, easy words, friendly emojis",
+        "teens": "Teens",
+        "teensDesc": "Trendy slangs, daily hobbies, casual conversation",
+        "adult": "Business/Adults",
+        "adultDesc": "Formal expressions, encouraging insights"
+      },
+      "difficulty": {
+        "beginner": "하 (Beginner)",
+        "intermediate": "중 (Intermediate)",
+        "advanced": "상 (Advanced)"
+      }
+    }
   }
 }
+
 

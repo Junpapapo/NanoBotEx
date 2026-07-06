@@ -52,6 +52,14 @@
       "p3": {
         "label": "連携ガイド",
         "text": "このプロジェクトを他のサービスにどのように連携できますか？"
+      },
+      "p4": {
+        "label": "名言の説明",
+        "text": "ヘッダーに表示されている名言「{quote}」の意味を日本語で親切に説明してください。"
+      },
+      "p5": {
+        "label": "今日の学習フレーズ 🎓",
+        "text": "今日の外国語学習フレーズを準備してください."
       }
     },
     "setupGuides": {
@@ -709,7 +717,8 @@
     "sidebar": {
       "tooltips": {
         "alarm": "アラーム通知",
-        "docViewer": "文書ビューアー"
+        "docViewer": "文書ビューアー",
+        "tutor": "学習チューター"
       }
     },
     "docViewer": {
@@ -770,5 +779,38 @@
     "sessionInitFailed": "ローカルAIセッションを初期化できません。設定を確認してください。",
     "localAiFailedPrefix": "ローカルオンデバイスAIがタスクを完了できませんでした",
     "detailReason": "詳細原因"
+  },
+  "tools": {
+    "tutor": {
+      "title": "学習チューター (Lingo Tutor)",
+      "desc": "学びたい言語と対象年齢層を設定してください。AI先生が親しみやすい口調で、レベルに合った例文と解説カードを毎日お届けします。",
+      "selectLang": "学びたい言語",
+      "selectLevel": "学習レベルと年齢",
+      "selectDifficulty": "学習難易度",
+      "requestButton": "今日の学習フレーズを取得 🎓",
+      "lang": {
+        "ko": "韓国어 (Korean)",
+        "en": "英語 (English)",
+        "ja": "日本語 (Japanese)",
+        "zh": "中国語 (Chinese)",
+        "es": "スペイン語 (Spanish)",
+        "fr": "フランス語 (French)",
+        "de": "ドイツ語 (German)",
+        "vi": "ベトナム語 (Vietnamese)"
+      },
+      "level": {
+        "kids": "キッズ (Kids)",
+        "kidsDesc": "童話風、簡単な単語、かわいい絵文字",
+        "teens": "ティーン (Teens)",
+        "teensDesc": "トレンドのスラング、日常・趣味の対話",
+        "adult": "ビジネス/大人 (Business)",
+        "adultDesc": "フォーマルな表現、役立つインサイト"
+      },
+      "difficulty": {
+        "beginner": "初級 (Beginner)",
+        "intermediate": "中級 (Intermediate)",
+        "advanced": "上級 (Advanced)"
+      }
+    }
   }
 }
