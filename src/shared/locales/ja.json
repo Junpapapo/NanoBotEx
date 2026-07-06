@@ -793,6 +793,14 @@
       "archiveTitle": "マイ単語帳",
       "archiveEmpty": "保存された学習フレーズはありません。",
       "deleteBtn": "削除",
+      "selectTopic": "学習トピック",
+      "topic": {
+        "general": "日常会話 (Daily)",
+        "travel": "旅行・生活 (Travel)",
+        "business": "ビジネス (Business)",
+        "slang": "スラング表現 (Slang)",
+        "grammar": "文法・パターン (Grammar)"
+      },
       "lang": {
         "ko": "韓国語 (Korean)",
         "en": "英語 (English)",

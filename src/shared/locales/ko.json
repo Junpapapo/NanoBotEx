@@ -785,6 +785,14 @@
       "archiveTitle": "내 단어장",
       "archiveEmpty": "저장된 배움 표현이 없습니다.",
       "deleteBtn": "삭제",
+      "selectTopic": "학습 주제",
+      "topic": {
+        "general": "일상 회화 (Daily)",
+        "travel": "여행 및 생활 (Travel)",
+        "business": "비즈니스 (Business)",
+        "slang": "슬랭 및 표현 (Slang)",
+        "grammar": "패턴 및 문법 (Grammar)"
+      },
       "lang": {
         "ko": "한국어 (Korean)",
         "en": "영어 (English)",

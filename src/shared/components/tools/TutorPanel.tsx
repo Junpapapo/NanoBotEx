@@ -107,6 +107,15 @@ export function TutorPanel({
   const currentLang = settings.tutor_lang || "en";
   const currentLevel = settings.tutor_level || "adult";
   const currentDiff = settings.tutor_difficulty || "intermediate";
+  const currentTopic = settings.tutor_topic || "general";
+
+  const topics = [
+    { id: "general", label: t("tools.tutor.topic.general", "일상 회화 (Daily)") },
+    { id: "travel", label: t("tools.tutor.topic.travel", "여행 및 생활 (Travel)") },
+    { id: "business", label: t("tools.tutor.topic.business", "비즈니스 (Business)") },
+    { id: "slang", label: t("tools.tutor.topic.slang", "슬랭 및 표현 (Slang)") },
+    { id: "grammar", label: t("tools.tutor.topic.grammar", "패턴 및 문법 (Grammar)") }
+  ];
 
   const difficulties = [
     { id: "beginner", label: t("tools.tutor.difficulty.beginner", "하 (Beginner)") },
@@ -147,6 +156,28 @@ export function TutorPanel({
             {learningLanguages.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 학습 주제 설정 */}
+        <div className="flex flex-col gap-1.5">
+          <label className={`text-[9px] ${theme.textSub} font-black uppercase tracking-wider block select-none`}>
+            {t("tools.tutor.selectTopic", "학습 주제")}
+          </label>
+          <select
+            value={currentTopic}
+            onChange={(e) => updateSettings({ tutor_topic: e.target.value })}
+            className={`w-full text-xs font-bold py-1.5 px-2 rounded-lg border focus:outline-none transition-all cursor-pointer ${
+              isLight
+                ? "bg-white border-slate-200 text-slate-700 focus:border-emerald-400"
+                : "bg-slate-900 border-white/[0.06] text-slate-200 focus:border-emerald-500"
+            }`}
+          >
+            {topics.map((tp) => (
+              <option key={tp.id} value={tp.id}>
+                {tp.label}
               </option>
             ))}
           </select>

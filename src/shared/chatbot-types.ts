@@ -99,6 +99,7 @@ export interface UserSettings {
   tutor_lang?: string;
   tutor_level?: string;
   tutor_difficulty?: "beginner" | "intermediate" | "advanced";
+  tutor_topic?: string;
 }
 
 export interface Skill {

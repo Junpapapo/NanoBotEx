@@ -786,6 +786,14 @@
       "archiveTitle": "Saved Expressions",
       "archiveEmpty": "No saved expressions found.",
       "deleteBtn": "Delete",
+      "selectTopic": "Learning Topic",
+      "topic": {
+        "general": "Daily Conversation",
+        "travel": "Travel & Life",
+        "business": "Business & Work",
+        "slang": "Slang & Idioms",
+        "grammar": "Grammar & Patterns"
+      },
       "lang": {
         "ko": "Korean",
         "en": "English",
