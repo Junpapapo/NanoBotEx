@@ -136,9 +136,29 @@ export function TutorPanel({
 
       {/* 스크롤 가능한 바디 컨테이너 */}
       <div className="flex-1 overflow-y-auto custom-scrollbar mt-3 space-y-4 pr-1 min-h-0 flex flex-col">
-        <p className={`text-[10px] ${theme.textSub} leading-relaxed select-none shrink-0`}>
-          {t("tools.tutor.desc", "배우고 싶은 타겟 언어와 연령대를 설정하세요. AI 선생님이 친근한 어조로 수준에 딱 맞는 예문과 설명 카드를 매일 배달합니다.")}
-        </p>
+        {/* 상단 레이아웃 (설명문 7 : 배움 받기 아이콘 버튼 3) */}
+        <div className="flex gap-3 justify-between items-start shrink-0">
+          <p className={`text-[10px] ${theme.textSub} leading-relaxed select-none w-[73%]`}>
+            {t("tools.tutor.desc", "배우고 싶은 타겟 언어와 연령대를 설정하세요. AI 선생님이 친근한 어조로 수준에 딱 맞는 예문과 설명 카드를 매일 배달합니다.")}
+          </p>
+          <div className="w-[27%] flex justify-end">
+            <button
+              type="button"
+              onClick={() => onTriggerQuickQuestion("__LEARN_TODAY_REQUEST__")}
+              className="p-2.5 rounded-xl transition-all cursor-pointer shadow-md active:scale-95
+                bg-gradient-to-br from-emerald-500 to-teal-600 text-white hover:brightness-105 active:brightness-95
+                flex items-center justify-center border border-emerald-400/20 group relative"
+              title={t("tools.tutor.requestButtonTooltip", "오늘의 배움 한마디 받기 🎓")}
+            >
+              <GraduationCap size={16} className="animate-pulse" />
+              
+              {/* 세련된 HTML 툴팁 */}
+              <div className="absolute right-0 top-full mt-2 hidden group-hover:block z-30 w-44 bg-slate-950/95 border border-emerald-500/20 text-emerald-300 text-[9px] font-black py-1.5 px-2.5 rounded-lg shadow-xl text-center select-none pointer-events-none whitespace-normal leading-normal">
+                {t("tools.tutor.requestButtonTooltip", "오늘의 배움 한마디 받기 🎓")}
+              </div>
+            </button>
+          </div>
+        </div>
 
         {/* 설정 폼 블록 (접이식 디자인 적용) */}
         <div className={`flex flex-col rounded-xl border ${theme.borderMuted} overflow-hidden shrink-0`}>
@@ -316,19 +336,7 @@ export function TutorPanel({
           )}
         </div>
 
-        {/* 배움 호출 버튼 */}
-        <div className="pt-1 shrink-0">
-          <button
-            type="button"
-            onClick={() => onTriggerQuickQuestion("__LEARN_TODAY_REQUEST__")}
-            className="w-full py-2.5 px-4 rounded-xl font-black text-xs transition-all cursor-pointer shadow-lg active:scale-98
-              bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:brightness-105 active:brightness-95
-              flex items-center justify-center gap-1.5 border border-emerald-500/10"
-          >
-            <GraduationCap size={15} />
-            {t("tools.tutor.requestButton", "오늘의 배움 한마디 받기 🎓")}
-          </button>
-        </div>
+
 
         {/* 내 단어장 (Saved Expressions) 아카이브 영역 (남은 높이를 유동적으로 차지) */}
         <div className="flex flex-col gap-2 pt-2 border-t border-white/[0.04] flex-1 min-h-[180px] pb-2">
