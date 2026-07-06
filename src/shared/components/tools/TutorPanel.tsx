@@ -304,7 +304,7 @@ export function TutorPanel({
               {t("tools.tutor.archiveEmpty", "저장된 배움 표현이 없습니다.")}
             </div>
           ) : (
-            <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto custom-scrollbar pr-1 flex-1">
+            <div className="flex flex-col gap-2 overflow-y-auto custom-scrollbar pr-1 flex-1 min-h-0">
               {archiveList.map((item) => {
                 const isExpanded = expandedCardId === item.id;
                 return (
