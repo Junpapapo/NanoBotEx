@@ -136,12 +136,12 @@ export function TutorPanel({
 
       {/* 스크롤 가능한 바디 컨테이너 */}
       <div className="flex-1 overflow-y-auto custom-scrollbar mt-3 space-y-4 pr-1 min-h-0 flex flex-col">
-        {/* 상단 레이아웃 (설명문 7 : 배움 받기 아이콘 버튼 3) */}
-        <div className="flex gap-3 justify-between items-start shrink-0">
-          <p className={`text-[10px] ${theme.textSub} leading-relaxed select-none w-[73%]`}>
+        {/* 상단 레이아웃 (설명문 최대 확장 및 버튼 우측 밀착) */}
+        <div className="flex gap-2.5 justify-between items-start shrink-0">
+          <p className={`text-[10px] ${theme.textSub} leading-relaxed select-none flex-1`}>
             {t("tools.tutor.desc", "배우고 싶은 타겟 언어와 연령대를 설정하세요. AI 선생님이 친근한 어조로 수준에 딱 맞는 예문과 설명 카드를 매일 배달합니다.")}
           </p>
-          <div className="w-[27%] flex justify-end">
+          <div className="shrink-0 ml-1.5">
             <button
               type="button"
               onClick={() => onTriggerQuickQuestion("__LEARN_TODAY_REQUEST__")}
