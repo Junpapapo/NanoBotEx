@@ -327,7 +327,7 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
       const learnData = cleanAndParseJson(learnBlock.jsonText);
       if (learnData.sentence && learnData.translation) {
         learnCard = (
-          <div className="my-4 p-5 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-slate-900/60 to-teal-950/40 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)] relative overflow-hidden backdrop-blur-md">
+          <div className="my-4 -mx-3.5 p-5 rounded-xl bg-gradient-to-br from-emerald-950/40 via-slate-900/60 to-teal-950/40 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)] relative overflow-hidden backdrop-blur-md">
             {/* 배경 장식 책 아이콘 */}
             <div className="absolute -top-6 -left-3 text-emerald-500/5 pointer-events-none select-none">
               <BookOpen size={130} strokeWidth={1} />
