@@ -131,6 +131,38 @@
         text-shadow: none;
       }
 
+      .rate-btn {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #ffb700;
+        background-color: rgba(255, 183, 0, 0.08);
+        border: 1px solid rgba(255, 183, 0, 0.25);
+        padding: 0.45rem 1rem;
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        box-shadow: 0 0 10px rgba(255, 183, 0, 0.05);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .rate-btn:hover {
+        background-color: #ffb700;
+        color: #070913;
+        box-shadow: 0 0 15px #ffb700;
+        text-shadow: none;
+      }
+
+      .rate-btn svg {
+        transition: all 0.25s ease;
+      }
+
+      .rate-btn:hover svg {
+        color: #070913 !important;
+        fill: #070913 !important;
+        stroke: #070913 !important;
+      }
+
       .nav-item-qna {
         margin-top: 1.5rem;
         border-top: 1px dashed var(--border);
@@ -471,6 +503,28 @@
         </span>
       </div>
       <div class="header-nav">
+        <a
+          href="https://chromewebstore.google.com/detail/npgdhpneemlimglbblodddpkamncodhj?utm_source=item-share-cb"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rate-btn"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="color: #ffb700; margin-top: -1px;"
+          >
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span>Rate Us</span>
+        </a>
         <a href="qna.html" class="qna-btn">FAQ & Q&A</a>
         <div class="lang-switcher">
           <a href="help.html" class="lang-link active">English</a>
