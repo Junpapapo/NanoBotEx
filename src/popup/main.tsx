@@ -22,6 +22,7 @@ import {
   ExternalLink,
   ShieldCheck,
   HelpCircle,
+  Star,
 } from "lucide-react";
 import {
   I18nProvider,
@@ -397,6 +398,18 @@ function PopupContent({
                 <div className="flex items-center gap-2">
                   <MessageSquare size={11} className="text-indigo-400" />
                   <span>Quick Feedback</span>
+                </div>
+                <ExternalLink size={9} className="opacity-50" />
+              </a>
+              <a
+                href="https://chromewebstore.google.com/detail/npgdhpneemlimglbblodddpkamncodhj?utm_source=item-share-cb"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center justify-between px-3 py-2 rounded-xl text-[10px] font-bold ${theme.textSub} hover:${theme.textMain} hover:${theme.bgHover} transition-all duration-200 border ${theme.borderMuted} hover:translate-x-0.5`}
+              >
+                <div className="flex items-center gap-2">
+                  <Star size={11} className="text-amber-400" />
+                  <span>Rate Us on Chrome Web Store</span>
                 </div>
                 <ExternalLink size={9} className="opacity-50" />
               </a>

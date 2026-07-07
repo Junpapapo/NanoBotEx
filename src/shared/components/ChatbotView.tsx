@@ -299,7 +299,8 @@ export function ChatbotView({
         url.startsWith("chrome://") ||
         url.startsWith("chrome-extension://") ||
         url.includes("chrome.google.com/webstore") ||
-        url.includes("chromewebstore.google.com")
+        url.includes("chromewebstore.google.com") ||
+        url.includes("junpapapo.github.io")
       ) {
         alert(
           "Due to Chrome's security policies, page summarization is not supported on browser settings, built-in extension pages, or the Chrome Web Store.\n\nPlease try again on a standard external website."
