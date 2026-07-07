@@ -1,9 +1,18 @@
-﻿# NanoBot - On-Device AI Chatbot (Chrome Extension)
+# NanoBot - On-Device AI Chatbot (Chrome Extension)
 
 A lightweight utility that brings a customized AI assistant directly onto your browser. This project is built as a Chrome Extension (Manifest V3) and utilizes Google Chrome's experimental on-device AI model (Gemini Nano) or connects directly to external LLM API endpoints.
 
 > [!NOTE]
 > This extension is optimized for lightweight on-device AI tasks, quick memos, bookmarks, and basic workflow scripting.
+
+## Our Mission: Why NanoBot & SLM?
+
+While modern AI advances at an unprecedented pace, accessing massive large language models (LLMs) often requires expensive subscription plans or high-end GPU hardware. As a result, users on budget hardware like Chromebooks, students, or communities in developing regions frequently find themselves in the "AI shadow," unable to utilize these modern tools.
+
+**NanoBot** was built to address this digital divide and support **"AI for Everyone"**:
+- **Accessible & Budget-Friendly**: Utilizing Small Language Models (SLMs) running locally inside the browser lowers the entry barrier. You don't need expensive paid API keys or high-end servers to perform daily micro-tasks.
+- **Eco-Friendly & Sustainable**: Running inference locally on the device bypasses the massive energy demands and carbon footprints associated with routing requests through giant cloud data centers. It represents a green, energy-efficient approach to AI.
+- **Privacy-Preserving**: Since the data stays on your machine, your private inputs never leave your local environment.
 
 ## Features
 
