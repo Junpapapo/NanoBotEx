@@ -335,13 +335,13 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
             
             <div className="relative z-10 flex flex-col gap-3.5">
               {/* 문장 및 발음 */}
-              <div className="flex flex-col gap-1 pr-4">
-                <div className="text-[15px] font-serif font-black text-emerald-200/95 leading-relaxed flex items-center gap-1.5">
-                  <span>{learnData.sentence}</span>
+              <div className="flex flex-col gap-1 pr-2">
+                <div className="text-[15px] font-serif font-black text-emerald-200/95 leading-relaxed">
+                  <span className="align-middle">{learnData.sentence}</span>
                   <button
                     type="button"
                     onClick={() => handlePlayTTS(learnData.sentence)}
-                    className="p-1 rounded-md text-emerald-400/80 hover:text-emerald-350 hover:bg-emerald-500/10 active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center"
+                    className="ml-1.5 p-0.5 rounded text-emerald-400/80 hover:text-emerald-350 hover:bg-emerald-500/10 active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center align-middle"
                     title={t ? t("tools.tutor.ttsTitle", "발음 듣기") : "발음 듣기"}
                   >
                     <Volume2 size={13} />
