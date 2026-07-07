@@ -386,6 +386,8 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
     } catch (e) {
       console.warn("Failed to parse quote JSON:", e);
     }
+    // rawMatchText replace가 실패했을 경우 대비: 마커+JSON 블록을 정규식으로 추가 제거
+    cleanContent = cleanContent.replace(/\[QUOTE\]\s*(?:```json\s*)?\{[\s\S]*?\}\s*(?:```)?/g, "").trim();
   }
 
   // 2. 배움 스페셜 카드 파싱
@@ -453,7 +455,12 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
     } catch (e) {
       console.warn("Failed to parse learn JSON:", e);
     }
+    // rawMatchText replace가 실패했을 경우 대비: 마커+JSON 블록을 정규식으로 추가 제거
+    cleanContent = cleanContent.replace(/\[LEARN_CARD\]\s*(?:```json\s*)?\{[\s\S]*?\}\s*(?:```)?/g, "").trim();
   }
+
+  // 최종: 카드 파싱 후 남은 JSON 코드블록(```json...```) 잔여물 일괄 제거
+  cleanContent = cleanContent.replace(/```json[\s\S]*?```/g, "").trim();
 
   const handleSaveToTodo = () => {
     if (todoSaved) return;
