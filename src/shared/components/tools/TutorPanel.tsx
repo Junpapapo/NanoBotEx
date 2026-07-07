@@ -119,6 +119,22 @@ export function TutorPanel({
     }
   };
 
+  // 아카이브 전체 삭제
+  const handleClearAll = () => {
+    if (archiveList.length === 0) return;
+    const confirmClear = window.confirm(
+      t ? t("tools.tutor.confirmClearAll", "정말로 내 단어장의 모든 표현을 삭제하시겠습니까?") : "정말로 내 단어장의 모든 표현을 삭제하시겠습니까?"
+    );
+    if (confirmClear) {
+      if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.set({ "nanobot-tutor-archive": [] }, () => {
+          setArchiveList([]);
+          setExpandedCardId(null);
+        });
+      }
+    }
+  };
+
   // 아코디언 토글
   const toggleExpand = (id: string) => {
     setExpandedCardId(expandedCardId === id ? null : id);
@@ -417,6 +433,17 @@ export function TutorPanel({
             <span className={`text-[10px] font-black uppercase tracking-wider ${theme.textSub}`}>
               {t("tools.tutor.archiveTitle", "내 단어장")} ({archiveList.length})
             </span>
+            {archiveList.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearAll}
+                className="p-1 rounded text-slate-400 hover:text-red-400 hover:bg-red-500/10 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                title={t("tools.tutor.clearAllTitle", "단어장 비우기")}
+              >
+                <Trash2 size={12} />
+                <span className="text-[9px] font-bold">{t("tools.tutor.clearAllBtn", "모두 삭제")}</span>
+              </button>
+            )}
           </div>
 
           {archiveList.length === 0 ? (
