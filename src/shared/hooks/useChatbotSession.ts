@@ -593,13 +593,18 @@ export function useChatbotSession(
       }
 
       if (searchResults.length > 0) {
+        const now = new Date();
+        const todayStr = now.toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric", weekday: "short" });
+        const timeStr = now.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
+        const dateHeader = `[📅 Current Date & Time: ${todayStr} ${timeStr}]\n`;
+
         const searchContext = searchResults
           .map((r, i) => `[${i + 1}] ${r.title} (${r.url})\n${r.snippet}`)
           .join("\n\n");
 
         if (currentSettings.api_mode === "local") {
           const miniRules = buildPromptWithRules(currentSettings, currentActiveSkill);
-          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}\n[WEB SEARCH RESULT]\n${searchContext}\n\n[USER QUESTION]\n${cleanText}\n\n(참고: 제공된 [WEB SEARCH RESULT]의 신뢰성 높은 최신 정보를 분석해서 한국어로 친절하게 답변하세요.)`;
+          promptText = `[SYSTEM INSTRUCTION]\n${miniRules}\n[WEB SEARCH RESULT]\n${dateHeader}${searchContext}\n\n[USER QUESTION]\n${cleanText}\n\n(참고: 제공된 [WEB SEARCH RESULT]의 신뢰성 높은 최신 정보를 분석해서 한국어로 친절하게 답변하세요.)`;
         } else {
           const lengthRule = currentSettings.nano_ai_context_level === "minimal"
             ? "[RESPONSE LENGTH LIMIT]: Please keep your response extremely brief, concise, and compact. Summarize key points in 1-2 short sentences maximum. (반드시 짧고 간결하게 핵심만 1~2문장으로 답변하세요.)"
@@ -607,7 +612,7 @@ export function useChatbotSession(
               ? "[RESPONSE LENGTH RULE]: Please provide a highly detailed, rich, and comprehensive response with background contexts and thorough explanations. (배경 설명과 심층 분석을 포함해 아주 상세하고 친절하게 장문으로 답변하세요.)"
               : "[RESPONSE LENGTH RULE]: Please provide a balanced response of moderate length. (적당한 길이로 요약하여 균형 있게 답변하세요.)";
 
-          promptText = `${lengthRule}\n\n[웹 검색 결과]\n${searchContext}\n\n[USER QUESTION]\n${cleanText}\n\n(참고: 제공된 [웹 검색 결과]의 신뢰성 높은 내용을 분석해서 친절한 한국어로 답변하세요.)`;
+          promptText = `${lengthRule}\n\n[웹 검색 결과]\n${dateHeader}${searchContext}\n\n[USER QUESTION]\n${cleanText}\n\n(참고: 제공된 [웹 검색 결과]의 신뢰성 높은 내용을 분석해서 친절한 한국어로 답변하세요.)`;
         }
       } else {
         if (currentSettings.api_mode === "local") {
