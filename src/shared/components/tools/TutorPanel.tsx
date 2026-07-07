@@ -19,6 +19,42 @@ export function TutorPanel({
   t
 }: TutorPanelProps) {
   const isLight = settings.nano_skin_mode === "light";
+
+  // "09:00" -> { ampm: "AM", hour: "09", minute: "00" } 파싱 헬퍼
+  const parseAlarmTime = (timeStr: string) => {
+    const defaultVal = { ampm: "AM", hour: "09", minute: "00" };
+    if (!timeStr) return defaultVal;
+    try {
+      const [hStr, mStr] = timeStr.split(":");
+      const hNum = parseInt(hStr, 10);
+      const ampm = hNum >= 12 ? "PM" : "AM";
+      let hourNum = hNum % 12;
+      if (hourNum === 0) hourNum = 12;
+      const hour = String(hourNum).padStart(2, "0");
+      const minute = mStr.padStart(2, "0");
+      return { ampm, hour, minute };
+    } catch {
+      return defaultVal;
+    }
+  };
+
+  // { ampm: "AM", hour: "09", minute: "00" } -> "09:00" 저장용 포맷터
+  const formatAlarmTime = (ampm: string, hourStr: string, minStr: string) => {
+    let hNum = parseInt(hourStr, 10);
+    if (ampm === "PM" && hNum < 12) hNum += 12;
+    if (ampm === "AM" && hNum === 12) hNum = 0;
+    const hStr = String(hNum).padStart(2, "0");
+    return `${hStr}:${minStr}`;
+  };
+
+  const alarmTimeObj = parseAlarmTime(settings.tutor_alarm_time || "09:00");
+
+  const handleTimeChange = (key: "ampm" | "hour" | "minute", val: string) => {
+    const current = parseAlarmTime(settings.tutor_alarm_time || "09:00");
+    current[key] = val;
+    const formatted = formatAlarmTime(current.ampm, current.hour, current.minute);
+    updateSettings({ tutor_alarm_time: formatted });
+  };
   
   const [archiveList, setArchiveList] = useState<any[]>([]);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
@@ -322,16 +358,53 @@ export function TutorPanel({
               <span className={`text-[9.5px] ${theme.textSub}`}>
                 {t("tools.tutor.alarmTimeLabel", "알림 배달 시각")}
               </span>
-              <input
-                type="time"
-                value={settings.tutor_alarm_time || "09:00"}
-                onChange={(e) => updateSettings({ tutor_alarm_time: e.target.value })}
-                className={`text-center font-extrabold text-[11px] py-1 px-2 rounded-md border focus:outline-none focus:border-emerald-400 transition-all cursor-pointer ${
-                  isLight
-                    ? "bg-slate-50 border-slate-200 text-slate-700"
-                    : "bg-slate-950 border-white/[0.05] text-slate-200"
-                }`}
-              />
+              <div className="flex items-center gap-1">
+                {/* AM / PM */}
+                <select
+                  value={alarmTimeObj.ampm}
+                  onChange={(e) => handleTimeChange("ampm", e.target.value)}
+                  className={`text-center font-extrabold text-[10px] py-1 px-1.5 rounded-md border focus:outline-none focus:border-emerald-400 transition-all cursor-pointer ${
+                    isLight
+                      ? "bg-slate-50 border-slate-200 text-slate-700"
+                      : "bg-slate-950 border-white/[0.05] text-slate-200"
+                  }`}
+                >
+                  <option value="AM">AM</option>
+                  <option value="PM">PM</option>
+                </select>
+
+                {/* Hour */}
+                <select
+                  value={alarmTimeObj.hour}
+                  onChange={(e) => handleTimeChange("hour", e.target.value)}
+                  className={`text-center font-extrabold text-[10px] py-1 px-1.5 rounded-md border focus:outline-none focus:border-emerald-400 transition-all cursor-pointer ${
+                    isLight
+                      ? "bg-slate-50 border-slate-200 text-slate-700"
+                      : "bg-slate-950 border-white/[0.05] text-slate-200"
+                  }`}
+                >
+                  {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(h => (
+                    <option key={h} value={h}>{h}</option>
+                  ))}
+                </select>
+
+                <span className={`text-[10px] font-bold ${theme.textSub}`}>:</span>
+
+                {/* Minute */}
+                <select
+                  value={alarmTimeObj.minute}
+                  onChange={(e) => handleTimeChange("minute", e.target.value)}
+                  className={`text-center font-extrabold text-[10px] py-1 px-1.5 rounded-md border focus:outline-none focus:border-emerald-400 transition-all cursor-pointer ${
+                    isLight
+                      ? "bg-slate-50 border-slate-200 text-slate-700"
+                      : "bg-slate-950 border-white/[0.05] text-slate-200"
+                  }`}
+                >
+                  {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           )}
         </div>
