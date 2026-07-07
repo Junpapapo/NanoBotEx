@@ -1,5 +1,6 @@
 {
   "chatbot": {
+    "unknownAuthor": "Unknown Author",
     "closeConfirm": {
       "title": "End this conversation?",
       "desc": "Ending will completely reset your history.",

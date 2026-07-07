@@ -302,7 +302,23 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
               )}
               <div className="text-right text-xs font-serif text-indigo-400 font-bold flex items-center justify-end gap-1.5">
                 <span className="w-4 h-[1px] bg-indigo-500/50"></span>
-                — {quoteData.author}
+                — {(() => {
+                  const author = quoteData.author;
+                  if (!author) return t ? t("chatbot.unknownAuthor", "저자 불분명") : "저자 불분명";
+                  const lower = author.toLowerCase().trim();
+                  if (
+                    lower === "unknown" || 
+                    lower === "unknown author" || 
+                    lower === "anonymous" || 
+                    lower === "저자 불분명" || 
+                    lower === "작가 미상" || 
+                    lower === "著者不明" ||
+                    lower === "unknown_author"
+                  ) {
+                    return t ? t("chatbot.unknownAuthor", "저자 불분명") : "저자 불분명";
+                  }
+                  return author;
+                })()}
               </div>
               {quoteData.explanation && (
                 <div className="mt-2 pt-3 border-t border-white/[0.06] text-[11.5px] text-slate-300 leading-relaxed whitespace-pre-line">

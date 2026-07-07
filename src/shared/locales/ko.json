@@ -1,5 +1,6 @@
 {
   "chatbot": {
+    "unknownAuthor": "저자 불분명",
     "closeConfirm": {
       "title": "대화를 완전히 종료하시겠습니까?",
       "desc": "종료 시 대화 내역이 완전히 초기화됩니다.",

@@ -1,5 +1,6 @@
 {
   "chatbot": {
+    "unknownAuthor": "著者不明",
     "closeConfirm": {
       "title": "会話を終了しますか？",
       "desc": "終了すると会話履歴がリセットされます。",
