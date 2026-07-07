@@ -24,62 +24,115 @@ interface ChatMessageItemProps {
 
 // ──────────────────────────────────────────────────────────────────────────
 // 유효하지 않은 줄바꿈 및 백슬래시 에러를 보정하여 안전하게 JSON을 파싱하는 헬퍼 함수
+// 1단계: 문자열 내 리터럴 줄바꿈 및 이스케이프 수정 후 JSON.parse 시도
+// 2단계: 여전히 실패 시 문자열 값 내 이중 따옴표를 강제 이스케이프 처리
+// 3단계: 마지막 수단으로 정규식 기반 필드 추출
 // ──────────────────────────────────────────────────────────────────────────
 const cleanAndParseJson = (jsonStr: string) => {
-  let cleaned = jsonStr.trim();
-  
-  let inString = false;
-  let escapeActive = false;
-  const chars = [];
-  
-  for (let i = 0; i < cleaned.length; i++) {
-    const char = cleaned[i];
-    
-    if (escapeActive) {
-      if (char === '"' || char === '\\' || char === '/' || char === 'b' || char === 'f' || char === 'n' || char === 'r' || char === 't' || char === 'u') {
-        chars.push('\\');
-        chars.push(char);
-      } else if (char === '\n' || char === '\r') {
-        chars.push('\\');
-        chars.push('n');
-        if (char === '\r' && cleaned[i + 1] === '\n') {
-          i++;
+  const cleaned = jsonStr.trim();
+
+  // ── 1단계: 문자열 내 리터럴 개행을 \n으로 치환하는 char-by-char 정제 ──
+  const repairLiterals = (src: string): string => {
+    let inStr = false;
+    let escape = false;
+    const out: string[] = [];
+    for (let i = 0; i < src.length; i++) {
+      const ch = src[i];
+      if (escape) {
+        const valid = '"\\\/bfnrtu'.includes(ch);
+        if (valid) { out.push('\\'); out.push(ch); }
+        else if (ch === '\n' || ch === '\r') { out.push('\\n'); if (ch === '\r' && src[i+1] === '\n') i++; }
+        else { out.push(ch); }
+        escape = false; continue;
+      }
+      if (ch === '\\') { escape = true; continue; }
+      if (ch === '"') { inStr = !inStr; out.push(ch); continue; }
+      if (inStr && (ch === '\n' || ch === '\r')) {
+        out.push('\\n'); if (ch === '\r' && src[i+1] === '\n') i++;
+      } else { out.push(ch); }
+    }
+    if (escape) out.push('\\');
+    return out.join('');
+  };
+
+  // ── 2단계: 각 string 값 내부의 이스케이프되지 않은 " 를 교체 ──
+  // JSON 문자열 값 경계를 추적하며, 값 내부의 raw " 를 \" 로 수정
+  const repairUnescapedQuotes = (src: string): string => {
+    // 각 키의 값 부분을 따로 처리하기 위해 키-값 경계를 수동으로 탐색
+    const out: string[] = [];
+    let i = 0;
+    while (i < src.length) {
+      const ch = src[i];
+      if (ch === '"') {
+        // 문자열 시작 - 닫는 따옴표를 추적
+        out.push('"');
+        i++;
+        while (i < src.length) {
+          const c = src[i];
+          if (c === '\\') {
+            // 이미 이스케이프된 문자 - 그대로 통과
+            out.push(c);
+            i++;
+            if (i < src.length) { out.push(src[i]); i++; }
+          } else if (c === '"') {
+            // 문자열 종료 따옴표 - 다음 문자로 , } ] 가 오면 실제 종료
+            const next = src.slice(i + 1).trimStart();
+            if (next.startsWith(',') || next.startsWith('}') || next.startsWith(']') || next === '') {
+              out.push('"'); i++; break;
+            } else {
+              // 값 내부의 이스케이프되지 않은 " → \" 로 교체
+              out.push('\\"'); i++;
+            }
+          } else {
+            out.push(c); i++;
+          }
         }
       } else {
-        chars.push(char);
+        out.push(ch); i++;
       }
-      escapeActive = false;
-      continue;
     }
-    
-    if (char === '\\') {
-      escapeActive = true;
-      continue;
-    }
-    
-    if (char === '"') {
-      inString = !inString;
-      chars.push(char);
-      continue;
-    }
-    
-    if (inString && (char === '\n' || char === '\r')) {
-      chars.push('\\');
-      chars.push('n');
-      if (char === '\r' && cleaned[i + 1] === '\n') {
-        i++;
-      }
-    } else {
-      chars.push(char);
+    return out.join('');
+  };
+
+  // ── 3단계: 정규식 기반 필드 추출 (최후 수단) ──
+  const extractByRegex = (src: string): Record<string, any> => {
+    const getString = (key: string): string => {
+      // key": "value" 형식을 찾되, 다음 키까지의 내용을 모두 값으로 간주
+      const re = new RegExp(`"${key}"\\s*:\\s*"([\\s\\S]*?)"(?=\\s*[,}])`, 'i');
+      const m = src.match(re);
+      return m ? m[1].replace(/\\n/g, '\n') : '';
+    };
+    const getArray = (key: string): any[] => {
+      const re = new RegExp(`"${key}"\\s*:\\s*\\[([\\s\\S]*?)\\]`, 'i');
+      const m = src.match(re);
+      if (!m) return [];
+      try {
+        const fixed = repairLiterals('[' + m[1] + ']');
+        return JSON.parse(fixed);
+      } catch { return []; }
+    };
+    return {
+      sentence: getString('sentence'),
+      pronunciation: getString('pronunciation'),
+      translation: getString('translation'),
+      vocabulary: getArray('vocabulary'),
+      tutor_note: getString('tutor_note'),
+    };
+  };
+
+  // 순서대로 시도
+  try {
+    return JSON.parse(repairLiterals(cleaned));
+  } catch (_e1) {
+    try {
+      return JSON.parse(repairUnescapedQuotes(repairLiterals(cleaned)));
+    } catch (_e2) {
+      // 최후 수단: 정규식 추출
+      const result = extractByRegex(cleaned);
+      if (result.sentence) return result;
+      throw new Error('All JSON repair strategies failed');
     }
   }
-  
-  if (escapeActive) {
-    chars.push('\\');
-  }
-  
-  cleaned = chars.join('');
-  return JSON.parse(cleaned);
 };
 
 export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQuestion, t, quickMenuItems, onConfirmAction, onOpenAlarm, onSendToViewer }: ChatMessageItemProps) {
