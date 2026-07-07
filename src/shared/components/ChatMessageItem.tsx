@@ -502,7 +502,7 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
         <AIAvatar avatarPath={effectiveAIAvatar} size={30} />
       )}
 
-      <div className={`flex flex-col max-w-[80%] gap-1`}>
+      <div className={`flex flex-col max-w-[90%] gap-1`}>
         {!isUser && (
           <div className="flex items-center gap-1.5 select-none pl-1">
             <span className={`text-[10px] font-bold ${theme.textSub}`}>
