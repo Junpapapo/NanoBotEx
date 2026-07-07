@@ -51,7 +51,7 @@
       },
       "p4": {
         "label": "Explain Quote",
-        "text": "Please kindly explain the meaning of the quote '{quote}' displayed in the header in English."
+        "text": "Please kindly explain the meaning of '{quote}' in English."
       },
       "p5": {
         "label": "Daily Learning Expression 🎓",
