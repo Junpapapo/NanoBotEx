@@ -59,6 +59,7 @@ export function TutorPanel({
   const [archiveList, setArchiveList] = useState<any[]>([]);
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [settingsExpanded, setSettingsExpanded] = useState(false);
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
 
   // 스토리지에서 저장된 아카이브 목록 로드
   useEffect(() => {
@@ -119,19 +120,20 @@ export function TutorPanel({
     }
   };
 
-  // 아카이브 전체 삭제
+  // 아카이브 전체 삭제 모달 트리거
   const handleClearAll = () => {
     if (archiveList.length === 0) return;
-    const confirmClear = window.confirm(
-      t ? t("tools.tutor.confirmClearAll", "정말로 내 단어장의 모든 표현을 삭제하시겠습니까?") : "정말로 내 단어장의 모든 표현을 삭제하시겠습니까?"
-    );
-    if (confirmClear) {
-      if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
-        chrome.storage.local.set({ "nanobot-tutor-archive": [] }, () => {
-          setArchiveList([]);
-          setExpandedCardId(null);
-        });
-      }
+    setIsClearConfirmOpen(true);
+  };
+
+  // 실제 삭제 실행
+  const executeClearAll = () => {
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ "nanobot-tutor-archive": [] }, () => {
+        setArchiveList([]);
+        setExpandedCardId(null);
+        setIsClearConfirmOpen(false);
+      });
     }
   };
 
@@ -548,6 +550,49 @@ export function TutorPanel({
           )}
         </div>
       </div>
+
+      {/* 커스텀 확인 모달 */}
+      {isClearConfirmOpen && (
+        <div className="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 text-inherit select-none">
+          <div className={`w-full max-w-[260px] border rounded-2xl p-5 shadow-2xl text-center ${
+            isLight ? "bg-white border-slate-200" : "bg-slate-900 border-emerald-500/25 shadow-[0_0_30px_rgba(16,185,129,0.15)]"
+          }`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3 ${
+              isLight ? "bg-emerald-50 border border-emerald-100 text-emerald-600" : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+            }`}>
+              <Bell size={18} />
+            </div>
+            
+            <h3 className={`text-xs font-black tracking-wide mb-1.5 ${isLight ? "text-slate-800" : "text-white"}`}>
+              {t ? t("tools.tutor.clearAllTitle", "단어장 비우기") : "단어장 비우기"}
+            </h3>
+            <p className={`text-[9.5px] leading-relaxed mb-5 px-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+              {t ? t("tools.tutor.confirmClearAll", "정말로 내 단어장의 모든 표현을 삭제하시겠습니까?") : "정말로 내 단어장의 모든 표현을 삭제하시겠습니까?"}
+            </p>
+
+            <div className="flex flex-col gap-1.5">
+              <button
+                type="button"
+                onClick={executeClearAll}
+                className="w-full py-2 rounded-lg text-[9.5px] font-black bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer shadow-md active:scale-98"
+              >
+                {t ? t("common.yes", "예") : "예"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsClearConfirmOpen(false)}
+                className={`w-full py-2 rounded-lg text-[9.5px] font-bold transition-all cursor-pointer border ${
+                  isLight 
+                    ? "bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200" 
+                    : "bg-slate-850 hover:bg-slate-800 text-slate-350 border-white/[0.05]"
+                }`}
+              >
+                {t ? t("common.no", "아니오") : "아니오"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
