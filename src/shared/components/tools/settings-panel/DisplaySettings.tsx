@@ -38,7 +38,11 @@ export function DisplaySettings({
   const handleResetAllData = () => {
     if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
       chrome.storage.local.clear(() => {
-        window.location.reload();
+        if (chrome.runtime && typeof chrome.runtime.reload === "function") {
+          chrome.runtime.reload();
+        } else {
+          window.location.reload();
+        }
       });
     } else {
       localStorage.clear();

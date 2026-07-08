@@ -7,7 +7,10 @@ import { checkSafety } from "../utils/safety-guard";
 import { ENABLE_CHAT_SAFETY } from "../../premium/premium-config";
 import { ALL_TEMPORAL_KEYWORDS } from "../chatbot-constants";
 
-export const performWebSearch = async (keyword: string): Promise<{ results: SearchResult[]; tabId: number }> => {
+export const performWebSearch = async (
+  keyword: string,
+  t?: (key: string, def: string) => string
+): Promise<{ results: SearchResult[]; tabId: number }> => {
   let tempTabId = 0;
   let originalTabId = 0;
   const results: SearchResult[] = [];
@@ -128,7 +131,9 @@ export const performWebSearch = async (keyword: string): Promise<{ results: Sear
           
           if (cleanedText) {
             results.push({
-              title: isUrl ? `웹 사이트 직접 수집: "${trimmedKeyword}"` : `실시간 기본 검색 결과: "${trimmedKeyword}"`,
+              title: isUrl
+                ? (t ? t("chatbot.sources.directScrape", `웹 사이트 직접 수집: "{query}"`).replace("{query}", trimmedKeyword) : `웹 사이트 직접 수집: "${trimmedKeyword}"`)
+                : (t ? t("chatbot.sources.defaultSearch", `실시간 기본 검색 결과: "{query}"`).replace("{query}", trimmedKeyword) : `실시간 기본 검색 결과: "${trimmedKeyword}"`),
               url: isUrl ? (trimmedKeyword.startsWith("http") ? trimmedKeyword : `https://${trimmedKeyword}`) : actualSearchUrl,
               snippet: cleanedText
             });
@@ -139,9 +144,9 @@ export const performWebSearch = async (keyword: string): Promise<{ results: Sear
   } catch (tabErr: any) {
     console.warn("[NanoBot] performWebSearch error:", tabErr);
     results.push({
-      title: "⚠️ 스크래핑 에러 디버그 정보",
+      title: t ? t("chatbot.sources.scrapeErrorTitle", "⚠️ 스크래핑 에러 디버그 정보") : "⚠️ 스크래핑 에러 디버그 정보",
       url: "chrome://error-details",
-      snippet: `에러 내용: ${tabErr?.message || tabErr}`
+      snippet: t ? t("chatbot.sources.scrapeErrorSnippet", "에러 내용: {error}").replace("{error}", tabErr?.message || tabErr) : `에러 내용: ${tabErr?.message || tabErr}`
     });
   } finally {
     // 5. 사용이 완료된 임시 검색 탭은 반드시 강제 닫기 수행 (메모리 누수 차단)
@@ -581,7 +586,7 @@ export function useChatbotSession(
         console.log("[NanoBot] Web search execution starts. query:", text);
         updateContent(t("chatbot.status.searching", "🔍 실시간 검색 결과를 가져오는 중입니다..."));
         try {
-          const searchData = await performWebSearch(text);
+          const searchData = await performWebSearch(text, t);
           searchResults = searchData.results;
           searchTabId = searchData.tabId;
           console.log("[NanoBot] Scrape success. Count:", searchResults.length, "tabId:", searchTabId);
@@ -813,7 +818,7 @@ const flushFinalContent = (content: string) => {
       } else {
         console.error(err);
         const errMsg = err?.message || String(err);
-        const errorContent = `오류가 발생했습니다: ${errMsg}\n\n브라우저 및 온디바이스 설정을 확인해 주세요.`;
+        const errorContent = `${t("chatbot.error.prefix", "오류가 발생했습니다")}: ${errMsg}\n\n${t("chatbot.error.suffix", "브라우저 및 온디바이스 설정을 확인해 주세요.")}`;
         updateContent(errorContent);
         setMessages((prev) => {
           const finalMsgs = prev.map((m) => m.id === assistantMessageId ? { ...m, content: errorContent, isStreaming: false, sources: searchResults.length > 0 ? searchResults : undefined, searchTabId, searchQuery: searchResults.length > 0 ? text : undefined } : m);

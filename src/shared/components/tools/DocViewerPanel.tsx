@@ -537,7 +537,7 @@ Constraints:
   const handlePrintPdf = () => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) {
-      alert("팝업 차단을 해제해 주세요.");
+      alert(t("docViewer.popupBlockerAlert", "팝업 차단을 해제해 주세요."));
       return;
     }
 
@@ -922,7 +922,7 @@ Constraints:
                 setDocContent(e.target.value);
                 setPrevDocBeforeRefine(null);
               }}
-              placeholder="여기에 문서를 자유롭게 입력하거나 편집하세요... (마크다운 지원)"
+              placeholder={t("docViewer.editPlaceholder", "여기에 문서를 자유롭게 입력하거나 편집하세요... (마크다운 지원)")}
               className={`flex-1 w-full p-3 rounded border outline-none resize-none font-mono transition-all custom-scrollbar ${
                 isLight
                   ? "bg-slate-50 border-slate-200 focus:bg-white focus:border-indigo-400 text-slate-800"
@@ -994,7 +994,7 @@ Constraints:
                     <button
                       onClick={(e) => handleDeleteHistoryItem(doc.id, e)}
                       className="text-slate-500 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all p-0.5 rounded cursor-pointer"
-                      title="삭제"
+                      title={t("docViewer.delete", "삭제")}
                     >
                       <Trash2 size={10} />
                     </button>

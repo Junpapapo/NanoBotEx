@@ -104,7 +104,10 @@ export function SystemSidebar({
           id: "sys_summarize",
           title: t("sidebar.tooltips.textSummary", "텍스트 요약"),
           description: t("sidebar.descriptions.textSummary", "입력한 본문의 핵심 내용을 깔끔하게 요약합니다."),
-          prompt: "Please summarize the following text to make it easy to read at a glance. Do NOT output any introductory, conversational, or concluding text (such as \"Here is the summary:\" or \"I hope this helps\"). Output ONLY the final summarized text directly.\n\n",
+          prompt: t(
+            "sidebar.prompts.textSummary",
+            "Please summarize the following text to make it easy to read at a glance. Do NOT output any introductory, conversational, or concluding text (such as \"Here is the summary:\" or \"I hope this helps\"). Output ONLY the final summarized text directly.\n\n"
+          ),
           icon: "FileText"
         };
       case "keyPoints":
@@ -112,7 +115,10 @@ export function SystemSidebar({
           id: "sys_keyPoints",
           title: t("sidebar.tooltips.keyPoints", "핵심요약"),
           description: t("sidebar.descriptions.keyPoints", "입력한 본문의 핵심 3가지 요점을 정리합니다."),
-          prompt: "Please summarize the key 3 points of the following text in a clear, bulleted list. Do NOT output any introductory, conversational, or concluding text. Output ONLY the 3 bullet points directly.\n\n",
+          prompt: t(
+            "sidebar.prompts.keyPoints",
+            "Please summarize the key 3 points of the following text in a clear, bulleted list. Do NOT output any introductory, conversational, or concluding text. Output ONLY the 3 bullet points directly.\n\n"
+          ),
           icon: "ListChecks"
         };
       case "grammar":
@@ -120,7 +126,10 @@ export function SystemSidebar({
           id: "sys_grammar",
           title: t("sidebar.tooltips.grammarCheck", "맞춤법 교정"),
           description: t("sidebar.descriptions.grammarCheck", "입력한 텍스트의 오탈자, 띄어쓰기, 문법 오류를 교정합니다."),
-          prompt: "Please correct any spelling, spacing, and grammatical errors in the following text. Do NOT output any explanation, introductory, conversational, or concluding text. Output ONLY the corrected text directly.\n\n",
+          prompt: t(
+            "sidebar.prompts.grammarCheck",
+            "Please correct any spelling, spacing, and grammatical errors in the following text. Do NOT output any explanation, introductory, conversational, or concluding text. Output ONLY the corrected text directly.\n\n"
+          ),
           icon: "SpellCheck"
         };
       case "business":
@@ -128,7 +137,10 @@ export function SystemSidebar({
           id: "sys_business",
           title: t("sidebar.tooltips.businessTone", "비즈니스 어조"),
           description: t("sidebar.descriptions.businessTone", "격식 있고 공손한 비즈니스 메일/메시지 어조로 변환합니다."),
-          prompt: "Please rewrite the following text into a formal and polite business email/message tone. Do NOT output any greetings to the user, introductory remarks, or conversational filler. Output ONLY the rewritten email/message body directly.\n\n",
+          prompt: t(
+            "sidebar.prompts.businessTone",
+            "Please rewrite the following text into a formal and polite business email/message tone. Do NOT output any greetings to the user, introductory remarks, or conversational filler. Output ONLY the rewritten email/message body directly.\n\n"
+          ),
           icon: "Mail"
         };
       case "explain":
@@ -136,7 +148,10 @@ export function SystemSidebar({
           id: "sys_explain",
           title: t("sidebar.tooltips.detailedExplain", "상세 설명"),
           description: t("sidebar.descriptions.detailedExplain", "코드나 어려운 텍스트의 동작 원리 및 뜻을 친절하게 설명합니다."),
-          prompt: "Please explain the meaning and detailed operation process of the following text or code in a friendly, clear manner. Structure your explanation logically. Do NOT add conversational introductory or concluding filler. Start explaining the content immediately.\n\n",
+          prompt: t(
+            "sidebar.prompts.detailedExplain",
+            "Please explain the meaning and detailed operation process of the following text or code in a friendly, clear manner. Structure your explanation logically. Do NOT add conversational introductory or concluding filler. Start explaining the content immediately.\n\n"
+          ),
           icon: "HelpCircle"
         };
       case "brainstorming":
@@ -144,7 +159,10 @@ export function SystemSidebar({
           id: "sys_brainstorming",
           title: t("sidebar.tooltips.brainstorming", "아이디어 발상"),
           description: t("sidebar.descriptions.brainstorming", "지정된 주제에 관해 5가지의 독창적이고 유용한 아이디어를 브레인스토밍합니다."),
-          prompt: "Please brainstorm 5 creative and useful ideas for the following topic. Do NOT output any conversational filler or introductions. Output ONLY the 5 brainstormed ideas directly in a list.\n\n",
+          prompt: t(
+            "sidebar.prompts.brainstorming",
+            "Please brainstorm 5 creative and useful ideas for the following topic. Do NOT output any conversational filler or introductions. Output ONLY the 5 brainstormed ideas directly in a list.\n\n"
+          ),
           icon: "Lightbulb"
         };
       default:

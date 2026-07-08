@@ -189,7 +189,9 @@ function PopupContent({
 
   return (
     <div
-      className={`w-[350px] ${theme.bgSub} ${theme.textMain} p-4 font-sans border ${theme.borderMuted} shadow-2xl rounded-xl transition-all duration-200 relative`}
+      className={`w-[350px] ${theme.bgSub} ${theme.textMain} p-4 font-sans border ${theme.borderMuted} shadow-2xl rounded-xl transition-all duration-200 relative ${
+        showSettingsModal || showShieldModal ? "min-h-[480px]" : ""
+      }`}
     >
       {/* Security & Privacy 모달 오버레이 */}
       {showShieldModal && (

@@ -27,14 +27,19 @@
       "restore": "元のサイズに戻す",
       "close": "閉じる",
       "clearScreen": "画面の会話をクリア",
-      "summarizePage": "現在のアクティブタブの要約"
+      "summarizePage": "現在のアクティブタブの要約",
+      "hideRightMenu": "右メニューを非表示",
+      "showRightMenu": "右メニューを表示"
     },
     "input": {
       "placeholder": "メッセージを入力...",
       "loadingPlaceholder": "AI が生成中...",
       "stop": "生成を停止",
       "send": "送信",
-      "hint": "Enter で送信 / Shift+Enter で改行"
+      "hint": "Enter で送信 / Shift+Enter で改行",
+      "webSearchOff": "リアルタイム検索オフ",
+      "webSearchAuto": "リアルタイム検索: AI自動判断",
+      "webSearchForce": "リアルタイム検索: 強制有効化"
     },
     "welcome": {
       "title": "Hi, I'm",
@@ -70,6 +75,18 @@
       "g3": {
         "label": "❓ ステップ3: 接続問題の解決 (Troubleshoot)"
       }
+    },
+    "error": {
+      "prefix": "エラーが発生しました",
+      "suffix": "ブラウザおよびオンデバイスの設定を確認してください。"
+    },
+    "sources": {
+      "title": "参考出処",
+      "switchToTab": "リアルタイム検索結果へ移動 ↗",
+      "directScrape": "ウェブサイト直接収集: \"{query}\"",
+      "defaultSearch": "リアルタイム基本検索結果: \"{query}\"",
+      "scrapeErrorTitle": "⚠️ スクレーピングエラー詳細情報",
+      "scrapeErrorSnippet": "エラー内容: {error}"
     }
   },
   "bookmarks": {
@@ -116,7 +133,6 @@
       "save": "保存",
       "delete": "削除"
     },
-
     "dangerZone": {
       "title": "Danger Zone",
       "collapse": "▼ Danger Zone を閉じる",
@@ -142,7 +158,6 @@
         "title": "Text Summarizer",
         "description": "Summarizes long text into 3 clean, key points."
       },
-
       "code_reviewer": {
         "title": "Code Reviewer",
         "description": "Finds problems in submitted code and suggests improvement ideas."
@@ -257,7 +272,9 @@
       "globalPlaceholder": "すべての AI 回答に常に適用される絶対的な指示を入力...",
       "generalPlaceholder": "自由会話時のみ適用する特別なルールを入力...",
       "saveSynced": "✓ ルールが同期されました！",
-      "saveBtn": "保存・ボット同期"
+      "saveBtn": "保存・ボット同期",
+      "defaultGlobalRules": "- すべての返信において、常に礼儀正しくフレンドリーなトーンを使用してください。\n- 提供されたリアルタイムの数値やニュースデータに関して、事実を歪めたり捏造したりしないでください。\n- 金額や数値情報を表示する際は、視認性を高めるために常に桁区切り記号 (,) を使用してください。",
+      "defaultGeneralRules": "- 一般的な会話や質問に回答する際は、親しみやすくコミュニケーションを取りつつ、簡潔で明確な回答を優先してください。\n- 投資判断や取引手法について回答する際は、リスクに関する注意喚起メッセージを追加してください: 「投資判断は自己責任となるため、慎重な意思決定が必要です。」\n- 難しい金融やマクロ経済の用語が登場した場合は、直感的な比喩を交えて分かりやすく説明してください。"
     }
   },
   "settings": {
@@ -325,48 +342,54 @@
     "tempBalanced": "バランス",
     "tempCreative": "創造的",
     "bypassTitle": "環境を強制的に有効化",
-    "bypassDesc": "オンデバイスAIの検出に失敗した場合でも、強制的にチャットボットを有効化します。"
+    "bypassDesc": "オンデバイスAIの検出に失敗した場合でも、強制的にチャットボットを有効化します。",
+    "chatFontSize": "チャット文字サイズ",
+    "fontSizeSmall": "小さく",
+    "fontSizeLarge": "大きく",
+    "fontSizeMedium": "標準",
+    "chatFont": "チャットフォント"
   },
   "session": {
     "clearContext": "🧹 **AIの以前の会話コンテキストメモリがクリアされました。** (以降の質問は以前の内容とリンクされず、完全に新しく回答されます。)",
-    "firstUserMsgDefault": "新しい会話"
+    "firstUserMsgDefault": "新しい会話",
+    "timeoutLabel": "セッション自動タイムアウト",
+    "timeoutOff": "無効",
+    "timeoutMinSuffix": "分"
   },
   "tools": {
     "calculator": {
-      "title": "スマート計算機＆変換器"
+      "title": "スマート電卓＆換算器"
     },
     "calc": {
-      "title": "🧮 電卓",
+      "title": "🧮 一般電卓",
       "converterTitle": "📏 スマート単位換算器",
       "temp": "温度",
       "valInput": "値を入力",
-      "exchange": "単位切替",
-      "pyung": "坪 (Pyung)",
+      "exchange": "単位切り替え",
+      "pyung": "坪 (坪)",
       "m2": "平方メートル (㎡)",
       "celsius": "摂氏 (°C)",
-      "fahrenheit": "華氏 (°F)"
+      "fahrenheit": "華氏 (°F)",
+      "cm": "センチメートル (cm)",
+      "inch": "インチ (inch)",
+      "ft": "フィート (ft)",
+      "areaTitle": "面積 (Area)",
+      "tempTitle": "温度 (Temperature)",
+      "lengthCmInchTitle": "長さ (cm ↔ inch)",
+      "lengthCmFtTitle": "長さ (cm ↔ ft)"
     },
     "translator": {
       "title": "翻訳",
-      "placeholder": "ここに翻訳するテキストを入力...",
-      "btnTranslate": "リアルタイム翻訳を実行 ⚡",
+      "placeholder": "ここに翻訳するテキストを入力してください...",
+      "btnTranslate": "リアルタイム翻訳実行 ⚡",
       "translating": "翻訳中...",
       "errorApi": "APIリクエストエラーが発生しました。",
       "errorFail": "翻訳処理に失敗しました。オンデバイスエンジンの状態またはAPI接続を確認してください。",
-      "fahrenheit": "華氏 (°F)"
-    },
-    "translator": {
-      "title": "翻訳",
-      "placeholder": "ここに翻訳するテキストを入力...",
-      "btnTranslate": "リアルタイム翻訳を実行 ⚡",
-      "translating": "翻訳中...",
-      "errorApi": "APIリクエストエラーが発生しました。",
-      "errorFail": "翻訳処理に失敗しました。オンデバイスエンジンの状態またはAPI接続を確認してください。",
-      "sourceLabel": "翻訳する原文を入力",
+      "sourceLabel": "翻訳元のテキストを入力",
       "resultLabel": "翻訳結果",
       "resultPlaceholder": "翻訳結果がここに表示されます...",
       "copied": "コピー完了！",
-      "copy": "コピーする",
+      "copy": "コピー",
       "languages": {
         "en": "English",
         "ko": "Korean",
@@ -378,10 +401,10 @@
     },
     "exchange": {
       "info": "為替レート情報",
-      "calculatorTitle": "金額直接計算",
-      "offline": "デフォルト (オフライン)",
+      "calculatorTitle": "金額の直接計算",
+      "offline": "デフォルト(オフライン)",
       "refresh": "更新",
-      "errorFallback": "エラー (バックアップ為替適用)",
+      "errorFallback": "エラー (バックアップレート適用)",
       "valInput": "金額を入力",
       "currencies": {
         "USD": "$ (ドル)",
@@ -395,21 +418,75 @@
       "title": "メモ＆ToDo",
       "todoTab": "ToDoリスト",
       "memoTab": "メモ帳",
-      "newTodoPlaceholder": "新しいToDoタスクを追加...",
-      "emptyTodo": "登録されたToDoはありません。\n今日のミッションを追加してください！",
-      "emptyTodoDate": "この日付のタスクはありません。\n上の入力欄から追加してみてください！",
-      "emptyMemo": "保存されたメモはありません。\n右上の [+] をクリックして新しいメモを作成してください！",
-      "emptyActiveMemo": "選択されたメモはありません。\nリストからメモを選択するか、新しいメモを作成してください！",
+      "newTodoPlaceholder": "新しいToDoを追加...",
+      "emptyTodo": "登録されたToDoはありません。\n今日のミッションを追加してみましょう！",
+      "emptyTodoDate": "この日付のToDoはありません。\n上の入力欄から追加してください。",
+      "emptyMemo": "保存されたメモはありません。\n右上の [+] ボタンを押して新しいメモを作成してください。",
+      "emptyActiveMemo": "選択されたメモはありません。\nリストからメモを選択するか、新規メモを作成してください。",
       "memoTitlePlaceholder": "メモのタイトルを入力...",
-      "memoContentPlaceholder": "ここに自由にメモを入力してください。変更は自動的に保存されます...",
+      "memoContentPlaceholder": "ここに自由にメモを入力してください。作成した内容は安全に自動保存されます...",
       "autoSaved": "自動保存済み",
-      "deleteConfirm": "このメモを削除してもよろしいですか？",
+      "deleteConfirm": "本当にこのメモを削除しますか？",
       "newMemoTitle": "新規メモ",
-      "unnamedMemo": "基本メモ",
-      "aiAnswerTitle": "AI回答の保存",
-      "lastUpdated": "最終更新",
-      "addMemo": "メモ追加",
-      "deleteMemo": "メモ削除"
+      "unnamedMemo": "デフォルトメモ",
+      "aiAnswerTitle": "AIの回答を保存",
+      "lastUpdated": "最終更新日",
+      "addMemo": "メモを追加",
+      "deleteMemo": "メモを削除",
+      "clickToEdit": "クリックしてメモを入力...",
+      "clearFilter": "すべてクリア ✕",
+      "reserveAlarmTooltip": "このメモをアラームとして予約",
+      "reserveTodoAlarmTooltip": "このToDoをアラームとして予約"
+    },
+    "tutor": {
+      "title": "学習チューター (Lingo Tutor)",
+      "desc": "学びたい言語と対象年齢層を設定してください。AI先生が親しみやすい口調で、レベルに合った例文と解説カードを毎日お届けします。",
+      "selectLang": "学びたい言語",
+      "selectLevel": "学習レベルと年齢",
+      "selectDifficulty": "学習難易度",
+      "requestButton": "今日の学習フレーズを取得 🎓",
+      "ttsTitle": "発音を聞く",
+      "archiveTitle": "マイ単語帳",
+      "archiveEmpty": "保存された学習フレーズはありません。",
+      "deleteBtn": "削除",
+      "confirmClearAll": "本当にマイ単語帳のすべてのフレーズを削除しますか？",
+      "clearAllTitle": "単語帳を空にする",
+      "clearAllBtn": "すべて削除",
+      "selectTopic": "学習トピック",
+      "settingsTitle": "学習条件設定",
+      "dailyAlarm": "毎日の学習リマインダー",
+      "alarmTimeLabel": "通知配信時刻",
+      "topic": {
+        "general": "日常会話 (Daily)",
+        "travel": "旅行・生活 (Travel)",
+        "business": "ビジネス (Business)",
+        "slang": "スラング表現 (Slang)",
+        "grammar": "文法・パターン (Grammar)"
+      },
+      "lang": {
+        "ko": "韓国語 (Korean)",
+        "en": "英語 (English)",
+        "ja": "日本語 (Japanese)",
+        "zh": "中国語 (Chinese)",
+        "es": "スペイン語 (Spanish)",
+        "fr": "フランス語 (French)",
+        "de": "ドイツ語 (German)",
+        "vi": "ベトナム語 (Vietnamese)"
+      },
+      "level": {
+        "kids": "キッズ (Kids)",
+        "kidsDesc": "童話風、簡単な単語、かわいい絵文字",
+        "teens": "ティーン (Teens)",
+        "teensDesc": "トレンドのスラング、日常・趣味の対話",
+        "adult": "ビジネス/大人 (Business)",
+        "adultDesc": "フォーマルな表現、役立つインサイト"
+      },
+      "difficulty": {
+        "beginner": "初級 (Beginner)",
+        "intermediate": "中級 (Intermediate)",
+        "advanced": "上級 (Advanced)"
+      },
+      "requestButtonTooltip": "今日の学びフレーズを取得する 🎓"
     }
   },
   "sidebar": {
@@ -421,7 +498,6 @@
       "resetChat": "会話をリセット",
       "botSettings": "カスタム AI ルール設定",
       "settings": "システム設定",
-
       "translator": "翻訳",
       "exchange": "リアルタイム為替換算機",
       "calculator": "スマート計算機",
@@ -439,7 +515,19 @@
       "tutorRequest": "今日の一言",
       "tutorDisabled": "バディモードでは今日の一言は使用できません",
       "tutorSettings": "学習チューター設定",
-      "tutorSettingsDisabled": "バディモードでは学習チューター設定は使用できません"
+      "tutorSettingsDisabled": "バディモードでは学習チューター設定は使用できません",
+      "clearContextDisabled": "バディモードではメインボット의 記憶クリアが制限されます",
+      "resetChatDisabled": "バディモードではメインボット의 会話リセットが制限されます",
+      "alarm": "AIアラーム・アラート",
+      "docViewer": "AI文書ビューア"
+    },
+    "prompts": {
+      "textSummary": "以下の本文をひと目で分かりやすく要約してください。導入部や結びの言葉（例：「要約は以下の通りです」など）は一切出力せず、要約された最終本文のみを直接出力してください。\n\n",
+      "keyPoints": "以下の本文の主要な3つのポイントを箇条書きで明確に要約してください。導入文や結びの言葉は一切出力せず、3つの箇条書き項目のみを直接出力してください。\n\n",
+      "grammarCheck": "以下のテキストのスペル、空白、文法の誤りを修正してください。解説や導入文などは一切出力せず、修正された最終テキストのみを直接出力してください。\n\n",
+      "businessTone": "以下のテキストをフォーマルで丁寧なビジネスメール/メッセージのトーンに書き換えてください。挨拶や導入文は一切出力せず、書き換えられたメール/メッセージ本文のみを直接出力してください。\n\n",
+      "detailedExplain": "以下のテキストまたはコードの意味と詳細な動作プロセスを、わかりやすく丁寧に説明してください。論理的に構成し、無駄な導入文や結びの言葉を付けずに、すぐに説明を開始してください。\n\n",
+      "brainstorming": "以下のテーマについて、独創的で役立つアイデアを5つブレインストーミングしてください。挨拶や導入文は出力せず、ブレインストーミングされた5つのアイデアのみをリスト形式で直接出力してください。\n\n"
     }
   },
   "persona": {
@@ -571,6 +659,11 @@
       },
       "lock": {
         "label": "プライバシーロックを有効化"
+      },
+      "temperature": {
+        "label": "回答の創造性 (Temperature)",
+        "precise": "慎重/一貫",
+        "creative": "独創/想像"
       }
     },
     "personality": {
@@ -720,7 +813,7 @@
       "tooltips": {
         "alarm": "アラーム通知",
         "docViewer": "文書ビューアー",
-        "tutor": "学習チューター"
+        "tutor": "Lingo Tutor"
       }
     },
     "docViewer": {
@@ -754,7 +847,9 @@
       "aiRefineSuccessToastMessage": "提供されたタイトルと本文をきれいに整理しました。",
       "saveToMemo": "メモ保存",
       "memoSavedToastTitle": "📝 メモ保存完了",
-      "memoSavedToastMessage": "ドキュメントの内容がメモ帳に新しいメモとして保存されました。"
+      "memoSavedToastMessage": "ドキュメントの内容がメモ帳に新しいメモとして保存されました。",
+      "popupBlockerAlert": "ポップアップブロックを解除してください。",
+      "editPlaceholder": "ここに文書を自由に入力または編集してください... (マークダウン対応)"
     }
   },
   "promptRunner": {
@@ -781,56 +876,5 @@
     "sessionInitFailed": "ローカルAIセッションを初期化できません。設定を確認してください。",
     "localAiFailedPrefix": "ローカルオンデバイスAIがタスクを完了できませんでした",
     "detailReason": "詳細原因"
-  },
-  "tools": {
-    "tutor": {
-      "title": "学習チューター (Lingo Tutor)",
-      "desc": "学びたい言語と対象年齢層を設定してください。AI先生が親しみやすい口調で、レベルに合った例文と解説カードを毎日お届けします。",
-      "selectLang": "学びたい言語",
-      "selectLevel": "学習レベルと年齢",
-      "selectDifficulty": "学習難易度",
-      "requestButton": "今日の学習フレーズを取得 🎓",
-      "ttsTitle": "発音を聞く",
-      "archiveTitle": "マイ単語帳",
-      "archiveEmpty": "保存された学習フレーズはありません。",
-      "deleteBtn": "削除",
-      "confirmClearAll": "本当にマイ単語帳のすべてのフレーズを削除しますか？",
-      "clearAllTitle": "単語帳を空にする",
-      "clearAllBtn": "すべて削除",
-      "selectTopic": "学習トピック",
-      "settingsTitle": "学習条件設定",
-      "dailyAlarm": "毎日の学習リマインダー",
-      "alarmTimeLabel": "通知配信時刻",
-      "topic": {
-        "general": "日常会話 (Daily)",
-        "travel": "旅行・生活 (Travel)",
-        "business": "ビジネス (Business)",
-        "slang": "スラング表現 (Slang)",
-        "grammar": "文法・パターン (Grammar)"
-      },
-      "lang": {
-        "ko": "韓国語 (Korean)",
-        "en": "英語 (English)",
-        "ja": "日本語 (Japanese)",
-        "zh": "中国語 (Chinese)",
-        "es": "スペイン語 (Spanish)",
-        "fr": "フランス語 (French)",
-        "de": "ドイツ語 (German)",
-        "vi": "ベトナム語 (Vietnamese)"
-      },
-      "level": {
-        "kids": "キッズ (Kids)",
-        "kidsDesc": "童話風、簡単な単語、かわいい絵文字",
-        "teens": "ティーン (Teens)",
-        "teensDesc": "トレンドのスラング、日常・趣味の対話",
-        "adult": "ビジネス/大人 (Business)",
-        "adultDesc": "フォーマルな表現、役立つインサイト"
-      },
-      "difficulty": {
-        "beginner": "初級 (Beginner)",
-        "intermediate": "中級 (Intermediate)",
-        "advanced": "上級 (Advanced)"
-      }
-    }
   }
 }

@@ -27,14 +27,19 @@
       "restore": "이전 크기로",
       "close": "종료",
       "clearScreen": "화면 대화 지우기",
-      "summarizePage": "현재 활성 탭 본문 요약"
+      "summarizePage": "현재 활성 탭 본문 요약",
+      "hideRightMenu": "오른쪽 메뉴 숨기기",
+      "showRightMenu": "오른쪽 메뉴 보이기"
     },
     "input": {
       "placeholder": "메시지를 입력하세요...",
       "loadingPlaceholder": "AI가 작성하는 중...",
       "stop": "생성 중단",
       "send": "메시지 전송",
-      "hint": "Enter 전송 / Shift+Enter 줄바꿈"
+      "hint": "Enter 전송 / Shift+Enter 줄바꿈",
+      "webSearchOff": "실시간 검색 꺼짐",
+      "webSearchAuto": "실시간 검색: AI 자동 판단",
+      "webSearchForce": "실시간 검색: 강제 활성화"
     },
     "welcome": {
       "title": "Hi, I'm",
@@ -70,6 +75,18 @@
       "g3": {
         "label": "❓ 3단계: 연결 문제 해결 (Troubleshoot)"
       }
+    },
+    "error": {
+      "prefix": "오류가 발생했습니다",
+      "suffix": "브라우저 및 온디바이스 설정을 확인해 주세요."
+    },
+    "sources": {
+      "title": "참고 출처",
+      "switchToTab": "실시간 검색 결과로 이동 ↗",
+      "directScrape": "웹 사이트 직접 수집: \"{query}\"",
+      "defaultSearch": "실시간 기본 검색 결과: \"{query}\"",
+      "scrapeErrorTitle": "⚠️ 스크래핑 에러 디버그 정보",
+      "scrapeErrorSnippet": "에러 내용: {error}"
     }
   },
   "bookmarks": {
@@ -116,7 +133,6 @@
       "save": "저장하기",
       "delete": "삭제"
     },
-
     "dangerZone": {
       "title": "Danger Zone",
       "collapse": "▼ Danger Zone 접기",
@@ -142,7 +158,6 @@
         "title": "Text Summarizer",
         "description": "Summarizes long text into 3 clean, key points."
       },
-
       "code_reviewer": {
         "title": "Code Reviewer",
         "description": "Finds problems in submitted code and suggests improvement ideas."
@@ -327,11 +342,19 @@
     "tempBalanced": "균형적",
     "tempCreative": "창의적",
     "bypassTitle": "환경 강제 활성화",
-    "bypassDesc": "내장 AI 검출 실패 시에도 챗봇을 강제 활성화합니다."
+    "bypassDesc": "내장 AI 검출 실패 시에도 챗봇을 강제 활성화합니다.",
+    "chatFontSize": "채팅 글자 크기",
+    "fontSizeSmall": "작게",
+    "fontSizeLarge": "크게",
+    "fontSizeMedium": "기본",
+    "chatFont": "채팅 폰트"
   },
   "session": {
     "clearContext": "🧹 **AI의 이전 대화 맥락 기억이 클리어되었습니다.** (이후의 질문은 이전 내용과 연계되지 않고 완전히 새롭게 답변됩니다.)",
-    "firstUserMsgDefault": "새로운 대화"
+    "firstUserMsgDefault": "새로운 대화",
+    "timeoutLabel": "세션 자동 만료",
+    "timeoutOff": "끔",
+    "timeoutMinSuffix": "분"
   },
   "tools": {
     "calculator": {
@@ -346,7 +369,14 @@
       "pyung": "평 (Pyung)",
       "m2": "제곱미터 (㎡)",
       "celsius": "섭씨 (°C)",
-      "fahrenheit": "화씨 (°F)"
+      "fahrenheit": "화씨 (°F)",
+      "cm": "센티미터 (cm)",
+      "inch": "인치 (inch)",
+      "ft": "피트 (ft)",
+      "areaTitle": "면적 (Area)",
+      "tempTitle": "온도 (Temperature)",
+      "lengthCmInchTitle": "길이 (cm ↔ inch)",
+      "lengthCmFtTitle": "길이 (cm ↔ ft)"
     },
     "translator": {
       "title": "번역",
@@ -359,7 +389,7 @@
       "resultLabel": "번역 결과",
       "resultPlaceholder": "번역 결과가 여기에 표시됩니다...",
       "copied": "복사 완료!",
-      "copy": "복사하기",
+      "copy": "copy",
       "languages": {
         "en": "English",
         "ko": "Korean",
@@ -402,7 +432,61 @@
       "aiAnswerTitle": "AI 답변 저장",
       "lastUpdated": "마지막 업데이트",
       "addMemo": "메모 추가",
-      "deleteMemo": "메모 삭제"
+      "deleteMemo": "메모 삭제",
+      "clickToEdit": "클릭하여 메모를 작성하세요...",
+      "clearFilter": "전체 ✕",
+      "reserveAlarmTooltip": "이 메모를 알람으로 예약",
+      "reserveTodoAlarmTooltip": "이 할 일을 알람으로 예약"
+    },
+    "tutor": {
+      "title": "배움 튜터 (Lingo Tutor)",
+      "desc": "배우고 싶은 타겟 언어와 연령대를 설정하세요. AI 선생님이 친근한 어조로 수준에 딱 맞는 예문과 설명 카드를 매일 배달합니다.",
+      "selectLang": "배우고 싶은 언어",
+      "selectLevel": "학습 연령 및 수준",
+      "selectDifficulty": "학습 난이도",
+      "requestButton": "오늘의 배움 한마디 받기 🎓",
+      "ttsTitle": "발음 듣기",
+      "archiveTitle": "내 단어장",
+      "archiveEmpty": "저장된 배움 표현이 없습니다.",
+      "deleteBtn": "삭제",
+      "confirmClearAll": "정말로 내 단어장의 모든 표현을 삭제하시겠습니까?",
+      "clearAllTitle": "단어장 비우기",
+      "clearAllBtn": "모두 삭제",
+      "selectTopic": "학습 주제",
+      "settingsTitle": "학습 조건 설정",
+      "dailyAlarm": "매일 배움 알림 받기",
+      "alarmTimeLabel": "알림 배달 시각",
+      "topic": {
+        "general": "일상 회화 (Daily)",
+        "travel": "여행 및 생활 (Travel)",
+        "business": "비즈니스 (Business)",
+        "slang": "슬랭 및 표현 (Slang)",
+        "grammar": "패턴 및 문법 (Grammar)"
+      },
+      "lang": {
+        "ko": "한국어 (Korean)",
+        "en": "영어 (English)",
+        "ja": "일본어 (Japanese)",
+        "zh": "중국어 (Chinese)",
+        "es": "스페인어 (Spanish)",
+        "fr": "프랑스어 (French)",
+        "de": "독일어 (German)",
+        "vi": "베트남어 (Vietnamese)"
+      },
+      "level": {
+        "kids": "어린이 (Kids)",
+        "kidsDesc": "동화 느낌, 쉬운 단어, 친근한 이모지",
+        "teens": "청소년 (Teens)",
+        "teensDesc": "트렌디한 슬랭, 일상 취미 소통",
+        "adult": "성인/비즈니스 (Business)",
+        "adultDesc": "격식 회화, 격려와 지적 통찰력"
+      },
+      "difficulty": {
+        "beginner": "하 (Beginner)",
+        "intermediate": "중 (Intermediate)",
+        "advanced": "상 (Advanced)"
+      },
+      "requestButtonTooltip": "오늘의 배움 한마디 받기 🎓"
     }
   },
   "sidebar": {
@@ -414,7 +498,6 @@
       "resetChat": "전체 대화 리셋",
       "botSettings": "커스텀 AI 동작 룰 설정",
       "settings": "시스템 세팅",
-
       "translator": "번역",
       "exchange": "실시간 환율 변환기",
       "calculator": "스마트 계산기",
@@ -432,7 +515,19 @@
       "tutorRequest": "배움 한마디",
       "tutorDisabled": "버디 모드에서는 오늘의 배움을 사용할 수 없습니다",
       "tutorSettings": "배움 튜터 설정",
-      "tutorSettingsDisabled": "버디 모드에서는 배움 설정을 사용할 수 없습니다"
+      "tutorSettingsDisabled": "버디 모드에서는 배움 설정을 사용할 수 없습니다",
+      "clearContextDisabled": "버디 모드에서는 메인 봇 기억 클리어가 제한됩니다",
+      "resetChatDisabled": "버디 모드에서는 메인 봇 대화 리셋이 제한됩니다",
+      "alarm": "알람 알리미",
+      "docViewer": "문서 뷰어"
+    },
+    "prompts": {
+      "textSummary": "다음 본문을 한눈에 읽기 쉽게 요약해 주세요. 서론이나 본론 설명, 맺음말(예: '요약은 다음과 같습니다' 등)은 일절 출력하지 말고, 요약된 최종 본문만 직접 출력해 주세요.\n\n",
+      "keyPoints": "다음 본문의 핵심 요점 3가지를 명확하게 글머리 기호(•) 리스트로 요약해 주세요. 서론이나 맺음말 등 일절 다른 말을 덧붙이지 말고, 요약된 3가지 항목만 직접 출력해 주세요.\n\n",
+      "grammarCheck": "다음 본문의 맞춤법, 띄어쓰기, 문법 오류를 교정해 주세요. 교정에 대한 설명이나 인사말 등은 일절 출력하지 말고, 교정된 최종 텍스트만 직접 출력해 주세요.\n\n",
+      "businessTone": "다음 본문을 격식 있고 정중한 비즈니스 이메일/메시지 어조로 다시 작성해 주세요. 인사말이나 서론 설명 등 일절 다른 말을 덧붙이지 말고, 재작성된 메일/메시지 본문만 직접 출력해 주세요.\n\n",
+      "detailedExplain": "다음 본문이나 코드의 의미와 상세한 동작 과정을 친절하고 명확하게 설명해 주세요. 논리적인 구조로 설명하되, 인사말이나 불필요한 메타 설명을 덧붙이지 말고 즉시 설명을 시작해 주세요.\n\n",
+      "brainstorming": "다음 주제에 대해 독창적이고 유용한 아이디어 5가지를 브레인스토밍해 주세요. 인사말이나 서론 설명은 출력하지 말고, 브레인스토밍된 5가지 아이디어만 목록으로 직접 출력해 주세요.\n\n"
     }
   },
   "persona": {
@@ -564,6 +659,11 @@
       },
       "lock": {
         "label": "사생활 보호 잠금 활성화"
+      },
+      "temperature": {
+        "label": "답변 창의성 (Temperature)",
+        "precise": "신중/일관",
+        "creative": "창의/상상"
       }
     },
     "personality": {
@@ -712,7 +812,8 @@
     "sidebar": {
       "tooltips": {
         "alarm": "알람 알리미",
-        "docViewer": "문서 뷰어"
+        "docViewer": "문서 뷰어",
+        "tutor": "배움 튜터"
       }
     },
     "docViewer": {
@@ -746,7 +847,9 @@
       "aiRefineSuccessToastMessage": "제공된 타이틀과 본문을 깔끔하게 정리했습니다.",
       "saveToMemo": "메모 저장",
       "memoSavedToastTitle": "📝 메모 저장 완료",
-      "memoSavedToastMessage": "문서 내용이 메모장에 새로운 메모로 저장되었습니다."
+      "memoSavedToastMessage": "문서 내용이 메모장에 새로운 메모로 저장되었습니다.",
+      "popupBlockerAlert": "팝업 차단을 해제해 주세요.",
+      "editPlaceholder": "여기에 문서를 자유롭게 입력하거나 편집하세요... (마크다운 지원)"
     }
   },
   "promptRunner": {
@@ -773,58 +876,5 @@
     "sessionInitFailed": "로컬 AI 세션을 초기화할 수 없습니다. 설정을 확인하세요.",
     "localAiFailedPrefix": "로컬 온디바이스 AI가 작업을 완료하지 못했습니다",
     "detailReason": "상세 원인"
-  },
-  "tools": {
-    "tutor": {
-      "title": "배움 튜터 (Lingo Tutor)",
-      "desc": "배우고 싶은 타겟 언어와 연령대를 설정하세요. AI 선생님이 친근한 어조로 수준에 딱 맞는 예문과 설명 카드를 매일 배달합니다.",
-      "selectLang": "배우고 싶은 언어",
-      "selectLevel": "학습 연령 및 수준",
-      "selectDifficulty": "학습 난이도",
-      "requestButton": "오늘의 배움 한마디 받기 🎓",
-      "ttsTitle": "발음 듣기",
-      "archiveTitle": "내 단어장",
-      "archiveEmpty": "저장된 배움 표현이 없습니다.",
-      "deleteBtn": "삭제",
-      "confirmClearAll": "정말로 내 단어장의 모든 표현을 삭제하시겠습니까?",
-      "clearAllTitle": "단어장 비우기",
-      "clearAllBtn": "모두 삭제",
-      "selectTopic": "학습 주제",
-      "settingsTitle": "학습 조건 설정",
-      "dailyAlarm": "매일 배움 알림 받기",
-      "alarmTimeLabel": "알림 배달 시각",
-      "topic": {
-        "general": "일상 회화 (Daily)",
-        "travel": "여행 및 생활 (Travel)",
-        "business": "비즈니스 (Business)",
-        "slang": "슬랭 및 표현 (Slang)",
-        "grammar": "패턴 및 문법 (Grammar)"
-      },
-      "lang": {
-        "ko": "한국어 (Korean)",
-        "en": "영어 (English)",
-        "ja": "일본어 (Japanese)",
-        "zh": "중국어 (Chinese)",
-        "es": "스페인어 (Spanish)",
-        "fr": "프랑스어 (French)",
-        "de": "독일어 (German)",
-        "vi": "베트남어 (Vietnamese)"
-      },
-      "level": {
-        "kids": "어린이 (Kids)",
-        "kidsDesc": "동화 느낌, 쉬운 단어, 친근한 이모지",
-        "teens": "청소년 (Teens)",
-        "teensDesc": "트렌디한 슬랭, 일상 취미 소통",
-        "adult": "성인/비즈니스 (Business)",
-        "adultDesc": "격식 회화, 격려와 지적 통찰력"
-      },
-      "difficulty": {
-        "beginner": "하 (Beginner)",
-        "intermediate": "중 (Intermediate)",
-        "advanced": "상 (Advanced)"
-      }
-    }
   }
 }
-
-

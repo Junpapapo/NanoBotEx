@@ -72,11 +72,26 @@ export function I18nProvider({
 
   const t = (key: string, defaultValue?: string): string => {
     const currentDict = DICTIONARIES[locale] || DICTIONARIES.ko;
-    let val = resolveKey(currentDict, key);
+    
+    let resolvedKey = key;
+    if (key.startsWith("docViewer.") || key.startsWith("premium.")) {
+      resolvedKey = "buddy." + key;
+    }
+
+    let val = resolveKey(currentDict, resolvedKey);
     if (val !== undefined) return val;
 
-    val = resolveKey(koDict, key);
+    val = resolveKey(koDict, resolvedKey);
     if (val !== undefined) return val;
+
+    // Fallback to original key if buddy prefix didn't match anything
+    if (resolvedKey !== key) {
+      val = resolveKey(currentDict, key);
+      if (val !== undefined) return val;
+
+      val = resolveKey(koDict, key);
+      if (val !== undefined) return val;
+    }
 
     return defaultValue !== undefined ? defaultValue : key;
   };

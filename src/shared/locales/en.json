@@ -27,14 +27,19 @@
       "restore": "Restore",
       "close": "Close",
       "clearScreen": "Clear screen messages",
-      "summarizePage": "Summarize active tab content"
+      "summarizePage": "Summarize active tab content",
+      "hideRightMenu": "Hide right menu",
+      "showRightMenu": "Show right menu"
     },
     "input": {
       "placeholder": "Type a message...",
       "loadingPlaceholder": "AI is writing...",
       "stop": "Stop",
       "send": "Send",
-      "hint": "Enter to send / Shift+Enter for new line"
+      "hint": "Enter to send / Shift+Enter for new line",
+      "webSearchOff": "Real-time search disabled",
+      "webSearchAuto": "Real-time search: AI Auto Decision",
+      "webSearchForce": "Real-time search: Force Enabled"
     },
     "welcome": {
       "title": "Hi, I'm",
@@ -70,6 +75,18 @@
       "g3": {
         "label": "❓ Step 3: Troubleshoot Connection"
       }
+    },
+    "error": {
+      "prefix": "An error occurred",
+      "suffix": "Please check your browser and on-device settings."
+    },
+    "sources": {
+      "title": "Reference Sources",
+      "switchToTab": "Go to real-time search results ↗",
+      "directScrape": "Direct website scrape: \"{query}\"",
+      "defaultSearch": "Real-time search result: \"{query}\"",
+      "scrapeErrorTitle": "⚠️ Scraping Error Details",
+      "scrapeErrorSnippet": "Error Content: {error}"
     }
   },
   "bookmarks": {
@@ -116,7 +133,6 @@
       "save": "Save",
       "delete": "Delete"
     },
-
     "dangerZone": {
       "title": "Danger Zone",
       "collapse": "▼ Collapse Danger Zone",
@@ -142,7 +158,6 @@
         "title": "Text Summarizer",
         "description": "Summarizes long text into 3 clean, key points."
       },
-
       "code_reviewer": {
         "title": "Code Reviewer",
         "description": "Finds problems in submitted code and suggests improvement ideas."
@@ -327,11 +342,19 @@
     "tempBalanced": "Balanced",
     "tempCreative": "Creative",
     "bypassTitle": "Force Enable Environment",
-    "bypassDesc": "Force activates the chatbot even if on-device AI detection fails."
+    "bypassDesc": "Force activates the chatbot even if on-device AI detection fails.",
+    "chatFontSize": "Chat Font Size",
+    "fontSizeSmall": "Small",
+    "fontSizeLarge": "Large",
+    "fontSizeMedium": "Default",
+    "chatFont": "Chat Font"
   },
   "session": {
     "clearContext": "🧹 **AI's previous conversation context memory has been cleared.** (Subsequent questions will not be linked to previous content and will be answered completely brand new.)",
-    "firstUserMsgDefault": "New Chat"
+    "firstUserMsgDefault": "New Chat",
+    "timeoutLabel": "Session Auto-Timeout",
+    "timeoutOff": "Off",
+    "timeoutMinSuffix": "min"
   },
   "tools": {
     "calculator": {
@@ -346,7 +369,14 @@
       "pyung": "Pyung",
       "m2": "Square Meter (㎡)",
       "celsius": "Celsius (°C)",
-      "fahrenheit": "Fahrenheit (°F)"
+      "fahrenheit": "Fahrenheit (°F)",
+      "cm": "Centimeter (cm)",
+      "inch": "Inch (inch)",
+      "ft": "Feet (ft)",
+      "areaTitle": "Area",
+      "tempTitle": "Temperature",
+      "lengthCmInchTitle": "Length (cm ↔ inch)",
+      "lengthCmFtTitle": "Length (cm ↔ ft)"
     },
     "translator": {
       "title": "Translation",
@@ -402,7 +432,61 @@
       "aiAnswerTitle": "Saved AI Answer",
       "lastUpdated": "Last updated",
       "addMemo": "Add Memo",
-      "deleteMemo": "Delete Memo"
+      "deleteMemo": "Delete Memo",
+      "clickToEdit": "Click to write a memo...",
+      "clearFilter": "Clear ✕",
+      "reserveAlarmTooltip": "Schedule this memo as an alarm",
+      "reserveTodoAlarmTooltip": "Schedule this to-do as an alarm"
+    },
+    "tutor": {
+      "title": "Lingo Tutor",
+      "desc": "Set your target language and level. The AI teacher will deliver daily expressions tailored to your level in a friendly tone.",
+      "selectLang": "Target Language",
+      "selectLevel": "Target Level/Age",
+      "selectDifficulty": "Target Difficulty",
+      "requestButton": "Get Daily Learning Expression 🎓",
+      "ttsTitle": "Listen Pronunciation",
+      "archiveTitle": "Saved Expressions",
+      "archiveEmpty": "No saved expressions found.",
+      "deleteBtn": "Delete",
+      "confirmClearAll": "Are you sure you want to delete all expressions from your vocabulary?",
+      "clearAllTitle": "Clear Vocabulary",
+      "clearAllBtn": "Clear All",
+      "selectTopic": "Learning Topic",
+      "settingsTitle": "Tutor Settings",
+      "dailyAlarm": "Daily Learn Reminder",
+      "alarmTimeLabel": "Delivery Time",
+      "topic": {
+        "general": "Daily Conversation",
+        "travel": "Travel & Life",
+        "business": "Business & Work",
+        "slang": "Slang & Idioms",
+        "grammar": "Grammar & Patterns"
+      },
+      "lang": {
+        "ko": "Korean",
+        "en": "English",
+        "ja": "Japanese",
+        "zh": "Chinese",
+        "es": "Spanish",
+        "fr": "French",
+        "de": "German",
+        "vi": "Vietnamese"
+      },
+      "level": {
+        "kids": "Kids",
+        "kidsDesc": "Fairy tale vibes, easy words, friendly emojis",
+        "teens": "Teens",
+        "teensDesc": "Trendy slangs, daily hobbies, casual conversation",
+        "adult": "Business/Adults",
+        "adultDesc": "Formal expressions, encouraging insights"
+      },
+      "difficulty": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "requestButtonTooltip": "Get daily expression 🎓"
     }
   },
   "sidebar": {
@@ -414,7 +498,6 @@
       "resetChat": "Reset All Chat",
       "botSettings": "Bot Rule Settings",
       "settings": "System Settings",
-
       "translator": "Translation",
       "exchange": "Live Exchange Rate",
       "calculator": "Smart Calculator",
@@ -432,7 +515,19 @@
       "tutorRequest": "Daily Expression",
       "tutorDisabled": "Daily Expression is not available in Buddy mode",
       "tutorSettings": "Lingo Tutor Settings",
-      "tutorSettingsDisabled": "Tutor Settings are not available in Buddy mode"
+      "tutorSettingsDisabled": "Tutor Settings are not available in Buddy mode",
+      "clearContextDisabled": "Clear context is restricted in Buddy mode",
+      "resetChatDisabled": "Reset chat is restricted in Buddy mode",
+      "alarm": "AI Alarm & Reminder",
+      "docViewer": "AI Document Viewer"
+    },
+    "prompts": {
+      "textSummary": "Please summarize the following text to make it easy to read at a glance. Do NOT output any introductory, conversational, or concluding text (such as \"Here is the summary:\" or \"I hope this helps\"). Output ONLY the final summarized text directly.\n\n",
+      "keyPoints": "Please summarize the key 3 points of the following text in a clear, bulleted list. Do NOT output any introductory, conversational, or concluding text. Output ONLY the 3 bullet points directly.\n\n",
+      "grammarCheck": "Please correct any spelling, spacing, and grammatical errors in the following text. Do NOT output any explanation, introductory, conversational, or concluding text. Output ONLY the corrected text directly.\n\n",
+      "businessTone": "Please rewrite the following text into a formal and polite business email/message tone. Do NOT output any greetings to the user, introductory remarks, or conversational filler. Output ONLY the rewritten email/message body directly.\n\n",
+      "detailedExplain": "Please explain the meaning and detailed operation process of the following text or code in a friendly, clear manner. Structure your explanation logically. Do NOT add conversational introductory or concluding filler. Start explaining the content immediately.\n\n",
+      "brainstorming": "Please brainstorm 5 creative and useful ideas for the following topic. Do NOT output any conversational filler or introductions. Output ONLY the 5 brainstormed ideas directly in a list.\n\n"
     }
   },
   "persona": {
@@ -564,6 +659,11 @@
       },
       "lock": {
         "label": "Enable Privacy Lock"
+      },
+      "temperature": {
+        "label": "Response Creativity (Temperature)",
+        "precise": "Precise/Consistent",
+        "creative": "Creative/Imaginative"
       }
     },
     "personality": {
@@ -747,7 +847,9 @@
       "aiRefineSuccessToastMessage": "The title and content have been refined and organized.",
       "saveToMemo": "Save to Memo",
       "memoSavedToastTitle": "📝 Memo Saved",
-      "memoSavedToastMessage": "The document has been successfully saved to your Memos."
+      "memoSavedToastMessage": "The document has been successfully saved to your Memos.",
+      "popupBlockerAlert": "Please disable popup blocker.",
+      "editPlaceholder": "Feel free to enter or edit the document here... (Markdown supported)"
     }
   },
   "promptRunner": {
@@ -774,58 +876,5 @@
     "sessionInitFailed": "Failed to initialize Local AI session. Please check your settings.",
     "localAiFailedPrefix": "Local on-device AI failed to complete the task",
     "detailReason": "Detail Reason"
-  },
-  "tools": {
-    "tutor": {
-      "title": "Lingo Tutor",
-      "desc": "Set your target language and level. The AI teacher will deliver daily expressions tailored to your level in a friendly tone.",
-      "selectLang": "Target Language",
-      "selectLevel": "Target Level/Age",
-      "selectDifficulty": "Target Difficulty",
-      "requestButton": "Get Daily Learning Expression 🎓",
-      "ttsTitle": "Listen Pronunciation",
-      "archiveTitle": "Saved Expressions",
-      "archiveEmpty": "No saved expressions found.",
-      "deleteBtn": "Delete",
-      "confirmClearAll": "Are you sure you want to delete all expressions from your vocabulary?",
-      "clearAllTitle": "Clear Vocabulary",
-      "clearAllBtn": "Clear All",
-      "selectTopic": "Learning Topic",
-      "settingsTitle": "Tutor Settings",
-      "dailyAlarm": "Daily Learn Reminder",
-      "alarmTimeLabel": "Delivery Time",
-      "topic": {
-        "general": "Daily Conversation",
-        "travel": "Travel & Life",
-        "business": "Business & Work",
-        "slang": "Slang & Idioms",
-        "grammar": "Grammar & Patterns"
-      },
-      "lang": {
-        "ko": "Korean",
-        "en": "English",
-        "ja": "Japanese",
-        "zh": "Chinese",
-        "es": "Spanish",
-        "fr": "French",
-        "de": "German",
-        "vi": "Vietnamese"
-      },
-      "level": {
-        "kids": "Kids",
-        "kidsDesc": "Fairy tale vibes, easy words, friendly emojis",
-        "teens": "Teens",
-        "teensDesc": "Trendy slangs, daily hobbies, casual conversation",
-        "adult": "Business/Adults",
-        "adultDesc": "Formal expressions, encouraging insights"
-      },
-      "difficulty": {
-        "beginner": "Beginner",
-        "intermediate": "Intermediate",
-        "advanced": "Advanced"
-      }
-    }
   }
 }
-
-
