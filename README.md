@@ -5,6 +5,14 @@ A lightweight utility that brings a customized AI assistant directly onto your b
 > [!NOTE]
 > This extension is optimized for lightweight on-device AI tasks, quick memos, bookmarks, and basic workflow scripting.
 
+## 📺 Usage Video (사용법 소개 영상)
+
+<p align="center">
+  <a href="https://youtu.be/O2WZoL0ilo0" target="_blank">
+    <img src="https://img.youtube.com/vi/O2WZoL0ilo0/0.jpg" alt="NanoBot Usage Video" width="600" />
+  </a>
+</p>
+
 ## Our Mission: Why NanoBot & SLM?
 
 While modern AI advances at an unprecedented pace, accessing massive large language models (LLMs) often requires expensive subscription plans or high-end GPU hardware. As a result, users on budget hardware like Chromebooks, students, or communities in developing regions frequently find themselves in the "AI shadow," unable to utilize these modern tools.
