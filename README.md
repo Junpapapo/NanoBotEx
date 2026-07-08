@@ -5,7 +5,7 @@ A lightweight utility that brings a customized AI assistant directly onto your b
 > [!NOTE]
 > This extension is optimized for lightweight on-device AI tasks, quick memos, bookmarks, and basic workflow scripting.
 
-## 📺 Usage Video (사용법 소개 영상)
+## 📺 Usage Video
 
 <p align="center">
   <a href="https://youtu.be/O2WZoL0ilo0" target="_blank">
