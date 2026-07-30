@@ -558,7 +558,7 @@ export function ChatMessageItem({ message, settings, effectiveAIAvatar, onQuickQ
               ? t("session.webAnalyze.invalidUrl", "❌ **올바른 형식의 웹 페이지 주소(URL)를 입력해 주세요.**") 
               : "올바른 형식의 웹 페이지 주소(URL)를 입력해 주세요.";
             const cleanMsg = rawMsg.replace(/\*\*|❌/g, "").trim();
-            alert(cleanMsg);
+            console.warn("[WebAnalyze] Invalid URL:", cleanMsg);
             return;
           }
 

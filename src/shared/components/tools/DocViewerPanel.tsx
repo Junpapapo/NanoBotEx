@@ -534,13 +534,8 @@ Constraints:
 
   // 8. PDF 인쇄 (새 인쇄용 창 팝업 실행)
   // 8. PDF 인쇄 (새 인쇄용 창 팝업 실행)
+  // 8. PDF 인쇄 (새 인쇄용 창 팝업 실행)
   const handlePrintPdf = () => {
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) {
-      alert(t("docViewer.popupBlockerAlert", "팝업 차단을 해제해 주세요."));
-      return;
-    }
-
     const title = docTitle || t("docViewer.titlePlaceholder", "제목 없는 문서");
     const styleTheme = theme.isLight
       ? "background: white; color: black;"
@@ -562,9 +557,11 @@ Constraints:
     const btnContainerBorder = isThemeLight ? "#e2e8f0" : "#334155";
     const btnTextColor = isThemeLight ? "#475569" : "#cbd5e1";
 
-    printWindow.document.write(`
+    const htmlContent = `
+      <!DOCTYPE html>
       <html>
         <head>
+          <meta charset="utf-8">
           <title>${title}</title>
           <style>
             body {
@@ -656,104 +653,51 @@ Constraints:
           </div>
           <h1>${title}</h1>
           <div>${parsedHtml}</div>
+          <script>
+            document.getElementById('nanobot-print-pdf-trigger').addEventListener('click', function() {
+              window.print();
+            });
+            const fsMap = {
+              S: { body: "11px", h1: "17px", h2: "13px", h3: "11px", other: "10px" },
+              M: { body: "13px", h1: "20px", h2: "15px", h3: "13px", other: "12px" },
+              L: { body: "16px", h1: "24px", h2: "18px", h3: "15px", other: "14px" }
+            };
+            function setFs(size) {
+              const fs = fsMap[size];
+              document.body.style.fontSize = fs.body;
+              document.querySelectorAll('h1').forEach(el => el.style.fontSize = fs.h1);
+              document.querySelectorAll('h2').forEach(el => el.style.fontSize = fs.h2);
+              document.querySelectorAll('h3').forEach(el => el.style.fontSize = fs.h3);
+              document.querySelectorAll('code, pre, table').forEach(el => el.style.fontSize = fs.other);
+              ['s', 'm', 'l'].forEach(s => {
+                const btn = document.getElementById('fs-btn-' + s);
+                if (btn) {
+                  btn.style.background = (s.toUpperCase() === size) ? '#6366f1' : 'transparent';
+                  btn.style.color = (s.toUpperCase() === size) ? 'white' : '${btnTextColor}';
+                }
+              });
+            }
+            document.getElementById('fs-btn-s').addEventListener('click', () => setFs('S'));
+            document.getElementById('fs-btn-m').addEventListener('click', () => setFs('M'));
+            document.getElementById('fs-btn-l').addEventListener('click', () => setFs('L'));
+            setFs('${printFontSize}');
+          </script>
         </body>
       </html>
-    `);
-    printWindow.document.close();
+    `;
 
-    // 팝업 창 로드 완료 후 부모 컨텍스트에서 버튼에 이벤트 리스너 동적 바인딩 (Manifest V3 CSP 준수)
-    const printButton = printWindow.document.getElementById(
-      "nanobot-print-pdf-trigger",
-    );
-    if (printButton) {
-      printButton.addEventListener("click", () => {
-        printWindow.print();
+    const blob = new Blob([htmlContent], { type: "text/html" });
+    const blobUrl = URL.createObjectURL(blob);
+    const printWindow = window.open(blobUrl, "_blank");
+
+    if (!printWindow) {
+      setAlertDialog({
+        title: t("docViewer.popupBlockerTitle", "팝업 차단 감지"),
+        message: t("docViewer.popupBlockerAlert", "팝업 차단을 해제해 주세요."),
       });
-      // 마우스 오버 효과 동적 적용
-      printButton.addEventListener("mouseover", () => {
-        printButton.style.background = "#4f46e5";
-      });
-      printButton.addEventListener("mouseout", () => {
-        printButton.style.background = "#6366f1";
-      });
+      return;
     }
-
-    // 폰트 크기 변경 헬퍼 함수
-    const updatePrintWindowFontSize = (size: "S" | "M" | "L") => {
-      const fsStyles = getFontSizeStyles(size);
-      const doc = printWindow.document;
-
-      doc.body.style.fontSize = fsStyles.body;
-
-      const h1s = doc.querySelectorAll("h1");
-      h1s.forEach((el: any) => { el.style.fontSize = fsStyles.h1; });
-
-      const h2s = doc.querySelectorAll("h2");
-      h2s.forEach((el: any) => { el.style.fontSize = fsStyles.h2; });
-
-      const h3s = doc.querySelectorAll("h3");
-      h3s.forEach((el: any) => { el.style.fontSize = fsStyles.h3; });
-
-      const codes = doc.querySelectorAll("code");
-      codes.forEach((el: any) => { el.style.fontSize = fsStyles.other; });
-
-      const pres = doc.querySelectorAll("pre");
-      pres.forEach((el: any) => { el.style.fontSize = fsStyles.other; });
-
-      const tables = doc.querySelectorAll("table");
-      tables.forEach((el: any) => { el.style.fontSize = fsStyles.other; });
-
-      // 단추 활성화 상태 스타일링 업데이트
-      const btnS = doc.getElementById("fs-btn-s");
-      const btnM = doc.getElementById("fs-btn-m");
-      const btnL = doc.getElementById("fs-btn-l");
-
-      if (btnS && btnM && btnL) {
-        [btnS, btnM, btnL].forEach((btn: any) => {
-          btn.style.background = "transparent";
-          btn.style.color = btnTextColor;
-        });
-
-        const activeBtn = size === "S" ? btnS : size === "M" ? btnM : btnL;
-        activeBtn.style.background = "#6366f1";
-        activeBtn.style.color = "white";
-      }
-    };
-
-    const btnS = printWindow.document.getElementById("fs-btn-s");
-    const btnM = printWindow.document.getElementById("fs-btn-m");
-    const btnL = printWindow.document.getElementById("fs-btn-l");
-
-    if (btnS) {
-      btnS.addEventListener("click", () => updatePrintWindowFontSize("S"));
-      btnS.addEventListener("mouseover", () => {
-        if (btnS.style.background !== "rgb(99, 102, 241)") btnS.style.background = isThemeLight ? "#e2e8f0" : "#334155";
-      });
-      btnS.addEventListener("mouseout", () => {
-        if (btnS.style.background !== "rgb(99, 102, 241)") btnS.style.background = "transparent";
-      });
-    }
-    if (btnM) {
-      btnM.addEventListener("click", () => updatePrintWindowFontSize("M"));
-      btnM.addEventListener("mouseover", () => {
-        if (btnM.style.background !== "rgb(99, 102, 241)") btnM.style.background = isThemeLight ? "#e2e8f0" : "#334155";
-      });
-      btnM.addEventListener("mouseout", () => {
-        if (btnM.style.background !== "rgb(99, 102, 241)") btnM.style.background = "transparent";
-      });
-    }
-    if (btnL) {
-      btnL.addEventListener("click", () => updatePrintWindowFontSize("L"));
-      btnL.addEventListener("mouseover", () => {
-        if (btnL.style.background !== "rgb(99, 102, 241)") btnL.style.background = isThemeLight ? "#e2e8f0" : "#334155";
-      });
-      btnL.addEventListener("mouseout", () => {
-        if (btnL.style.background !== "rgb(99, 102, 241)") btnL.style.background = "transparent";
-      });
-    }
-
-    // 팝업 생성 시점의 부모 설정값으로 초기화 적용
-    updatePrintWindowFontSize(printFontSize);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
   };
 
   const isLight = theme.isLight;

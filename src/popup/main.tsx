@@ -166,8 +166,7 @@ function PopupContent({
     } catch (err: any) {
       console.error("Manual AI test failed:", err);
       setTestStatus("fail");
-      alert(`로컬 AI 테스트 실패: ${err?.message || err}`);
-      setTimeout(() => setTestStatus("idle"), 2000);
+      setTimeout(() => setTestStatus("idle"), 3000);
     }
   };
 

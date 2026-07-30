@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { UserSettings } from "../../../chatbot-types";
 import { ThemePalette } from "../../../chatbot-constants";
+import { CustomDialog } from "../../CustomDialog";
 
 interface PersonaPickerProps {
   theme: ThemePalette;
@@ -52,6 +53,22 @@ export function PersonaPicker({
   const [editingLabel, setEditingLabel] = useState("");
   const [editingValue, setEditingValue] = useState("");
 
+  const [dialogState, setDialogState] = useState<{
+    isOpen: boolean;
+    type: "alert" | "confirm";
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    type: "alert",
+    title: "",
+    message: "",
+    onConfirm: () => {},
+  });
+
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("nano-custom-personas");
@@ -59,7 +76,6 @@ export function PersonaPicker({
         try {
           const parsed = JSON.parse(saved);
           if (parsed && parsed.length > 0) {
-            // 기존 한국어 프리셋 또는 값에 한국어가 포함된 경우 영어 프리셋으로 마이그레이션
             const migrated = parsed.map((p: CustomPreset) => {
               const def = DEFAULT_PRESETS.find((d) => d.id === p.id);
               if (def) {
@@ -99,13 +115,23 @@ export function PersonaPicker({
     }
   };
 
+  const showAlert = (title: string, message: string) => {
+    setDialogState({
+      isOpen: true,
+      type: "alert",
+      title,
+      message,
+      onConfirm: () => setDialogState((prev) => ({ ...prev, isOpen: false })),
+    });
+  };
+
   const handleCreate = () => {
     if (!newLabel.trim()) {
-      alert(t("persona.alertLabelRequired", "성향의 라벨 이름을 입력해주세요."));
+      showAlert(t("persona.alertTitle", "입력 오류"), t("persona.alertLabelRequired", "성향의 라벨 이름을 입력해주세요."));
       return;
     }
     if (!newValue.trim()) {
-      alert(t("persona.alertValueRequired", "성향 지침 내용을 입력해주세요."));
+      showAlert(t("persona.alertTitle", "입력 오류"), t("persona.alertValueRequired", "성향 지침 내용을 입력해주세요."));
       return;
     }
 
@@ -130,11 +156,11 @@ export function PersonaPicker({
 
   const handleSaveEdit = () => {
     if (!editingLabel.trim()) {
-      alert(t("persona.alertLabelRequired", "성향의 라벨 이름을 입력해주세요."));
+      showAlert(t("persona.alertTitle", "입력 오류"), t("persona.alertLabelRequired", "성향의 라벨 이름을 입력해주세요."));
       return;
     }
     if (!editingValue.trim()) {
-      alert(t("persona.alertValueRequired", "성향 지침 내용을 입력해주세요."));
+      showAlert(t("persona.alertTitle", "입력 오류"), t("persona.alertValueRequired", "성향 지침 내용을 입력해주세요."));
       return;
     }
 
@@ -152,11 +178,20 @@ export function PersonaPicker({
   };
 
   const handleDelete = (id: string) => {
-    if (confirm(t("persona.deleteConfirm", "이 성향 프리셋을 삭제하시겠습니까?"))) {
-      const filtered = presets.filter((p) => p.id !== id);
-      savePresets(filtered);
-      if (editingId === id) setEditingId(null);
-    }
+    setDeleteTargetId(id);
+    setDialogState({
+      isOpen: true,
+      type: "confirm",
+      title: t("persona.deleteTitle", "프리셋 삭제"),
+      message: t("persona.deleteConfirm", "이 성향 프리셋을 삭제하시겠습니까?"),
+      onConfirm: () => {
+        const filtered = presets.filter((p) => p.id !== id);
+        savePresets(filtered);
+        if (editingId === id) setEditingId(null);
+        setDialogState((prev) => ({ ...prev, isOpen: false }));
+        setDeleteTargetId(null);
+      },
+    });
   };
 
   const currentPersona = settings.nano_ai_persona || "";
@@ -351,6 +386,17 @@ export function PersonaPicker({
             ? "bg-white border-slate-200 text-slate-800"
             : "bg-slate-950 border border-white/[0.08] text-white"
         } ${theme.focusBorder} rounded-xl p-2.5 outline-none resize-none font-medium leading-relaxed custom-scrollbar text-xs`}
+      />
+
+      <CustomDialog
+        isOpen={dialogState.isOpen}
+        type={dialogState.type}
+        title={dialogState.title}
+        message={dialogState.message}
+        onConfirm={dialogState.onConfirm}
+        onCancel={() => setDialogState((prev) => ({ ...prev, isOpen: false }))}
+        confirmText={t("common.confirm", "확인")}
+        cancelText={t("common.cancel", "취소")}
       />
     </div>
   );

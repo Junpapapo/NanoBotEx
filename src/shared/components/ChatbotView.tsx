@@ -280,7 +280,10 @@ export function ChatbotView({
 
   const handleSummarizeCurrentPage = async () => {
     if (typeof chrome === "undefined" || !chrome.tabs || !chrome.scripting) {
-      alert("Page summarization is only supported in a Chrome Extension environment.");
+      showAlert(
+        t("dialog.summarizeError.title", "페이지 요약 오류"),
+        "Page summarization is only supported in a Chrome Extension environment."
+      );
       return;
     }
 
@@ -290,7 +293,10 @@ export function ChatbotView({
         currentWindow: true,
       });
       if (!tab || !tab.id) {
-        alert("Cannot find an active web page to summarize.");
+        showAlert(
+          t("dialog.summarizeError.title", "페이지 요약 오류"),
+          "Cannot find an active web page to summarize."
+        );
         return;
       }
 
@@ -302,14 +308,18 @@ export function ChatbotView({
         url.includes("chromewebstore.google.com") ||
         url.includes("junpapapo.github.io")
       ) {
-        alert(
+        showAlert(
+          t("dialog.summarizeError.title", "페이지 요약 오류"),
           "Due to Chrome's security policies, page summarization is not supported on browser settings, built-in extension pages, or the Chrome Web Store.\n\nPlease try again on a standard external website."
         );
         return;
       }
 
       if (url.endsWith(".pdf") || url.includes(".pdf#")) {
-        alert("Page summarization is not supported on PDF tabs. Please run on a standard web page.");
+        showAlert(
+          t("dialog.summarizeError.title", "페이지 요약 오류"),
+          "Page summarization is not supported on PDF tabs. Please run on a standard web page."
+        );
         return;
       }
 
@@ -321,12 +331,18 @@ export function ChatbotView({
         async (results) => {
           if (chrome.runtime.lastError) {
             console.warn("executeScript warning:", chrome.runtime.lastError.message);
-            alert(`Cannot read the web page content.\n(Reason: ${chrome.runtime.lastError.message || "Security restrictions or page blocked"})`);
+            showAlert(
+              t("dialog.summarizeError.title", "페이지 요약 오류"),
+              `Cannot read the web page content.\n(Reason: ${chrome.runtime.lastError.message || "Security restrictions or page blocked"})`
+            );
             return;
           }
 
           if (!results || !results[0] || typeof results[0].result !== "string") {
-            alert("Cannot read the web page content. The body text might be empty or extraction failed.");
+            showAlert(
+              t("dialog.summarizeError.title", "페이지 요약 오류"),
+              "Cannot read the web page content. The body text might be empty or extraction failed."
+            );
             return;
           }
 
@@ -337,7 +353,10 @@ export function ChatbotView({
             .slice(0, 3000);
 
           if (!cleanedText) {
-            alert("The extracted web page text is empty.");
+            showAlert(
+              t("dialog.summarizeError.title", "페이지 요약 오류"),
+              "The extracted web page text is empty."
+            );
             return;
           }
 
@@ -353,7 +372,10 @@ export function ChatbotView({
       );
     } catch (err: any) {
       console.error("Failed to summarize page:", err);
-      alert("Failed to summarize page: " + (err.message || err));
+      showAlert(
+        t("dialog.summarizeError.title", "페이지 요약 오류"),
+        "Failed to summarize page: " + (err.message || err)
+      );
     }
   };
 
@@ -555,6 +577,16 @@ export function ChatbotView({
     message: "",
     onConfirm: () => {},
   });
+
+  const showAlert = (title: string, message: string) => {
+    setDialogState({
+      isOpen: true,
+      type: "alert",
+      title,
+      message,
+      onConfirm: () => setDialogState((prev) => ({ ...prev, isOpen: false })),
+    });
+  };
 
   const showConfirm = (
     title: string,
