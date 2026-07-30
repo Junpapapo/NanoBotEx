@@ -60,6 +60,7 @@ export function TutorPanel({
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [settingsExpanded, setSettingsExpanded] = useState(false);
   const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
+  const [playingText, setPlayingText] = useState<string | null>(null);
 
   // 스토리지에서 저장된 아카이브 목록 로드
   useEffect(() => {
@@ -90,20 +91,46 @@ export function TutorPanel({
     e.stopPropagation();
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    const lang = settings.tutor_lang || "en";
-    const langCodeMap: Record<string, string> = {
-      en: "en-US",
-      ko: "ko-KR",
-      ja: "ja-JP",
-      zh: "zh-CN",
-      es: "es-ES",
-      fr: "fr-FR",
-      de: "de-DE",
-      vi: "vi-VN"
-    };
-    utterance.lang = langCodeMap[lang] || "en-US";
-    window.speechSynthesis.speak(utterance);
+    
+    // Chrome TTS 및 오디오 디바이스 절전(Sleep) 대응: 공백 문자 발화로 디바이스를 미리 깨운 후, 본 문장을 이어서 재생합니다.
+    setTimeout(() => {
+      const lang = settings.tutor_lang || "en";
+      const langCodeMap: Record<string, string> = {
+        en: "en-US",
+        ko: "ko-KR",
+        ja: "ja-JP",
+        zh: "zh-CN",
+        es: "es-ES",
+        fr: "fr-FR",
+        de: "de-DE",
+        vi: "vi-VN"
+      };
+      const selectedLang = langCodeMap[lang] || "en-US";
+
+      // 1. 디바이스를 깨울 아주 짧은 무음 발화 등록
+      const wakeUtterance = new SpeechSynthesisUtterance(" ");
+      wakeUtterance.volume = 0.0001;
+      wakeUtterance.rate = 2.0;
+      wakeUtterance.lang = selectedLang;
+      window.speechSynthesis.speak(wakeUtterance);
+
+      // 2. 실제 본래 문장 발화 등록 (1번이 끝난 후 순차적으로 자동 실행됨)
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = selectedLang;
+
+      // 발화 상태 이벤트 처리 (버튼 깜빡임 등 시각적 피드백 제공용)
+      utterance.onstart = () => {
+        setPlayingText(text);
+      };
+      utterance.onend = () => {
+        setPlayingText(null);
+      };
+      utterance.onerror = () => {
+        setPlayingText(null);
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }, 100);
   };
 
   // 아카이브 카드 개별 삭제
@@ -488,10 +515,14 @@ export function TutorPanel({
                         <button
                           type="button"
                           onClick={(e) => handlePlayTTS(e, item.sentence)}
-                          className="p-1 rounded text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 active:scale-95 transition-all"
+                          className={`p-1 rounded cursor-pointer transition-all duration-200 
+                            ${playingText === item.sentence 
+                              ? 'text-emerald-400 bg-emerald-500/20 scale-110 shadow-[0_0_8px_rgba(16,185,129,0.3)]' 
+                              : 'text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/15 hover:scale-110 active:scale-90 active:bg-emerald-500/25'
+                            }`}
                           title={t("tools.tutor.ttsTitle", "발음 듣기")}
                         >
-                          <Volume2 size={12} />
+                          <Volume2 size={12} className={playingText === item.sentence ? 'animate-pulse' : ''} />
                         </button>
                         <button
                           type="button"

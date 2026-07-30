@@ -443,12 +443,26 @@ export function useChatbotSession(
     let isQuoteRequest = false;
     let isLearnRequest = false;
     let cleanText = text;
+    let archiveSentences: string[] = [];
     if (text.endsWith("__QUOTE_EXPLAIN_REQUEST__")) {
       isQuoteRequest = true;
       cleanText = text.replace("__QUOTE_EXPLAIN_REQUEST__", "").trim();
     } else if (text.includes("__LEARN_TODAY_REQUEST__")) {
       isLearnRequest = true;
       cleanText = t ? t("chatbot.quickPrompts.p5.text", "오늘의 외국어 배움 한마디를 준비해 주세요.") : "오늘의 외국어 배움 한마디를 준비해 주세요.";
+      
+      // 오늘의 배움 중복 방지를 위한 기존 저장 표현 목록 비동기 조회
+      archiveSentences = await new Promise<string[]>((resolve) => {
+        if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+          chrome.storage.local.get(["nanobot-tutor-archive"], (res) => {
+            const archive = res["nanobot-tutor-archive"] || [];
+            const sentences = archive.map((item: any) => item.sentence).filter(Boolean);
+            resolve(sentences);
+          });
+        } else {
+          resolve([]);
+        }
+      });
     }
 
     let searchResults: SearchResult[] = [];
@@ -695,6 +709,11 @@ export function useChatbotSession(
         };
         const targetTopicInstruction = topicGuidelines[topic] || topicGuidelines.general;
 
+        // 배움 표현 중복 회피를 위한 시스템 룰 프롬프트 조립
+        const excludePrompt = archiveSentences.length > 0
+          ? `\n\n[CRITICAL RULE - EXCLUDE LIST]: The user has already learned the following expressions. NEVER recommend or generate any of these expressions again: ${JSON.stringify(archiveSentences)}. You MUST select a completely different, unique, and fresh expression.`
+          : `\n\n[SYSTEM RULE]: Make sure to select a highly creative, unique, and fresh expression that is not commonly overused in standard textbooks.`;
+
         if (currentLocale === "en") {
           const targetLangName = langNames[lang] || "English (영어)";
           promptText = promptText + "\n\n[SYSTEM RULE]: Respond ONLY with the special [LEARN_CARD] JSON format below. Do not output any other text, intro, or explanation outside the [LEARN_CARD] block. Absolutely no other sentences are allowed. Ensure the JSON is valid and escaped correctly.\nGenerate an interesting, practical expression to learn for the target language: \"" + targetLangName + "\" tailored for target age/level: \"" + targetLevelName + "\", difficulty: \"" + diff + " (" + targetDiffInstruction + ")\" and topic: \"" + topic + " (" + targetTopicInstruction + ")\".\nExplain and translate strictly in English.\n\n[LEARN_CARD] {\n  \"sentence\": \"Original sentence/expression in the target language (e.g. 'Break a leg!')\",\n  \"pronunciation\": \"Phonetic reading/pronunciation guide written strictly using English characters (e.g. '[break uh leg]'). Never use Hangul, Katakana, or other language characters.\",\n  \"translation\": \"Translation of the sentence in English (e.g. 'Good luck!')\",\n  \"vocabulary\": [\n    { \"word\": \"word/phrase\", \"meaning\": \"definition in English\" }\n  ],\n  \"tutor_note\": \"Brief 1-2 sentence explanation in English of when/how to use this expression. Then add a short 2-turn dialogue where EACH LINE is written in " + targetLangName + " first, followed by its English translation in parentheses. Format: '👨‍🏫 Tutor Guide:\\n[1-2 sentence usage tip]\\n\\n💬 Example Dialogue:\\nA: [sentence in " + targetLangName + "] (English meaning)\\nB: [sentence in " + targetLangName + "] (English meaning)'. Crucial: Never use raw unescaped double quotes inside this string value; use single quotes (') or escape them as \\\\\\\" to avoid JSON SyntaxErrors.\"\n}\n(Note: The newline must be represented as a single string using the escape character \\n in JSON. Do not output any intro, outro, or explanation outside the [LEARN_CARD] block. Return ONLY the [LEARN_CARD] block.)";
@@ -705,6 +724,8 @@ export function useChatbotSession(
           const targetLangName = langNames[lang] || "English (영어)";
           promptText = promptText + "\n\n[SYSTEM RULE]: Respond ONLY with the special [LEARN_CARD] JSON format below. Do not output any other text, intro, or explanation outside the [LEARN_CARD] block. Absolutely no other sentences are allowed. Ensure the JSON is valid and escaped correctly.\nGenerate an interesting, practical expression to learn for the target language: \"" + targetLangName + "\" tailored for target age/level: \"" + targetLevelName + "\", difficulty: \"" + diff + " (" + targetDiffInstruction + ")\" and topic: \"" + topic + " (" + targetTopicInstruction + ")\".\nExplain and translate strictly in Korean.\n\n[LEARN_CARD] {\n  \"sentence\": \"Original sentence/expression in the target language (e.g. 'Break a leg!')\",\n  \"pronunciation\": \"Phonetic reading/pronunciation guide written strictly and ONLY using Korean Hangul (e.g. '[브레이크 어 렉]'). Never use Japanese Katakana, Hiragana, English, or other language characters. Absolutely strictly enforce Hangul characters only.\",\n  \"translation\": \"Translation of the sentence in Korean (e.g. '행운을 빌어!')\",\n  \"vocabulary\": [\n    { \"word\": \"word/phrase\", \"meaning\": \"definition in Korean\" }\n  ],\n  \"tutor_note\": \"1~2문장의 간결한 사용법 설명(한국어). 그 후, 2턴 대화 예시를 추가하되 각 대화 줄은 반드시 " + targetLangName + "으로 먼저 쓰고, 괄호 안에 한국어 뜻을 병기한다. 형식: '👨‍🏫 튜터 가이드:\\n[1~2문장 사용 팁]\\n\\n💬 예시 대화:\\nA: [" + targetLangName + " 문장] (한국어 뜻)\\nB: [" + targetLangName + " 문장] (한국어 뜻)'. Crucial: Never use raw unescaped double quotes inside this string value; use single quotes (') or escape them as \\\\\\\" to avoid JSON SyntaxErrors.\"\n}\n(참고: 줄바꿈은 반드시 JSON 내 이스케이프 문자 \\n 을 사용하여 단일 문자열로 표현하세요. [LEARN_CARD] 블록 외에 다른 어떠한 서론, 결론 텍스트도 절대 출력해서는 안 됩니다.)";
         }
+        
+        promptText = promptText + excludePrompt;
       }
 const flushFinalContent = (content: string) => {
         if (rafId !== null) {

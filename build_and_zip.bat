@@ -20,8 +20,18 @@ if not exist "package.json" (
     exit /b 1
 )
 
-:: 3. Run production build
-echo [1/2] Running 'npm run build'...
+:: 3. Run TypeScript type check & production build
+echo [1/3] Checking TypeScript types ('npx tsc --noEmit')...
+call npx tsc --noEmit
+if %errorlevel% neq 0 (
+    echo.
+    echo [ERROR] TypeScript type check failed with exit code %errorlevel%.
+    echo Aborting build and archive creation.
+    pause
+    exit /b %errorlevel%
+)
+
+echo [2/3] Running 'npm run build'...
 call npm run build
 if %errorlevel% neq 0 (
     echo.
@@ -41,7 +51,7 @@ if exist "nanobot-extension.zip" (
 )
 
 :: 5. Compress dist contents using PowerShell Compress-Archive
-echo [2/2] Compressing dist contents to nanobot-extension.zip...
+echo [3/3] Compressing dist contents to nanobot-extension.zip...
 powershell -NoProfile -Command "Compress-Archive -Path 'dist\*' -DestinationPath 'nanobot-extension.zip' -Force"
 
 if %errorlevel% neq 0 (

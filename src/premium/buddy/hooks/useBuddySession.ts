@@ -23,65 +23,77 @@ const speakText = (text: string, preset: string, customRate?: number, customPitc
 
   if (!cleanText) return;
 
-  const utterance = new SpeechSynthesisUtterance(cleanText);
-  const voices = window.speechSynthesis.getVoices();
-  
-  let lang = "en-US";
-  if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(cleanText)) {
-    lang = "ko-KR";
-  } else if (/[ぁ-んァ-ヶ]/.test(cleanText)) {
-    lang = "ja-JP";
-  }
-  utterance.lang = lang;
+  // Chrome TTS 및 오디오 디바이스 절전(Sleep) 대응: 볼륨 0.0001의 아주 짧은 무음 발화로 디바이스를 미리 깨웁니다.
+  setTimeout(() => {
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    const voices = window.speechSynthesis.getVoices();
+    
+    let lang = "en-US";
+    if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(cleanText)) {
+      lang = "ko-KR";
+    } else if (/[ぁ-んァ-ヶ]/.test(cleanText)) {
+      lang = "ja-JP";
+    }
+    utterance.lang = lang;
 
-  const targetVoice = voices.find(v => v.lang.startsWith(lang));
-  if (targetVoice) {
-    utterance.voice = targetVoice;
-  }
+    const targetVoice = voices.find(v => v.lang.startsWith(lang));
+    if (targetVoice) {
+      utterance.voice = targetVoice;
+    }
 
-  switch (preset) {
-    case "genz":
-      utterance.rate = 1.25;
-      utterance.pitch = 1.25;
-      break;
-    case "grandma":
-      utterance.rate = 0.8;
-      utterance.pitch = 0.85;
-      break;
-    case "corporate":
-      utterance.rate = 1.05;
-      utterance.pitch = 0.9;
-      break;
-    case "motivator":
-      utterance.rate = 1.15;
-      utterance.pitch = 1.1;
-      break;
-    case "cyberpunk":
-      utterance.rate = 1.1;
-      utterance.pitch = 0.85;
-      break;
-    case "aristocrat":
-      utterance.rate = 0.9;
-      utterance.pitch = 0.98;
-      break;
-    case "bard":
-      utterance.rate = 0.98;
-      utterance.pitch = 1.15;
-      break;
-    default:
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-  }
+    switch (preset) {
+      case "genz":
+        utterance.rate = 1.25;
+        utterance.pitch = 1.25;
+        break;
+      case "grandma":
+        utterance.rate = 0.8;
+        utterance.pitch = 0.85;
+        break;
+      case "corporate":
+        utterance.rate = 1.05;
+        utterance.pitch = 0.9;
+        break;
+      case "motivator":
+        utterance.rate = 1.15;
+        utterance.pitch = 1.1;
+        break;
+      case "cyberpunk":
+        utterance.rate = 1.1;
+        utterance.pitch = 0.85;
+        break;
+      case "aristocrat":
+        utterance.rate = 0.9;
+        utterance.pitch = 0.98;
+        break;
+      case "bard":
+        utterance.rate = 0.98;
+        utterance.pitch = 1.15;
+        break;
+      default:
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+    }
 
-  // 사용자가 수동 설정한 값이 있으면 페르소나 기본값 대신 덮어씌웁니다.
-  if (customRate !== undefined && customRate !== 1.0) {
-    utterance.rate = customRate;
-  }
-  if (customPitch !== undefined && customPitch !== 1.0) {
-    utterance.pitch = customPitch;
-  }
+    // 사용자가 수동 설정한 값이 있으면 페르소나 기본값 대신 덮어씌웁니다.
+    if (customRate !== undefined && customRate !== 1.0) {
+      utterance.rate = customRate;
+    }
+    if (customPitch !== undefined && customPitch !== 1.0) {
+      utterance.pitch = customPitch;
+    }
 
-  window.speechSynthesis.speak(utterance);
+    const wakeUtterance = new SpeechSynthesisUtterance(" ");
+    wakeUtterance.volume = 0.0001;
+    wakeUtterance.rate = 2.0;
+    wakeUtterance.lang = lang;
+    if (targetVoice) {
+      wakeUtterance.voice = targetVoice;
+    }
+
+    window.speechSynthesis.speak(wakeUtterance);
+    window.speechSynthesis.speak(utterance);
+  }, 100);
 };
 
 export function useBuddySession(
